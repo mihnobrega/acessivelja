@@ -270,6 +270,83 @@
   text-align:center;
 }
 
+/* Botão do assistente por voz */
+.welcome-voice-button{
+  width:auto;
+  min-height:42px;
+  margin:12px auto 0;
+  padding:0 16px 0 10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  border:1px solid #8fb2c7;
+  border-radius:14px;
+  background:linear-gradient(135deg,#ffffff 0%,#f1f7fa 100%);
+  color:#173b57;
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 7px 18px rgba(7,28,44,.15),inset 0 0 0 1px rgba(255,255,255,.8);
+  transition:.2s ease;
+}
+
+/* Quadrado azul com ondas de voz */
+.welcome-voice-symbol{
+  width:30px;
+  height:30px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  flex-shrink:0;
+  border-radius:10px;
+  background:linear-gradient(145deg,#173b57,#285c7a);
+  box-shadow:0 4px 10px rgba(23,59,87,.2);
+}
+
+/* Barrinhas que formam o símbolo de voz */
+.welcome-voice-symbol span{
+  width:2px;
+  border-radius:999px;
+  background:#ffffff;
+}
+
+/* Tamanhos diferentes das ondas */
+.welcome-voice-symbol span:nth-child(1){
+  height:7px;
+}
+.welcome-voice-symbol span:nth-child(2){
+  height:13px;
+}
+.welcome-voice-symbol span:nth-child(3){
+  height:19px;
+}
+.welcome-voice-symbol span:nth-child(4){
+  height:13px;
+}
+.welcome-voice-symbol span:nth-child(5){
+  height:7px;
+}
+
+/* Texto do botão */
+.welcome-voice-text{
+  white-space:nowrap;
+}
+
+/* Efeito ao passar o mouse */
+.welcome-voice-button:hover{
+  border-color:#5d8da8;
+  background:#ffffff;
+  transform:translateY(-1px);
+  box-shadow:0 9px 22px rgba(7,28,44,.19);
+}
+
+/* Efeito ao clicar */
+.welcome-voice-button:active{
+  transform:scale(.98);
+}
+
 @media(max-width:390px){
   .welcome-page{
     padding:34px 16px 28px;

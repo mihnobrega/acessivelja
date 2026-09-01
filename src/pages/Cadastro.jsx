@@ -1,4 +1,6 @@
 import {
+  useEffect,
+  useRef,
   useState
 } from "react";
 
@@ -27,6 +29,9 @@ function Cadastro() {
     setSenha
   ] = useState("");
 
+  const senhaRef =
+  useRef(null);
+
   const [
   mostrarSenha,
   setMostrarSenha
@@ -47,6 +52,276 @@ function Cadastro() {
     setFotoPerfil
   ] = useState("");
 
+  const [
+  ouvindoCadastro,
+  setOuvindoCadastro
+] = useState(false);
+
+
+// ========================================
+// INICIAR CADASTRO POR VOZ
+// ========================================
+
+useEffect(() => {
+  const iniciarPorVoz =
+    sessionStorage.getItem(
+      "iniciarCadastroPorVoz"
+    );
+
+  console.log(
+    "Cadastro por voz:",
+    iniciarPorVoz
+  );
+
+  if (
+    iniciarPorVoz !== "true"
+  ) {
+    return;
+  }
+
+  const temporizador =
+    setTimeout(() => {
+
+      // Só remove depois que realmente
+      // chegou o momento de iniciar.
+      sessionStorage.removeItem(
+        "iniciarCadastroPorVoz"
+      );
+
+      console.log(
+        "Iniciando cadastro por voz"
+      );
+
+      falarNome();
+
+    }, 800);
+
+  return () => {
+    clearTimeout(
+      temporizador
+    );
+  };
+}, []);
+
+// ========================================
+// INICIAR ACESSIBILIDADE POR VOZ
+// ========================================
+
+function iniciarAcessibilidadePorVoz() {
+  falarEExecutar(
+    "Agora me diga qual recurso de acessibilidade você precisa.",
+    ouvirAcessibilidade
+  );
+}
+
+
+// ========================================
+// OUVIR ACESSIBILIDADE
+// ========================================
+
+function ouvirAcessibilidade() {
+  reconhecerVoz((texto) => {
+    const comando =
+      texto
+        .toLowerCase()
+        .trim();
+
+    let opcaoEncontrada = "";
+
+    if (
+      comando.includes(
+        "mobilidade reduzida"
+      )
+    ) {
+      opcaoEncontrada =
+        "Mobilidade reduzida";
+    }
+
+    else if (
+      comando.includes(
+        "cadeira de rodas"
+      ) ||
+      comando.includes(
+        "cadeirante"
+      )
+    ) {
+      opcaoEncontrada =
+        "Usuário de cadeira de rodas";
+    }
+
+    else if (
+      comando.includes(
+        "deficiência visual"
+      )
+    ) {
+      opcaoEncontrada =
+        "Deficiência visual";
+    }
+
+    else if (
+      comando.includes(
+        "baixa visão"
+      )
+    ) {
+      opcaoEncontrada =
+        "Baixa visão";
+    }
+
+    else if (
+      comando.includes(
+        "deficiência auditiva"
+      )
+    ) {
+      opcaoEncontrada =
+        "Deficiência auditiva";
+    }
+
+    else if (
+      comando.includes(
+        "pessoa surda"
+      ) ||
+      comando.includes(
+        "sou surda"
+      ) ||
+      comando.includes(
+        "sou surdo"
+      )
+    ) {
+      opcaoEncontrada =
+        "Pessoa surda";
+    }
+
+    else if (
+      comando.includes(
+        "deficiência intelectual"
+      )
+    ) {
+      opcaoEncontrada =
+        "Deficiência intelectual";
+    }
+
+    else if (
+      comando.includes(
+        "neurodivergência"
+      ) ||
+      comando.includes(
+        "neurodivergente"
+      )
+    ) {
+      opcaoEncontrada =
+        "Neurodivergência";
+    }
+
+    else if (
+      comando.includes(
+        "outra necessidade"
+      )
+    ) {
+      opcaoEncontrada =
+        "Outra necessidade";
+    }
+
+    else if (
+      comando.includes(
+        "não preciso"
+      ) ||
+      comando.includes(
+        "nenhuma"
+      ) ||
+      comando.includes(
+        "sem acessibilidade"
+      )
+    ) {
+      opcaoEncontrada =
+        "Não preciso de recursos de acessibilidade";
+    }
+
+    if (!opcaoEncontrada) {
+      falarEExecutar(
+        "Não consegui identificar essa opção. Tente falar novamente.",
+        ouvirAcessibilidade
+      );
+
+      return;
+    }
+
+    setNecessidades(
+      (anteriores) => {
+        if (
+          anteriores.includes(
+            opcaoEncontrada
+          )
+        ) {
+          return anteriores;
+        }
+
+        return [
+          ...anteriores,
+          opcaoEncontrada
+        ];
+      }
+    );
+
+    perguntarOutraNecessidade(
+      opcaoEncontrada
+    );
+  });
+}
+
+// ========================================
+// PERGUNTAR SE QUER MAIS UMA
+// ========================================
+
+function perguntarOutraNecessidade(
+  opcao
+) {
+  falarEExecutar(
+    `${opcao} selecionada. Você precisa de outro recurso de acessibilidade? Responda sim ou não.`,
+    ouvirRespostaOutraNecessidade
+  );
+}
+
+
+// ========================================
+// OUVIR SIM OU NÃO
+// ========================================
+
+function ouvirRespostaOutraNecessidade() {
+  reconhecerVoz((texto) => {
+    const resposta =
+      texto
+        .toLowerCase()
+        .trim();
+
+    if (
+      resposta.includes("sim")
+    ) {
+      falarEExecutar(
+        "Certo. Diga o próximo recurso de acessibilidade.",
+        ouvirAcessibilidade
+      );
+
+      return;
+    }
+
+    if (
+      resposta.includes("não") ||
+      resposta.includes("nao")
+    ) {
+      falarMensagemCadastro(
+        "Certo. Suas preferências de acessibilidade foram preenchidas. Revise os dados e pressione criar minha conta."
+      );
+
+      return;
+    }
+
+    falarEExecutar(
+      "Não entendi. Responda apenas sim ou não.",
+      ouvirRespostaOutraNecessidade
+    );
+  });
+}
+
 
   // ========================================
   // OPÇÕES DE ACESSIBILIDADE
@@ -65,6 +340,230 @@ function Cadastro() {
     "Não preciso de recursos de acessibilidade",
   ];
 
+  // ========================================
+// PEDIR NOME
+// ========================================
+
+function falarNome() {
+  falarEExecutar(
+    "Vamos criar sua conta. Primeiro, diga o seu nome.",
+    ouvirNome
+  );
+}
+
+
+// ========================================
+// OUVIR NOME
+// ========================================
+
+function ouvirNome() {
+  reconhecerVoz((texto) => {
+    const nomeFalado =
+      texto
+        .trim()
+        .replace(
+          /\b\w/g,
+          (letra) =>
+            letra.toUpperCase()
+        );
+
+    setNome(
+      nomeFalado
+    );
+
+    falarEExecutar(
+      `Nome preenchido como ${nomeFalado}. Agora diga o seu e-mail.`,
+      ouvirEmail
+    );
+  });
+}
+
+// ========================================
+// OUVIR EMAIL
+// ========================================
+
+function ouvirEmail() {
+  reconhecerVoz((texto) => {
+    let emailFalado =
+      texto.toLowerCase();
+
+    emailFalado =
+      emailFalado
+        .replace(
+          /\s+arroba\s+/g,
+          "@"
+        )
+        .replace(
+          /\s+ponto\s+/g,
+          "."
+        )
+        .replace(
+          /\s/g,
+          ""
+        );
+
+    setEmail(
+  emailFalado
+);
+
+if (
+  senhaRef.current
+) {
+  senhaRef.current.focus();
+}
+
+falarMensagemCadastro(
+  "E-mail preenchido. Agora crie sua senha usando o teclado."
+);
+  });
+}
+
+// ========================================
+// FALAR E CONTINUAR
+// ========================================
+
+function falarEExecutar(
+  mensagem,
+  proximaEtapa
+) {
+  if (
+    !("speechSynthesis" in window)
+  ) {
+    proximaEtapa();
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const fala =
+    new SpeechSynthesisUtterance(
+      mensagem
+    );
+
+  fala.lang = "pt-BR";
+  fala.rate = 1;
+  fala.pitch = 1;
+  fala.volume = 1;
+
+  fala.onstart = () => {
+    console.log(
+      "Assistente falando:",
+      mensagem
+    );
+  };
+
+  fala.onend = () => {
+    // Pequena pausa para não abrir
+    // o microfone imediatamente.
+    setTimeout(() => {
+      proximaEtapa();
+    }, 350);
+  };
+
+  fala.onerror = (
+    erro
+  ) => {
+    console.error(
+      "Erro na fala:",
+      erro
+    );
+  };
+
+  window.speechSynthesis.speak(
+    fala
+  );
+}
+
+
+// ========================================
+// APENAS FALAR
+// ========================================
+
+function falarMensagemCadastro(
+  mensagem
+) {
+  if (
+    !("speechSynthesis" in window)
+  ) {
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const fala =
+    new SpeechSynthesisUtterance(
+      mensagem
+    );
+
+  fala.lang = "pt-BR";
+  fala.rate = 1;
+  fala.pitch = 1;
+
+  window.speechSynthesis.speak(
+    fala
+  );
+}
+
+
+// ========================================
+// RECONHECER VOZ
+// ========================================
+
+function reconhecerVoz(
+  aoReconhecer
+) {
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    alert(
+      "O reconhecimento de voz não é suportado neste navegador."
+    );
+
+    return;
+  }
+
+  const reconhecimento =
+    new SpeechRecognition();
+
+  reconhecimento.lang = "pt-BR";
+  reconhecimento.continuous = false;
+  reconhecimento.interimResults = false;
+
+  reconhecimento.onstart = () => {
+    setOuvindoCadastro(true);
+  };
+
+  reconhecimento.onend = () => {
+    setOuvindoCadastro(false);
+  };
+
+  reconhecimento.onerror = (
+    erroVoz
+  ) => {
+    console.error(
+      "Erro no reconhecimento de voz:",
+      erroVoz
+    );
+
+    setOuvindoCadastro(false);
+  };
+
+  reconhecimento.onresult = (
+    evento
+  ) => {
+    const texto =
+      evento.results[0][0]
+        .transcript;
+
+    aoReconhecer(
+      texto
+    );
+  };
+
+  reconhecimento.start();
+}
 
   // ========================================
   // SELECIONAR FOTO
@@ -335,21 +834,22 @@ navigate("/home");
   </span>
 
   <input
-    id="senha"
-    type={
-      mostrarSenha
-        ? "text"
-        : "password"
-    }
-    placeholder="Crie uma senha"
-    value={senha}
-    onChange={(evento) =>
-      setSenha(
-        evento.target.value
-      )
-    }
-    required
-  />
+  ref={senhaRef}
+  id="senha"
+  type={
+    mostrarSenha
+      ? "text"
+      : "password"
+  }
+  placeholder="Crie uma senha"
+  value={senha}
+  onChange={(evento) =>
+    setSenha(
+      evento.target.value
+    )
+  }
+  required
+/>
 
   <button
     type="button"
@@ -458,6 +958,22 @@ navigate("/home");
             </span>
 
           </div>
+
+          <button
+  type="button"
+  className="cadastro-voice-accessibility"
+  onClick={
+    iniciarAcessibilidadePorVoz
+  }
+>
+  <span aria-hidden="true">
+    🎤
+  </span>
+
+  <span>
+    Preencher acessibilidade por voz
+  </span>
+</button>
 
 
           {/* ========================================

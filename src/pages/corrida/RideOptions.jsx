@@ -1,32 +1,76 @@
-import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import {
+  useEffect,
+  useRef,
+  useState
+} from "react";
+
+import {
+  useLocation,
+  useNavigate
+} from "react-router-dom";
+
 import useAlertaSonoro from "../../hooks/useAlertaSonoro";
 
 function RideOptions() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { distancia, duracao, destino } =
-    location.state || {};
+  const {
+    distancia,
+    duracao,
+    destino
+  } = location.state || {};
 
+  // ========================================
   // ALERTA SONORO
+  // ========================================
+
   useAlertaSonoro(
     "Escolha uma opção de corrida. Confira o preço, o tempo estimado e os recursos disponíveis."
   );
 
-  const [corridaSelecionada, setCorridaSelecionada] =
-    useState(null);
 
-  const [pagamento, setPagamento] =
-    useState("pix");
+  // ========================================
+  // ESTADOS
+  // ========================================
 
-  const dadosUsuario = localStorage.getItem(
-    "acessivelJaUsuario"
-  );
+  const [
+    corridaSelecionada,
+    setCorridaSelecionada
+  ] = useState(null);
 
-  const usuario = dadosUsuario
-    ? JSON.parse(dadosUsuario)
-    : null;
+  const [
+    pagamento,
+    setPagamento
+  ] = useState("pix");
+
+  const [
+    ouvindoOpcao,
+    setOuvindoOpcao
+  ] = useState(false);
+
+  const corridaSelecionadaRef =
+  useRef(null);
+
+const pagamentoRef =
+  useRef("pix");
+
+
+  // ========================================
+  // DADOS DO USUÁRIO
+  // ========================================
+
+  const dadosUsuario =
+    localStorage.getItem(
+      "acessivelJaUsuario"
+    );
+
+  const usuario =
+    dadosUsuario
+      ? JSON.parse(
+          dadosUsuario
+        )
+      : null;
 
   const necessidades =
     usuario?.necessidades || [];
@@ -45,6 +89,11 @@ function RideOptions() {
     usaCadeiraDeRodas ||
     mobilidadeReduzida;
 
+
+  // ========================================
+  // CALCULAR PREÇO
+  // ========================================
+
   function calcularPreco(
     valorBase,
     valorPorKm
@@ -53,9 +102,16 @@ function RideOptions() {
       return valorBase;
     }
 
-    return valorBase +
-      distancia * valorPorKm;
+    return (
+      valorBase +
+      distancia * valorPorKm
+    );
   }
+
+
+  // ========================================
+  // OPÇÕES DE CORRIDA
+  // ========================================
 
   const corridaNormal = {
     id: "normal",
@@ -96,6 +152,7 @@ function RideOptions() {
     icone: "🚙",
   };
 
+
   let opcoes = [
     corridaNormal,
     corridaAdaptada,
@@ -110,21 +167,600 @@ function RideOptions() {
     ];
   }
 
-  function confirmarCorrida() {
-    if (!corridaSelecionada) {
-      return;
-    }
 
-    navigate("/corrida/procurando", {
+  // ========================================
+  // CONFIRMAR CORRIDA
+  // ========================================
+
+  function confirmarCorrida() {
+  const corridaAtual =
+    corridaSelecionadaRef.current;
+
+  const pagamentoAtual =
+    pagamentoRef.current;
+
+  if (!corridaAtual) {
+    return;
+  }
+
+  navigate(
+    "/corrida/procurando",
+    {
       state: {
-        corrida: corridaSelecionada,
-        pagamento,
+        corrida:
+          corridaAtual,
+        pagamento:
+          pagamentoAtual,
         distancia,
         duracao,
         destino,
       },
-    });
+    }
+  );
+}
+
+
+  // ========================================
+  // FALAR E DEPOIS OUVIR
+  // ========================================
+
+  function falarEExecutar(
+    mensagem,
+    proximaEtapa
+  ) {
+    if (
+      !(
+        "speechSynthesis" in
+        window
+      )
+    ) {
+      if (proximaEtapa) {
+        proximaEtapa();
+      }
+
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const fala =
+      new SpeechSynthesisUtterance(
+        mensagem
+      );
+
+    fala.lang = "pt-BR";
+    fala.rate = 1;
+    fala.pitch = 1;
+    fala.volume = 1;
+
+    fala.onend = () => {
+      if (!proximaEtapa) {
+        return;
+      }
+
+      setTimeout(() => {
+        proximaEtapa();
+      }, 350);
+    };
+
+    window.speechSynthesis.speak(
+      fala
+    );
   }
+
+
+  // ========================================
+  // RECONHECIMENTO DE VOZ
+  // ========================================
+
+  function reconhecerVoz(
+    callback
+  ) {
+    const SpeechRecognition =
+      window.SpeechRecognition ||
+      window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      alert(
+        "O reconhecimento de voz não é suportado neste navegador."
+      );
+
+      return;
+    }
+
+    const reconhecimento =
+      new SpeechRecognition();
+
+    reconhecimento.lang =
+      "pt-BR";
+
+    reconhecimento.continuous =
+      false;
+
+    reconhecimento.interimResults =
+      false;
+
+    reconhecimento.onstart =
+      () => {
+        setOuvindoOpcao(
+          true
+        );
+      };
+
+    reconhecimento.onend =
+      () => {
+        setOuvindoOpcao(
+          false
+        );
+      };
+
+    reconhecimento.onerror =
+      (erro) => {
+        console.error(
+          "Erro no reconhecimento de voz:",
+          erro
+        );
+
+        setOuvindoOpcao(
+          false
+        );
+      };
+
+    reconhecimento.onresult =
+      (evento) => {
+        const texto =
+          evento.results[0][0]
+            .transcript
+            .trim();
+
+        callback(
+          texto
+        );
+      };
+
+    reconhecimento.start();
+  }
+
+
+  // ========================================
+  // NORMALIZAR COMANDO
+  // ========================================
+
+  function normalizarComando(
+    texto
+  ) {
+    return texto
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(
+        /[\u0300-\u036f]/g,
+        ""
+      )
+      .trim();
+  }
+
+
+  // ========================================
+  // OUVIR OPÇÃO DE CORRIDA
+  // ========================================
+
+  function ouvirOpcaoCorrida() {
+    reconhecerVoz(
+      (texto) => {
+        const comando =
+          normalizarComando(
+            texto
+          );
+
+        if (
+          comando.includes(
+            "adaptado"
+          ) ||
+          comando.includes(
+            "adaptada"
+          )
+        ) {
+          selecionarCorridaPorVoz(
+            corridaAdaptada
+          );
+
+          return;
+        }
+
+        if (
+          comando.includes(
+            "confort"
+          ) ||
+          comando.includes(
+            "conforto"
+          )
+        ) {
+          selecionarCorridaPorVoz(
+            corridaConfort
+          );
+
+          return;
+        }
+
+        if (
+          comando.includes(
+            "acessivel ja"
+          ) ||
+          comando.includes(
+            "normal"
+          )
+        ) {
+          selecionarCorridaPorVoz(
+            corridaNormal
+          );
+
+          return;
+        }
+
+        falarEExecutar(
+          "Não consegui identificar a opção de corrida. Diga Acessível Já, Acessível Adaptado ou Acessível Confort.",
+          ouvirOpcaoCorrida
+        );
+      }
+    );
+  }
+
+
+  // ========================================
+  // SELECIONAR CORRIDA POR VOZ
+  // ========================================
+
+  function selecionarCorridaPorVoz(
+  corrida
+) {
+  corridaSelecionadaRef.current =
+    corrida;
+
+  setCorridaSelecionada(
+    corrida
+  );
+
+  falarEExecutar(
+    `${corrida.nome} selecionado. Como deseja pagar? Diga Pix, cartão ou dinheiro.`,
+    ouvirPagamento
+  );
+}
+
+
+  // ========================================
+  // OUVIR PAGAMENTO
+  // ========================================
+
+  function ouvirPagamento() {
+    reconhecerVoz(
+      (texto) => {
+        const comando =
+          normalizarComando(
+            texto
+          );
+
+        if (
+          comando.includes(
+            "pix"
+          )
+        ) {
+          selecionarPagamentoPorVoz(
+            "pix",
+            "Pix"
+          );
+
+          return;
+        }
+
+        if (
+          comando.includes(
+            "cartao"
+          ) ||
+          comando.includes(
+            "credito"
+          ) ||
+          comando.includes(
+            "debito"
+          )
+        ) {
+          selecionarPagamentoPorVoz(
+            "cartao",
+            "cartão"
+          );
+
+          return;
+        }
+
+        if (
+          comando.includes(
+            "dinheiro"
+          )
+        ) {
+          selecionarPagamentoPorVoz(
+            "dinheiro",
+            "dinheiro"
+          );
+
+          return;
+        }
+
+        falarEExecutar(
+          "Não consegui identificar a forma de pagamento. Diga Pix, cartão ou dinheiro.",
+          ouvirPagamento
+        );
+      }
+    );
+  }
+
+
+  // ========================================
+  // SELECIONAR PAGAMENTO
+  // ========================================
+
+  function selecionarPagamentoPorVoz(
+  tipo,
+  nome
+) {
+  pagamentoRef.current =
+    tipo;
+
+  setPagamento(
+    tipo
+  );
+
+  falarEExecutar(
+    `Pagamento por ${nome} selecionado. Diga confirmar corrida para continuar.`,
+    ouvirConfirmacao
+  );
+}
+
+
+  // ========================================
+  // OUVIR CONFIRMAÇÃO
+  // ========================================
+
+  function ouvirConfirmacao() {
+    reconhecerVoz(
+      (texto) => {
+        const comando =
+          normalizarComando(
+            texto
+          );
+
+        if (
+          comando.includes(
+            "confirmar corrida"
+          ) ||
+          comando.includes(
+            "confirmar"
+          ) ||
+          comando.includes(
+            "sim"
+          )
+        ) {
+          confirmarCorrida();
+
+          return;
+        }
+
+        if (
+          comando.includes(
+            "nao"
+          ) ||
+          comando.includes(
+            "cancelar"
+          )
+        ) {
+          falarEExecutar(
+            "Tudo bem. Diga Pix, cartão ou dinheiro para escolher outra forma de pagamento.",
+            ouvirPagamento
+          );
+
+          return;
+        }
+
+        falarEExecutar(
+          "Não entendi. Diga confirmar corrida para continuar ou não para voltar ao pagamento.",
+          ouvirConfirmacao
+        );
+      }
+    );
+  }
+
+
+  // ========================================
+  // COMANDOS DO MICROFONE GLOBAL
+  // ========================================
+
+  useEffect(() => {
+    function executarComando(
+      evento
+    ) {
+      const comando =
+        normalizarComando(
+          evento.detail.comando
+        );
+
+      if (
+        comando.includes(
+          "adaptado"
+        ) ||
+        comando.includes(
+          "adaptada"
+        )
+      ) {
+        evento.detail.entendido =
+          true;
+
+        selecionarCorridaPorVoz(
+          corridaAdaptada
+        );
+
+        return;
+      }
+
+      if (
+        comando.includes(
+          "confort"
+        ) ||
+        comando.includes(
+          "conforto"
+        )
+      ) {
+        evento.detail.entendido =
+          true;
+
+        selecionarCorridaPorVoz(
+          corridaConfort
+        );
+
+        return;
+      }
+
+      if (
+        comando.includes(
+          "acessivel ja"
+        ) ||
+        comando.includes(
+          "corrida normal"
+        ) ||
+        comando === "normal"
+      ) {
+        evento.detail.entendido =
+          true;
+
+        selecionarCorridaPorVoz(
+          corridaNormal
+        );
+
+        return;
+      }
+
+      if (
+        comando.includes(
+          "pix"
+        )
+      ) {
+        evento.detail.entendido =
+          true;
+
+        selecionarPagamentoPorVoz(
+          "pix",
+          "Pix"
+        );
+
+        return;
+      }
+
+      if (
+        comando.includes(
+          "cartao"
+        ) ||
+        comando.includes(
+          "credito"
+        ) ||
+        comando.includes(
+          "debito"
+        )
+      ) {
+        evento.detail.entendido =
+          true;
+
+        selecionarPagamentoPorVoz(
+          "cartao",
+          "cartão"
+        );
+
+        return;
+      }
+
+      if (
+        comando.includes(
+          "dinheiro"
+        )
+      ) {
+        evento.detail.entendido =
+          true;
+
+        selecionarPagamentoPorVoz(
+          "dinheiro",
+          "dinheiro"
+        );
+
+        return;
+      }
+
+      if (
+        comando.includes(
+          "confirmar corrida"
+        ) ||
+        comando.includes(
+          "confirmar"
+        )
+      ) {
+        if (
+          corridaSelecionada
+        ) {
+          evento.detail.entendido =
+            true;
+
+          confirmarCorrida();
+        }
+
+        return;
+      }
+    }
+
+    window.addEventListener(
+      "comandoVozPagina",
+      executarComando
+    );
+
+    return () => {
+      window.removeEventListener(
+        "comandoVozPagina",
+        executarComando
+      );
+    };
+  }, [
+    corridaSelecionada,
+    pagamento,
+    distancia,
+    duracao,
+    destino
+  ]);
+
+  useEffect(() => {
+  const iniciarPorVoz =
+    sessionStorage.getItem(
+      "iniciarOpcoesCorridaPorVoz"
+    );
+
+  if (
+    iniciarPorVoz !== "true"
+  ) {
+    return;
+  }
+
+  const temporizador =
+    setTimeout(() => {
+      sessionStorage.removeItem(
+        "iniciarOpcoesCorridaPorVoz"
+      );
+
+      falarEExecutar(
+        "Escolha sua corrida. Você pode dizer Acessível Já, Acessível Adaptado ou Acessível Confort.",
+        ouvirOpcaoCorrida
+      );
+    }, 800);
+
+  return () => {
+    clearTimeout(
+      temporizador
+    );
+  };
+}, []);
+
 
   return (
     <main className="ride-options-page">
@@ -133,14 +769,18 @@ function RideOptions() {
 
         <button
           className="ride-back-button"
-          onClick={() => navigate(-1)}
+          onClick={() =>
+            navigate(-1)
+          }
           aria-label="Voltar"
         >
           ←
         </button>
 
         <div>
-          <p>Sua viagem</p>
+          <p>
+            Sua viagem
+          </p>
 
           <h1>
             Escolha sua corrida
@@ -225,96 +865,121 @@ function RideOptions() {
 
       <section className="ride-options-list">
 
-        {opcoes.map((opcao) => {
+        {opcoes.map(
+          (opcao) => {
 
-          const recomendadoAdaptado =
-            precisaAdaptado &&
-            opcao.id === "adaptada";
+            const recomendadoAdaptado =
+              precisaAdaptado &&
+              opcao.id ===
+                "adaptada";
 
-          const recomendadoNormal =
-            !precisaAdaptado &&
-            opcao.id === "normal";
+            const recomendadoNormal =
+              !precisaAdaptado &&
+              opcao.id ===
+                "normal";
 
-          const selecionada =
-            corridaSelecionada?.id ===
-            opcao.id;
+            const selecionada =
+              corridaSelecionada
+                ?.id ===
+              opcao.id;
 
-          return (
-            <button
-              key={opcao.id}
-              type="button"
-              className={`ride-option-card ${
-                selecionada
-                  ? "ride-option-selected"
-                  : ""
-              } ${
-                recomendadoAdaptado
-                  ? "ride-option-recommended"
-                  : ""
-              }`}
-              onClick={() =>
-                setCorridaSelecionada(opcao)
-              }
-            >
+            return (
+              <button
+                key={
+                  opcao.id
+                }
+                type="button"
+                className={`ride-option-card ${
+                  selecionada
+                    ? "ride-option-selected"
+                    : ""
+                } ${
+                  recomendadoAdaptado
+                    ? "ride-option-recommended"
+                    : ""
+                }`}
+                onClick={() => {
+                  corridaSelecionadaRef.current =
+                    opcao;
 
-              {recomendadoAdaptado && (
-                <span className="recommended-badge">
-                  Recomendado para você
-                </span>
-              )}
+                  setCorridaSelecionada(
+                    opcao
+                  );
+                }}
+              >
 
-              {recomendadoNormal && (
-                <span className="recommended-simple">
-                  Recomendado
-                </span>
-              )}
-
-              <div className="ride-option-icon">
-                {opcao.icone}
-              </div>
-
-
-              <div className="ride-option-content">
-
-                <div className="ride-option-title">
-
-                  <strong>
-                    {opcao.nome}
-                  </strong>
-
-                  <span>
-                    {opcao.tempoChegada} min
+                {recomendadoAdaptado && (
+                  <span className="recommended-badge">
+                    Recomendado para você
                   </span>
+                )}
 
+                {recomendadoNormal && (
+                  <span className="recommended-simple">
+                    Recomendado
+                  </span>
+                )}
+
+                <div className="ride-option-icon">
+                  {opcao.icone}
                 </div>
 
 
-                <p>
-                  {opcao.descricao}
-                </p>
+                <div className="ride-option-content">
+
+                  <div className="ride-option-title">
+
+                    <strong>
+                      {opcao.nome}
+                    </strong>
+
+                    <span>
+                      {
+                        opcao.tempoChegada
+                      }{" "}
+                      min
+                    </span>
+
+                  </div>
 
 
-                <div className="ride-option-bottom">
+                  <p>
+                    {
+                      opcao.descricao
+                    }
+                  </p>
 
-                  <small>
-                    Motorista em aproximadamente{" "}
-                    {opcao.tempoChegada} minutos
-                  </small>
 
-                  <strong>
-                    R${" "}
-                    {opcao.preco
-                      .toFixed(2)
-                      .replace(".", ",")}
-                  </strong>
+                  <div className="ride-option-bottom">
+
+                    <small>
+                      Motorista em aproximadamente{" "}
+                      {
+                        opcao.tempoChegada
+                      }{" "}
+                      minutos
+                    </small>
+
+                    <strong>
+                      R${" "}
+                      {opcao.preco
+                        .toFixed(
+                          2
+                        )
+                        .replace(
+                          ".",
+                          ","
+                        )}
+                    </strong>
+
+                  </div>
 
                 </div>
 
-              </div>
-
-            </button>
-          );
-        })}
+              </button>
+            );
+          }
+        )}
 
       </section>
 
@@ -342,13 +1007,19 @@ function RideOptions() {
             <button
               type="button"
               className={`payment-option ${
-                pagamento === "pix"
+                pagamento ===
+                "pix"
                   ? "payment-selected"
                   : ""
               }`}
-              onClick={() =>
-                setPagamento("pix")
-              }
+              onClick={() => {
+                pagamentoRef.current =
+                  "pix";
+
+                setPagamento(
+                  "pix"
+                );
+              }}
             >
               <span className="payment-icon">
                 ◈
@@ -365,7 +1036,8 @@ function RideOptions() {
               </div>
 
               <span className="payment-check">
-                {pagamento === "pix"
+                {pagamento ===
+                "pix"
                   ? "✓"
                   : ""}
               </span>
@@ -375,13 +1047,19 @@ function RideOptions() {
             <button
               type="button"
               className={`payment-option ${
-                pagamento === "cartao"
+                pagamento ===
+                "cartao"
                   ? "payment-selected"
                   : ""
               }`}
-              onClick={() =>
-                setPagamento("cartao")
-              }
+              onClick={() => {
+                pagamentoRef.current =
+                  "cartao";
+
+                setPagamento(
+                  "cartao"
+                );
+              }}
             >
               <span className="payment-icon">
                 💳
@@ -398,7 +1076,8 @@ function RideOptions() {
               </div>
 
               <span className="payment-check">
-                {pagamento === "cartao"
+                {pagamento ===
+                "cartao"
                   ? "✓"
                   : ""}
               </span>
@@ -408,13 +1087,19 @@ function RideOptions() {
             <button
               type="button"
               className={`payment-option ${
-                pagamento === "dinheiro"
+                pagamento ===
+                "dinheiro"
                   ? "payment-selected"
                   : ""
               }`}
-              onClick={() =>
-                setPagamento("dinheiro")
-              }
+              onClick={() => {
+                pagamentoRef.current =
+                  "dinheiro";
+
+                setPagamento(
+                  "dinheiro"
+                );
+              }}
             >
               <span className="payment-icon">
                 R$
@@ -431,7 +1116,8 @@ function RideOptions() {
               </div>
 
               <span className="payment-check">
-                {pagamento === "dinheiro"
+                {pagamento ===
+                "dinheiro"
                   ? "✓"
                   : ""}
               </span>
@@ -443,24 +1129,43 @@ function RideOptions() {
           <button
             className="confirm-ride-button"
             type="button"
-            onClick={confirmarCorrida}
+            onClick={
+              confirmarCorrida
+            }
           >
 
             <span>
               Confirmar{" "}
-              {corridaSelecionada.nome}
+              {
+                corridaSelecionada
+                  .nome
+              }
             </span>
 
             <strong>
               R${" "}
-              {corridaSelecionada.preco
+              {corridaSelecionada
+                .preco
                 .toFixed(2)
-                .replace(".", ",")}
+                .replace(
+                  ".",
+                  ","
+                )}
             </strong>
 
           </button>
 
         </section>
+      )}
+
+
+      {ouvindoOpcao && (
+        <div
+          className="voice-listening-status"
+          role="status"
+        >
+          Ouvindo...
+        </div>
       )}
 
     </main>

@@ -62,6 +62,11 @@ function RideRequest() {
   const [erroRota, setErroRota] =
     useState("");
 
+    const [
+  ouvindoDestino,
+  setOuvindoDestino
+] = useState(false);
+
   // ==================================================
   // ALERTA SONORO
   // ==================================================
@@ -71,93 +76,375 @@ function RideRequest() {
   );
 
   useEffect(() => {
-    if (!navigator.geolocation) {
-      setErroLocalizacao(
-        "Seu dispositivo não oferece suporte à localização."
-      );
+  if (!navigator.geolocation) {
+    setErroLocalizacao(
+      "Seu dispositivo não oferece suporte à localização."
+    );
 
-      setCarregandoLocalizacao(false);
-      return;
-    }
+    setCarregandoLocalizacao(
+      false
+    );
 
-    const watchId =
+    return;
+  }
+
+  let watchId = null;
+
+
+  // ========================================
+  // LOCALIZAÇÃO ENCONTRADA
+  // ========================================
+
+  function localizacaoEncontrada(
+    posicao
+  ) {
+    setLocalizacao({
+      latitude:
+        posicao.coords.latitude,
+      longitude:
+        posicao.coords.longitude,
+      precisao:
+        posicao.coords.accuracy,
+    });
+
+    setErroLocalizacao("");
+
+    setCarregandoLocalizacao(
+      false
+    );
+  }
+
+
+  // ========================================
+  // COMEÇAR A ACOMPANHAR LOCALIZAÇÃO
+  // ========================================
+
+  function acompanharLocalizacao() {
+    watchId =
       navigator.geolocation.watchPosition(
-        (posicao) => {
-          setLocalizacao({
-            latitude:
-              posicao.coords.latitude,
-
-            longitude:
-              posicao.coords.longitude,
-
-            precisao:
-              posicao.coords.accuracy,
-          });
-
-          setErroLocalizacao("");
-          setCarregandoLocalizacao(false);
-        },
+        localizacaoEncontrada,
 
         (erro) => {
           console.error(
-            "Erro ao obter localização:",
+            "Erro ao acompanhar localização:",
             erro
-          );
-
-          let mensagemErro =
-            "Não foi possível acessar sua localização.";
-
-          if (
-            erro.code ===
-            erro.PERMISSION_DENIED
-          ) {
-            mensagemErro =
-              "A permissão de localização foi negada.";
-          }
-
-          if (
-            erro.code ===
-            erro.POSITION_UNAVAILABLE
-          ) {
-            mensagemErro =
-              "Sua localização não está disponível no momento.";
-          }
-
-          if (
-            erro.code ===
-            erro.TIMEOUT
-          ) {
-            mensagemErro =
-              "O GPS demorou muito para responder. Tente novamente.";
-          }
-
-          setErroLocalizacao(
-            mensagemErro
-          );
-
-          setCarregandoLocalizacao(
-            false
           );
         },
 
         {
           enableHighAccuracy: true,
-          timeout: 15000,
-          maximumAge: 0,
+          timeout: 30000,
+          maximumAge: 60000,
         }
       );
+  }
 
-    return () => {
+
+  // ========================================
+  // ERRO NA PRIMEIRA LOCALIZAÇÃO
+  // ========================================
+
+  function erroLocalizacaoInicial(
+    erro
+  ) {
+    console.error(
+      "Erro ao obter localização:",
+      erro
+    );
+
+    if (
+      erro.code ===
+      erro.PERMISSION_DENIED
+    ) {
+      setErroLocalizacao(
+        "A permissão de localização foi negada."
+      );
+
+      setCarregandoLocalizacao(
+        false
+      );
+
+      return;
+    }
+
+    if (
+      erro.code ===
+      erro.POSITION_UNAVAILABLE
+    ) {
+      setErroLocalizacao(
+        "Sua localização não está disponível no momento."
+      );
+
+      setCarregandoLocalizacao(
+        false
+      );
+
+      return;
+    }
+
+    if (
+      erro.code ===
+      erro.TIMEOUT
+    ) {
+      setErroLocalizacao(
+        "O GPS está demorando. Tentando novamente..."
+      );
+
+      tentarLocalizacaoAlternativa();
+
+      return;
+    }
+
+    setErroLocalizacao(
+      "Não foi possível acessar sua localização."
+    );
+
+    setCarregandoLocalizacao(
+      false
+    );
+  }
+
+
+  // ========================================
+  // TENTATIVA ALTERNATIVA
+  // ========================================
+
+  function tentarLocalizacaoAlternativa() {
+    navigator.geolocation.getCurrentPosition(
+      (posicao) => {
+        localizacaoEncontrada(
+          posicao
+        );
+
+        acompanharLocalizacao();
+      },
+
+      (erro) => {
+        console.error(
+          "Erro na localização alternativa:",
+          erro
+        );
+
+        setErroLocalizacao(
+          "Não conseguimos obter sua localização. Verifique o GPS e tente novamente."
+        );
+
+        setCarregandoLocalizacao(
+          false
+        );
+      },
+
+      {
+        enableHighAccuracy: false,
+        timeout: 30000,
+        maximumAge: 300000,
+      }
+    );
+  }
+
+
+  // ========================================
+  // PRIMEIRA TENTATIVA
+  // ========================================
+
+  navigator.geolocation.getCurrentPosition(
+    (posicao) => {
+      localizacaoEncontrada(
+        posicao
+      );
+
+      acompanharLocalizacao();
+    },
+
+    erroLocalizacaoInicial,
+
+    {
+      enableHighAccuracy: false,
+      timeout: 30000,
+      maximumAge: 60000,
+    }
+  );
+
+
+  // ========================================
+  // LIMPEZA
+  // ========================================
+
+  return () => {
+    if (
+      watchId !== null
+    ) {
       navigator.geolocation.clearWatch(
         watchId
       );
-    };
-  }, []);
+    }
+  };
+}, []);
 
-  async function buscarDestino() {
-    if (!destinoDigitado.trim()) {
+
+  // ==================================================
+// COMANDOS DE VOZ DA TELA
+// ==================================================
+
+useEffect(() => {
+  function executarComando(
+    evento
+  ) {
+    const comando =
+      evento.detail.comando;
+
+    if (
+      comando.includes(
+        "continuar"
+      )
+    ) {
+      if (
+        distancia !== null &&
+        duracao !== null &&
+        destinoSelecionado
+      ) {
+        evento.detail.entendido =
+          true;
+
+        sessionStorage.setItem(
+  "iniciarOpcoesCorridaPorVoz",
+  "true"
+);
+
+navigate(
+  "/corrida/opcoes",
+  {
+    state: {
+      distancia,
+      duracao,
+      destino:
+        destinoSelecionado
+    }
+  }
+);
+      }
+
       return;
     }
+  }
+
+  window.addEventListener(
+    "comandoVozPagina",
+    executarComando
+  );
+
+  return () => {
+    window.removeEventListener(
+      "comandoVozPagina",
+      executarComando
+    );
+  };
+}, [
+  distancia,
+  duracao,
+  destinoSelecionado,
+  navigate
+]);
+
+
+  // ==================================================
+// INICIAR CORRIDA POR VOZ
+// ==================================================
+
+useEffect(() => {
+  const iniciarPorVoz =
+    sessionStorage.getItem(
+      "iniciarCorridaPorVoz"
+    );
+
+  console.log(
+    "Corrida por voz:",
+    iniciarPorVoz
+  );
+
+  if (
+    iniciarPorVoz !== "true"
+  ) {
+    return;
+  }
+
+  const temporizador =
+    setTimeout(() => {
+      sessionStorage.removeItem(
+        "iniciarCorridaPorVoz"
+      );
+
+      console.log(
+        "Iniciando corrida por voz"
+      );
+
+      perguntarDestino();
+    }, 800);
+
+  return () => {
+    clearTimeout(
+      temporizador
+    );
+  };
+}, []);
+
+// ==================================================
+// FALAR E CONTINUAR
+// ==================================================
+
+function falarEExecutar(
+  mensagem,
+  proximaEtapa
+) {
+  if (
+    !("speechSynthesis" in window)
+  ) {
+    proximaEtapa();
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const fala =
+    new SpeechSynthesisUtterance(
+      mensagem
+    );
+
+  fala.lang = "pt-BR";
+  fala.rate = 1;
+  fala.pitch = 1;
+  fala.volume = 1;
+
+  fala.onend = () => {
+    setTimeout(() => {
+      proximaEtapa();
+    }, 350);
+  };
+
+  window.speechSynthesis.speak(
+    fala
+  );
+}
+
+// ==================================================
+// PERGUNTAR DESTINO
+// ==================================================
+
+function perguntarDestino() {
+  falarEExecutar(
+    "Para onde você quer ir?",
+    ouvirDestino
+  );
+}
+
+  async function buscarDestino(
+  destinoInformado = destinoDigitado
+  ) {
+  if (
+    !destinoInformado.trim()
+  ) {
+    return;
+  }
 
     setCarregandoDestino(true);
     setResultadosDestino([]);
@@ -166,7 +453,7 @@ function RideRequest() {
       let url =
         `https://nominatim.openstreetmap.org/search` +
         `?format=json` +
-        `&q=${encodeURIComponent(destinoDigitado)}` +
+        `&q=${encodeURIComponent(destinoInformado)}` +
         `&limit=5` +
         `&addressdetails=1` +
         `&countrycodes=br`;
@@ -219,6 +506,74 @@ function RideRequest() {
       );
     }
   }
+
+  // ==================================================
+// OUVIR DESTINO
+// ==================================================
+
+function ouvirDestino() {
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    alert(
+      "O reconhecimento de voz não é suportado neste navegador."
+    );
+
+    return;
+  }
+
+  const reconhecimento =
+    new SpeechRecognition();
+
+  reconhecimento.lang = "pt-BR";
+  reconhecimento.continuous = false;
+  reconhecimento.interimResults = false;
+
+  reconhecimento.onstart = () => {
+    setOuvindoDestino(true);
+  };
+
+  reconhecimento.onend = () => {
+    setOuvindoDestino(false);
+  };
+
+  reconhecimento.onerror = (
+    erro
+  ) => {
+    console.error(
+      "Erro ao reconhecer destino:",
+      erro
+    );
+
+    setOuvindoDestino(false);
+  };
+
+  reconhecimento.onresult = (
+    evento
+  ) => {
+    const destinoFalado =
+      evento.results[0][0]
+        .transcript
+        .trim();
+
+    console.log(
+      "Destino falado:",
+      destinoFalado
+    );
+
+    setDestinoDigitado(
+      destinoFalado
+    );
+
+    buscarDestino(
+      destinoFalado
+    );
+  };
+
+  reconhecimento.start();
+}
 
   function selecionarDestino(local) {
     const novoDestino = {
@@ -491,7 +846,9 @@ function RideRequest() {
         <button
           className="primary-button"
           type="button"
-          onClick={buscarDestino}
+          onClick={() =>
+  buscarDestino()
+}
         >
           {carregandoDestino
             ? "Buscando..."
@@ -598,7 +955,12 @@ function RideRequest() {
             <button
               className="primary-button ride-continue-button"
               type="button"
-              onClick={() =>
+              onClick={() => {
+                sessionStorage.setItem(
+                  "iniciarOpcoesCorridaPorVoz",
+                  "true"
+                );
+
                 navigate(
                   "/corrida/opcoes",
                   {
@@ -609,8 +971,8 @@ function RideRequest() {
                         destinoSelecionado,
                     },
                   }
-                )
-              }
+                );
+              }}
             >
               Continuar
             </button>

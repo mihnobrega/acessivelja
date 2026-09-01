@@ -8,6 +8,15 @@ import logo from "../assets/logo.png";
 function Welcome() {
   const navigate = useNavigate();
 
+  // Ativa o assistente global de voz.
+function ativarVoz() {
+  window.dispatchEvent(
+    new Event(
+      "ativarAssistenteVoz"
+    )
+  );
+}
+
   return (
     <main className="welcome-page">
 
@@ -27,6 +36,27 @@ function Welcome() {
         <span>
           MOBILIDADE PARA TODOS
         </span>
+
+        <button
+          type="button"
+          className="welcome-voice-button"
+          onClick={ativarVoz}
+        >
+          <span
+            className="welcome-voice-symbol"
+            aria-hidden="true"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+
+          <span className="welcome-voice-text">
+            Ativar assistente por voz
+          </span>
+        </button>
 
       </section>
 

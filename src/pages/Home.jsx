@@ -16,43 +16,138 @@ import useAlertaSonoro from "../hooks/useAlertaSonoro";
 function Home() {
   const navigate = useNavigate();
 
-  // Indica se o microfone está ouvindo.
+
+  // ========================================
+  // ESTADOS
+  // ========================================
+
   const [
     ouvindo,
     setOuvindo
   ] = useState(false);
 
-  // Indica se o assistente está ativado.
   const [
     assistenteAtivo,
     setAssistenteAtivo
   ] = useState(false);
 
-  // Busca os dados do usuário salvo.
+
+  // ========================================
+  // USUÁRIO
+  // ========================================
+
   const usuario =
     obterUsuario();
 
-  // Pega somente o primeiro nome.
   const primeiroNome =
     usuario?.nome
       ? usuario.nome.split(" ")[0]
       : "Usuário";
 
-  // Busca a foto do perfil.
   const fotoPerfil =
     usuario?.fotoPerfil || "";
 
-  // ==================================================
+
+  // ========================================
   // ALERTA SONORO
-  // ==================================================
+  // ========================================
 
   useAlertaSonoro(
     `Olá, ${primeiroNome}. Você está na página inicial do Acessível Já. Escolha um serviço para continuar.`
   );
 
-  // ==================================================
-  // CARREGA A PREFERÊNCIA DE VOZ
-  // ==================================================
+
+  // ========================================
+  // CONTINUAR ASSISTENTE APÓS LOGIN
+  // ========================================
+
+  useEffect(() => {
+    const continuarPorVoz =
+      sessionStorage.getItem(
+        "continuarHomePorVoz"
+      );
+
+    console.log(
+      "Continuar voz na Home:",
+      continuarPorVoz
+    );
+
+    if (
+      continuarPorVoz !== "true"
+    ) {
+      return;
+    }
+
+    const temporizador =
+      setTimeout(() => {
+
+        sessionStorage.removeItem(
+          "continuarHomePorVoz"
+        );
+
+        falarBoasVindas();
+
+      }, 800);
+
+    return () => {
+      clearTimeout(
+        temporizador
+      );
+    };
+  }, []);
+
+
+  // ========================================
+  // BOAS-VINDAS APÓS LOGIN
+  // ========================================
+
+  function falarBoasVindas() {
+    if (
+      !(
+        "speechSynthesis" in
+        window
+      )
+    ) {
+      ativarAssistenteVoz();
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const fala =
+      new SpeechSynthesisUtterance(
+        `Login realizado com sucesso. Olá, ${primeiroNome}. Você está na página inicial. O que deseja fazer? Você pode pedir uma corrida, abrir o mapa acessível, alugar um veículo ou acessar seu perfil.`
+      );
+
+    fala.lang = "pt-BR";
+    fala.rate = 1;
+    fala.pitch = 1;
+    fala.volume = 1;
+
+    fala.onend = () => {
+      setTimeout(() => {
+        ativarAssistenteVoz();
+      }, 350);
+    };
+
+    fala.onerror = (
+      erro
+    ) => {
+      console.error(
+        "Erro na fala da Home:",
+        erro
+      );
+    };
+
+    window.speechSynthesis.speak(
+      fala
+    );
+  }
+
+
+  // ========================================
+  // CARREGAR PREFERÊNCIA DE VOZ
+  // ========================================
 
   useEffect(() => {
     const preferenciasSalvas =
@@ -60,7 +155,6 @@ function Home() {
         "acessivelJaPreferencias"
       );
 
-    // Se não tiver preferência salva, mantém desligado.
     if (!preferenciasSalvas) {
       return;
     }
@@ -71,7 +165,6 @@ function Home() {
           preferenciasSalvas
         );
 
-      // Usa a mesma opção dos alertas sonoros do perfil.
       setAssistenteAtivo(
         Boolean(
           preferencias.alertasSonoros
@@ -86,9 +179,10 @@ function Home() {
     }
   }, []);
 
-  // ==================================================
-  // SALVA O ESTADO DO ASSISTENTE
-  // ==================================================
+
+  // ========================================
+  // SALVAR ESTADO DO ASSISTENTE
+  // ========================================
 
   function salvarEstadoAssistente(
     ativo
@@ -100,13 +194,13 @@ function Home() {
 
     let preferencias = {};
 
-    // Recupera as preferências que já existem.
     if (preferenciasSalvas) {
       try {
         preferencias =
           JSON.parse(
             preferenciasSalvas
           );
+
       } catch (erro) {
         console.error(
           "Erro ao carregar preferências:",
@@ -115,7 +209,6 @@ function Home() {
       }
     }
 
-    // Mantém as outras preferências e altera apenas a voz.
     const novasPreferencias = {
       ...preferencias,
       alertasSonoros: ativo
@@ -128,7 +221,6 @@ function Home() {
       )
     );
 
-    // Avisa o restante do aplicativo sobre a alteração.
     window.dispatchEvent(
       new Event(
         "preferenciasAcessibilidadeAlteradas"
@@ -136,38 +228,42 @@ function Home() {
     );
   }
 
-  // ==================================================
-  // DESATIVA O ASSISTENTE
-  // ==================================================
+
+  // ========================================
+  // DESATIVAR ASSISTENTE
+  // ========================================
 
   function desativarAssistente() {
-    // Atualiza o botão.
-    setAssistenteAtivo(false);
+    setAssistenteAtivo(
+      false
+    );
 
-    // Salva a preferência.
-    salvarEstadoAssistente(false);
+    salvarEstadoAssistente(
+      false
+    );
 
-    // Para qualquer fala que estiver acontecendo.
     if (
-      "speechSynthesis" in window
+      "speechSynthesis" in
+      window
     ) {
       window.speechSynthesis.cancel();
     }
 
-    // Também encerra o estado visual de escuta.
-    setOuvindo(false);
+    setOuvindo(
+      false
+    );
   }
 
-  // ==================================================
-  // ATIVA O ASSISTENTE
-  // ==================================================
+
+  // ========================================
+  // ATIVAR ASSISTENTE
+  // ========================================
 
   function ativarAssistenteVoz() {
     const SpeechRecognition =
       window.SpeechRecognition ||
       window.webkitSpeechRecognition;
 
-    // Verifica se o navegador aceita reconhecimento de voz.
     if (!SpeechRecognition) {
       alert(
         "O reconhecimento de voz não é suportado neste navegador."
@@ -176,119 +272,233 @@ function Home() {
       return;
     }
 
-    // Marca o assistente como ativado.
-    setAssistenteAtivo(true);
+    setAssistenteAtivo(
+      true
+    );
 
-    // Salva a preferência.
-    salvarEstadoAssistente(true);
+    salvarEstadoAssistente(
+      true
+    );
 
-    // Cria o reconhecimento de voz.
     const reconhecimento =
       new SpeechRecognition();
 
-    // Define o idioma.
-    reconhecimento.lang = "pt-BR";
+    reconhecimento.lang =
+      "pt-BR";
 
-    // Escuta somente um comando por vez.
-    reconhecimento.continuous = false;
+    reconhecimento.continuous =
+      false;
 
-    // Usa apenas o resultado final.
-    reconhecimento.interimResults = false;
+    reconhecimento.interimResults =
+      false;
 
-    // Quando começar a ouvir.
-    reconhecimento.onstart = () => {
-      setOuvindo(true);
-    };
 
-    // Quando parar de ouvir.
-    reconhecimento.onend = () => {
-      setOuvindo(false);
-    };
+    // ========================================
+    // COMEÇOU A OUVIR
+    // ========================================
 
-    // Caso ocorra algum erro.
-    reconhecimento.onerror = (
-      erro
-    ) => {
-      console.error(
-        "Erro no reconhecimento de voz:",
-        erro
-      );
+    reconhecimento.onstart =
+      () => {
+        setOuvindo(
+          true
+        );
+      };
 
-      setOuvindo(false);
-    };
 
-    // Recebe aquilo que a pessoa falou.
-    reconhecimento.onresult = (
-      evento
-    ) => {
-      const comando =
-        evento.results[0][0]
-          .transcript
-          .toLowerCase();
+    // ========================================
+    // PAROU DE OUVIR
+    // ========================================
 
-      // Abre a tela de corrida.
-      if (
-        comando.includes("corrida") ||
-        comando.includes("pedir corrida")
-      ) {
-        navigate("/corrida");
-        return;
-      }
+    reconhecimento.onend =
+      () => {
+        setOuvindo(
+          false
+        );
+      };
 
-      // Abre o mapa acessível.
-      if (
-        comando.includes("mapa") ||
-        comando.includes("lugar acessível") ||
-        comando.includes("lugares acessíveis")
-      ) {
-        navigate(
-          "/mapa-acessivel"
+
+    // ========================================
+    // ERRO
+    // ========================================
+
+    reconhecimento.onerror =
+      (erro) => {
+        console.error(
+          "Erro no reconhecimento de voz:",
+          erro
         );
 
-        return;
-      }
+        setOuvindo(
+          false
+        );
+      };
 
-      // Abre a parte de aluguel.
-      if (
-        comando.includes("alugar") ||
-        comando.includes("aluguel") ||
-        comando.includes("veículo")
-      ) {
-        navigate(
-          "/aluguel"
+
+    // ========================================
+    // COMANDO RECONHECIDO
+    // ========================================
+
+    reconhecimento.onresult =
+      (evento) => {
+        const comando =
+          evento.results[0][0]
+            .transcript
+            .toLowerCase();
+
+        console.log(
+          "Comando na Home:",
+          comando
         );
 
-        return;
-      }
 
-      // Abre o perfil.
-      if (
-        comando.includes("perfil") ||
-        comando.includes("acessibilidade")
-      ) {
-        navigate(
-          "/perfil"
-        );
+        // ========================================
+        // PEDIR CORRIDA
+        // ========================================
 
-        return;
-      }
+        if (
+          comando.includes(
+            "corrida"
+          ) ||
+          comando.includes(
+            "pedir corrida"
+          )
+        ) {
+          sessionStorage.setItem(
+            "iniciarCorridaPorVoz",
+            "true"
+          );
 
-      // Mostra mensagem se não entender.
-      alert(
-        `Não entendi o comando: "${comando}". Tente dizer "pedir corrida", "mapa acessível", "alugar veículo" ou "abrir perfil".`
-      );
-    };
+          navigate(
+            "/corrida"
+          );
 
-    // Inicia o microfone.
+          return;
+        }
+
+
+        // ========================================
+        // MAPA ACESSÍVEL
+        // ========================================
+
+        if (
+          comando.includes(
+            "mapa"
+          ) ||
+          comando.includes(
+            "lugar acessível"
+          ) ||
+          comando.includes(
+            "lugares acessíveis"
+          )
+        ) {
+          navigate(
+            "/mapa-acessivel"
+          );
+
+          return;
+        }
+
+
+        // ========================================
+        // ALUGAR VEÍCULO
+        // ========================================
+
+        if (
+          comando.includes(
+            "alugar"
+          ) ||
+          comando.includes(
+            "aluguel"
+          ) ||
+          comando.includes(
+            "veículo"
+          )
+        ) {
+          navigate(
+            "/aluguel"
+          );
+
+          return;
+        }
+
+
+        // ========================================
+        // PERFIL
+        // ========================================
+
+        if (
+          comando.includes(
+            "perfil"
+          ) ||
+          comando.includes(
+            "acessibilidade"
+          )
+        ) {
+          navigate(
+            "/perfil"
+          );
+
+          return;
+        }
+
+
+        // ========================================
+        // NÃO ENTENDEU
+        // ========================================
+
+        falarNaoEntendi();
+      };
+
     reconhecimento.start();
   }
 
-  // ==================================================
-  // BOTÃO ATIVAR / DESATIVAR
-  // ==================================================
+
+  // ========================================
+  // COMANDO NÃO ENTENDIDO
+  // ========================================
+
+  function falarNaoEntendi() {
+    if (
+      !(
+        "speechSynthesis" in
+        window
+      )
+    ) {
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const fala =
+      new SpeechSynthesisUtterance(
+        "Não entendi. Você pode dizer pedir corrida, mapa acessível, alugar veículo ou abrir perfil."
+      );
+
+    fala.lang = "pt-BR";
+    fala.rate = 1;
+    fala.pitch = 1;
+    fala.volume = 1;
+
+    fala.onend = () => {
+      setTimeout(() => {
+        ativarAssistenteVoz();
+      }, 350);
+    };
+
+    window.speechSynthesis.speak(
+      fala
+    );
+  }
+
+
+  // ========================================
+  // ATIVAR / DESATIVAR
+  // ========================================
 
   function alternarAssistente() {
-    if (assistenteAtivo) {
+    if (
+      assistenteAtivo
+    ) {
       desativarAssistente();
       return;
     }
@@ -296,11 +506,18 @@ function Home() {
     ativarAssistenteVoz();
   }
 
+
   return (
     <main className="home-page">
 
       <div className="home-decoration home-decoration-one"></div>
+
       <div className="home-decoration home-decoration-two"></div>
+
+
+      {/* ========================================
+          CABEÇALHO
+      ======================================== */}
 
       <header className="home-header">
 
@@ -316,11 +533,14 @@ function Home() {
 
         </div>
 
+
         <button
           type="button"
           className="profile-button"
           onClick={() =>
-            navigate("/perfil")
+            navigate(
+              "/perfil"
+            )
           }
           aria-label="Abrir perfil"
         >
@@ -343,6 +563,11 @@ function Home() {
 
       </header>
 
+
+      {/* ========================================
+          INTRODUÇÃO
+      ======================================== */}
+
       <section className="home-introduction">
 
         <p className="welcome-label">
@@ -359,15 +584,25 @@ function Home() {
 
       </section>
 
+
+      {/* ========================================
+          SERVIÇOS
+      ======================================== */}
+
       <section
         className="services"
         aria-label="Serviços disponíveis"
       >
 
+
+        {/* CORRIDA */}
+
         <button
           className="service-card service-primary"
           onClick={() =>
-            navigate("/corrida")
+            navigate(
+              "/corrida"
+            )
           }
         >
 
@@ -400,10 +635,15 @@ function Home() {
 
         </button>
 
+
+        {/* MAPA */}
+
         <button
           className="service-card"
           onClick={() =>
-            navigate("/mapa-acessivel")
+            navigate(
+              "/mapa-acessivel"
+            )
           }
         >
 
@@ -436,10 +676,15 @@ function Home() {
 
         </button>
 
+
+        {/* ALUGUEL */}
+
         <button
           className="service-card"
           onClick={() =>
-            navigate("/aluguel")
+            navigate(
+              "/aluguel"
+            )
           }
         >
 
@@ -474,6 +719,11 @@ function Home() {
 
       </section>
 
+
+      {/* ========================================
+          ASSISTENTE POR VOZ
+      ======================================== */}
+
       <section className="voice-assistant-card">
 
         <div className="voice-icon">
@@ -495,6 +745,7 @@ function Home() {
           </p>
 
         </div>
+
 
         <button
           type="button"

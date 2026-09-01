@@ -6691,6 +6691,33 @@ html.alto-contraste [class*="total"][class*="card"] * {
 }
 
 
+.global-voice-button{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  z-index:9999;
+  width:54px;
+  height:54px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid #bdc8ce;
+  border-radius:50%;
+  background:#173b57;
+  color:#ffffff;
+  font-size:22px;
+  cursor:pointer;
+  box-shadow:0 8px 22px rgba(23,59,87,.25);
+  transition:.2s ease;
+}
+.global-voice-button:hover{
+  transform:translateY(-2px);
+}
+.global-voice-button.listening{
+  box-shadow:0 0 0 5px rgba(93,141,168,.22),0 8px 22px rgba(23,59,87,.25);
+}
+
+
 @media (max-width: 390px) {
   .rental-confirmed-page {
     padding: 22px 15px 50px;
