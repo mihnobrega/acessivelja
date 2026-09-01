@@ -13,8 +13,12 @@ import {
 
 import "../css/profile.css";
 import "../index.css";
+
 import useAlertaSonoro from "../hooks/useAlertaSonoro";
 
+import {
+  pararFala
+} from "../utils/acessibilidade";
 
 function Profile() {
   const navigate = useNavigate();
@@ -31,17 +35,17 @@ function Profile() {
   // Controla a mensagem de confirmação.
   const [salvo, setSalvo] = useState(false);
 
- // Dados do usuário.
-const usuario =
-  obterUsuario();
+  // Dados do usuário.
+  const usuario =
+    obterUsuario();
 
-const nome =
-  usuario?.nome || "Usuário";
+  const nome =
+    usuario?.nome || "Usuário";
 
-const fotoPerfil =
-  usuario?.fotoPerfil || "";
+  const fotoPerfil =
+    usuario?.fotoPerfil || "";
 
-    // ========================================
+  // ========================================
   // ALERTA SONORO
   // ========================================
 
@@ -49,73 +53,84 @@ const fotoPerfil =
     "Perfil e acessibilidade. Nesta página você pode configurar suas necessidades e preferências de acessibilidade."
   );
 
-/*
-  Quando a página abre:
-  - carrega as preferências
-  - restaura as configurações visuais
-*/
-useEffect(() => {
-  const preferenciasSalvas =
-    localStorage.getItem(
-      "acessivelJaPreferencias"
+  /*
+    Quando a página abre:
+    - carrega as preferências
+    - restaura as configurações visuais
+  */
+
+  useEffect(() => {
+    const preferenciasSalvas =
+      localStorage.getItem(
+        "acessivelJaPreferencias"
+      );
+
+    if (!preferenciasSalvas) {
+      return;
+    }
+
+    try {
+      const preferencias =
+        JSON.parse(
+          preferenciasSalvas
+        );
+
+      setNecessidades(
+        preferencias.necessidades || []
+      );
+
+      setTextoMaior(
+        preferencias.textoMaior || false
+      );
+
+      setAltoContraste(
+        preferencias.altoContraste || false
+      );
+
+      setAlertasSonoros(
+        preferencias.alertasSonoros || false
+      );
+
+      setVibracao(
+        preferencias.vibracao || false
+      );
+
+      document.documentElement.classList.toggle(
+        "texto-maior",
+        Boolean(
+          preferencias.textoMaior
+        )
+      );
+
+      document.documentElement.classList.toggle(
+        "alto-contraste",
+        Boolean(
+          preferencias.altoContraste
+        )
+      );
+
+    } catch (erro) {
+      console.error(
+        "Erro ao carregar preferências:",
+        erro
+      );
+    }
+  }, []);
+
+  function sairDaConta() {
+    pararFala();
+
+    localStorage.removeItem(
+      "acessivelJaLogado"
     );
 
-  if (!preferenciasSalvas) {
-    return;
+    navigate("/login");
   }
-
-  try {
-    const preferencias =
-      JSON.parse(preferenciasSalvas);
-
-    setNecessidades(
-      preferencias.necessidades || []
-    );
-
-    setTextoMaior(
-      preferencias.textoMaior || false
-    );
-
-    setAltoContraste(
-      preferencias.altoContraste || false
-    );
-
-    setAlertasSonoros(
-      preferencias.alertasSonoros || false
-    );
-
-    setVibracao(
-      preferencias.vibracao || false
-    );
-
-    document.documentElement.classList.toggle(
-      "texto-maior",
-      Boolean(preferencias.textoMaior)
-    );
-
-    document.documentElement.classList.toggle(
-      "alto-contraste",
-      Boolean(preferencias.altoContraste)
-    );
-  } catch (erro) {
-    console.error(
-      "Erro ao carregar preferências:",
-      erro
-    );
-  }
-}, []);
-
-function sairDaConta() {
-  localStorage.removeItem(
-    "acessivelJaLogado"
-  );
-
-  navigate("/login");
-}
 
   /*
     Lista das necessidades disponíveis.
   */
+
   const opcoesNecessidades = [
     {
       id: "cadeira-rodas",
@@ -157,46 +172,116 @@ function sairDaConta() {
   /*
     Adiciona ou remove uma necessidade.
   */
+
   function alternarNecessidade(id) {
     setSalvo(false);
 
-    setNecessidades((anteriores) => {
-      if (anteriores.includes(id)) {
-        return anteriores.filter(
-          (necessidade) =>
-            necessidade !== id
-        );
-      }
+    setNecessidades(
+      (anteriores) => {
+        if (
+          anteriores.includes(id)
+        ) {
+          return anteriores.filter(
+            (necessidade) =>
+              necessidade !== id
+          );
+        }
 
-      return [
-        ...anteriores,
-        id
-      ];
-    });
+        return [
+          ...anteriores,
+          id
+        ];
+      }
+    );
   }
 
   /*
     Aplica as preferências visuais
     diretamente no HTML.
   */
-  function aplicarPreferencias(preferencias) {
+
+  function aplicarPreferencias(
+    preferencias
+  ) {
     const raiz =
       document.documentElement;
 
     raiz.classList.toggle(
       "texto-maior",
-      Boolean(preferencias.textoMaior)
+      Boolean(
+        preferencias.textoMaior
+      )
     );
 
     raiz.classList.toggle(
       "alto-contraste",
-      Boolean(preferencias.altoContraste)
+      Boolean(
+        preferencias.altoContraste
+      )
+    );
+  }
+
+  // ========================================
+  // ALTERAR ALERTAS SONOROS
+  // ========================================
+
+  function alterarAlertasSonoros(
+    ativo
+  ) {
+    setAlertasSonoros(
+      ativo
+    );
+
+    setSalvo(false);
+
+    const preferenciasSalvas =
+      localStorage.getItem(
+        "acessivelJaPreferencias"
+      );
+
+    let preferenciasAtuais = {};
+
+    if (preferenciasSalvas) {
+      try {
+        preferenciasAtuais =
+          JSON.parse(
+            preferenciasSalvas
+          );
+      } catch (erro) {
+        console.error(
+          "Erro ao carregar preferências:",
+          erro
+        );
+      }
+    }
+
+    const novasPreferencias = {
+      ...preferenciasAtuais,
+      alertasSonoros: ativo
+    };
+
+    localStorage.setItem(
+      "acessivelJaPreferencias",
+      JSON.stringify(
+        novasPreferencias
+      )
+    );
+
+    if (!ativo) {
+      pararFala();
+    }
+
+    window.dispatchEvent(
+      new Event(
+        "preferenciasAcessibilidadeAlteradas"
+      )
     );
   }
 
   /*
     Salva todas as preferências no navegador.
   */
+
   function salvarPreferencias() {
     const preferencias = {
       necessidades,
@@ -208,12 +293,24 @@ function sairDaConta() {
 
     localStorage.setItem(
       "acessivelJaPreferencias",
-      JSON.stringify(preferencias)
+      JSON.stringify(
+        preferencias
+      )
     );
 
     aplicarPreferencias(
       preferencias
     );
+
+    window.dispatchEvent(
+      new Event(
+        "preferenciasAcessibilidadeAlteradas"
+      )
+    );
+
+    if (!alertasSonoros) {
+      pararFala();
+    }
 
     setSalvo(true);
   }
@@ -223,6 +320,7 @@ function sairDaConta() {
 
       {/* Cabeçalho */}
       <header className="profile-header">
+
         <button
           type="button"
           className="profile-back"
@@ -235,6 +333,7 @@ function sairDaConta() {
         </button>
 
         <div>
+
           <span>
             ACESSÍVEL JÁ
           </span>
@@ -247,13 +346,16 @@ function sairDaConta() {
             Personalize o aplicativo de acordo
             com suas necessidades.
           </p>
+
         </div>
+
       </header>
 
       {/* Informações do perfil */}
       <section className="profile-user-card">
 
         <div className="profile-avatar">
+
           {fotoPerfil ? (
             <img
               src={fotoPerfil}
@@ -261,12 +363,16 @@ function sairDaConta() {
             />
           ) : (
             <span>
-              {nome.charAt(0).toUpperCase()}
+              {nome
+                .charAt(0)
+                .toUpperCase()}
             </span>
           )}
+
         </div>
 
         <div>
+
           <span>
             MEU PERFIL
           </span>
@@ -279,6 +385,7 @@ function sairDaConta() {
             Configure suas preferências
             e recursos de acessibilidade.
           </p>
+
         </div>
 
       </section>
@@ -287,6 +394,7 @@ function sairDaConta() {
       <section className="profile-section">
 
         <div className="profile-section-title">
+
           <span>
             ACESSIBILIDADE
           </span>
@@ -298,6 +406,7 @@ function sairDaConta() {
           <p>
             Você pode selecionar mais de uma opção.
           </p>
+
         </div>
 
         <div className="profile-needs">
@@ -327,11 +436,13 @@ function sairDaConta() {
                     selecionado
                   }
                 >
+
                   <div className="profile-need-icon">
                     {opcao.icone}
                   </div>
 
                   <div className="profile-need-text">
+
                     <strong>
                       {opcao.nome}
                     </strong>
@@ -339,6 +450,7 @@ function sairDaConta() {
                     <span>
                       {opcao.descricao}
                     </span>
+
                   </div>
 
                   <div className="profile-check">
@@ -346,18 +458,21 @@ function sairDaConta() {
                       ? "✓"
                       : ""}
                   </div>
+
                 </button>
               );
             }
           )}
 
         </div>
+
       </section>
 
       {/* Preferências */}
       <section className="profile-section">
 
         <div className="profile-section-title">
+
           <span>
             PREFERÊNCIAS
           </span>
@@ -365,13 +480,16 @@ function sairDaConta() {
           <h2>
             Experiência no aplicativo
           </h2>
+
         </div>
 
         <div className="profile-settings">
 
           {/* Texto maior */}
           <label className="profile-setting">
+
             <div>
+
               <strong>
                 Texto maior
               </strong>
@@ -380,6 +498,7 @@ function sairDaConta() {
                 Aumenta o tamanho dos textos
                 principais do aplicativo.
               </span>
+
             </div>
 
             <input
@@ -401,11 +520,14 @@ function sairDaConta() {
                 );
               }}
             />
+
           </label>
 
           {/* Alto contraste */}
           <label className="profile-setting">
+
             <div>
+
               <strong>
                 Alto contraste
               </strong>
@@ -414,6 +536,7 @@ function sairDaConta() {
                 Aumenta o contraste entre
                 textos e elementos da interface.
               </span>
+
             </div>
 
             <input
@@ -435,11 +558,14 @@ function sairDaConta() {
                 );
               }}
             />
+
           </label>
 
           {/* Alertas sonoros */}
           <label className="profile-setting">
+
             <div>
+
               <strong>
                 Alertas sonoros
               </strong>
@@ -448,24 +574,26 @@ function sairDaConta() {
                 Reforça informações importantes
                 utilizando avisos sonoros.
               </span>
+
             </div>
 
             <input
               type="checkbox"
               checked={alertasSonoros}
-              onChange={(evento) => {
-                setAlertasSonoros(
+              onChange={(evento) =>
+                alterarAlertasSonoros(
                   evento.target.checked
-                );
-
-                setSalvo(false);
-              }}
+                )
+              }
             />
+
           </label>
 
           {/* Vibração */}
           <label className="profile-setting">
+
             <div>
+
               <strong>
                 Vibração
               </strong>
@@ -474,6 +602,7 @@ function sairDaConta() {
                 Usa vibração em avisos importantes
                 quando o dispositivo permitir.
               </span>
+
             </div>
 
             <input
@@ -487,9 +616,11 @@ function sairDaConta() {
                 setSalvo(false);
               }}
             />
+
           </label>
 
         </div>
+
       </section>
 
       {/* Confirmação */}
@@ -510,6 +641,7 @@ function sairDaConta() {
               navigate("/home")
             }
           >
+
             <span>
               Voltar para o início
             </span>
@@ -517,6 +649,7 @@ function sairDaConta() {
             <span>
               →
             </span>
+
           </button>
 
         </div>
@@ -526,8 +659,11 @@ function sairDaConta() {
       <button
         type="button"
         className="profile-save"
-        onClick={salvarPreferencias}
+        onClick={
+          salvarPreferencias
+        }
       >
+
         <span>
           Salvar preferências
         </span>
@@ -535,25 +671,28 @@ function sairDaConta() {
         <span>
           →
         </span>
+
       </button>
 
       <section className="profile-logout-section">
 
-  <button
-    type="button"
-    className="profile-logout-button"
-    onClick={sairDaConta}
-  >
-    <span>
-      Sair da conta
-    </span>
+        <button
+          type="button"
+          className="profile-logout-button"
+          onClick={sairDaConta}
+        >
 
-    <span aria-hidden="true">
-      →
-    </span>
-  </button>
+          <span>
+            Sair da conta
+          </span>
 
-</section>
+          <span aria-hidden="true">
+            →
+          </span>
+
+        </button>
+
+      </section>
 
     </main>
   );

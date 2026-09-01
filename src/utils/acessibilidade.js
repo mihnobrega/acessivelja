@@ -5,7 +5,7 @@ export function obterPreferenciasAcessibilidade() {
     );
 
   if (!dadosSalvos) {
-    return null;
+    return {};
   }
 
   try {
@@ -18,7 +18,7 @@ export function obterPreferenciasAcessibilidade() {
       erro
     );
 
-    return null;
+    return {};
   }
 }
 
@@ -26,11 +26,16 @@ export function falarMensagem(mensagem) {
   const preferencias =
     obterPreferenciasAcessibilidade();
 
-  if (!preferencias?.alertasSonoros) {
+  if (
+    !preferencias.alertasSonoros ||
+    !mensagem
+  ) {
     return;
   }
 
-  if (!("speechSynthesis" in window)) {
+  if (
+    !("speechSynthesis" in window)
+  ) {
     return;
   }
 
@@ -42,11 +47,18 @@ export function falarMensagem(mensagem) {
     );
 
   fala.lang = "pt-BR";
-  fala.rate = 0.95;
+  fala.rate = 1;
   fala.pitch = 1;
-  fala.volume = 1;
 
   window.speechSynthesis.speak(
     fala
   );
+}
+
+export function pararFala() {
+  if (
+    "speechSynthesis" in window
+  ) {
+    window.speechSynthesis.cancel();
+  }
 }
