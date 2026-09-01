@@ -6642,6 +6642,55 @@ html.alto-contraste [class*="total"][class*="card"] * {
   cursor: pointer;
 }
 
+.ride-search-card .primary-button{
+  width:100%;
+  min-height:54px;
+  margin-top:14px;
+  padding:0 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border:1px solid #5d8da8;
+  border-radius:16px;
+  background:linear-gradient(135deg,#173b57,#285c7a);
+  color:#ffffff;
+  font-size:15px;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 10px 22px rgba(23,59,87,.18);
+  transition:.2s ease;
+}
+.ride-search-card .primary-button::after{
+  content:"→";
+  width:32px;
+  height:32px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:50%;
+  background:rgba(255,255,255,.08);
+  color:#ffffff;
+  font-size:17px;
+}
+.ride-search-card .primary-button:hover{
+  background:linear-gradient(135deg,#102f47,#214f6b);
+  transform:translateY(-1px);
+}
+.ride-search-card .primary-button:active{
+  transform:translateY(0);
+}
+.ride-search-card .primary-button:disabled{
+  opacity:.65;
+  cursor:not-allowed;
+  transform:none;
+}
+.ride-continue-button{
+  margin-top:16px;
+}
+
+
 @media (max-width: 390px) {
   .rental-confirmed-page {
     padding: 22px 15px 50px;
