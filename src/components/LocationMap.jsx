@@ -10,8 +10,25 @@ import {
   useMap
 } from "react-leaflet";
 
+import L from "leaflet";
+
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
+
 import "leaflet/dist/leaflet.css";
 
+const iconePadrao = L.icon({
+  iconUrl: markerIcon,
+  iconRetinaUrl: markerIcon2x,
+  shadowUrl: markerShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+L.Marker.prototype.options.icon = iconePadrao;
 
 function AjustarMapa({
   posicaoAtual,
@@ -20,7 +37,6 @@ function AjustarMapa({
   const map = useMap();
 
   useEffect(() => {
-
     if (posicaoDestino) {
       map.fitBounds(
         [
@@ -31,14 +47,12 @@ function AjustarMapa({
           padding: [50, 50]
         }
       );
-
     } else {
       map.setView(
         posicaoAtual,
         16
       );
     }
-
   }, [
     map,
     posicaoAtual,
@@ -48,14 +62,12 @@ function AjustarMapa({
   return null;
 }
 
-
 function LocationMap({
   latitude,
   longitude,
   destino,
   rota
 }) {
-
   const posicaoAtual = [
     latitude,
     longitude
@@ -68,7 +80,6 @@ function LocationMap({
       ]
     : null;
 
-
   return (
     <MapContainer
       center={posicaoAtual}
@@ -76,18 +87,15 @@ function LocationMap({
       scrollWheelZoom={true}
       className="real-map"
     >
-
       <TileLayer
         attribution="&copy; OpenStreetMap contributors"
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-
       <AjustarMapa
         posicaoAtual={posicaoAtual}
         posicaoDestino={posicaoDestino}
       />
-
 
       <Circle
         center={posicaoAtual}
@@ -99,31 +107,21 @@ function LocationMap({
         }}
       />
 
-
       <Marker position={posicaoAtual}>
-
         <Popup>
           Sua localização atual.
         </Popup>
-
       </Marker>
 
-
       {posicaoDestino && (
-
         <Marker position={posicaoDestino}>
-
           <Popup>
             {destino.nome}
           </Popup>
-
         </Marker>
-
       )}
 
-
       {rota && rota.length > 0 && (
-
         <Polyline
           positions={rota}
           pathOptions={{
@@ -132,9 +130,7 @@ function LocationMap({
             opacity: 0.9
           }}
         />
-
       )}
-
     </MapContainer>
   );
 }
