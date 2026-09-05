@@ -1,10 +1,13 @@
 import {
+  useEffect,
+  useState
+} from "react";
+
+import {
   useLocation,
   useNavigate,
   useParams
 } from "react-router-dom";
-
-import useAlertaSonoro from "../hooks/useAlertaSonoro";
 
 function RentalSummary() {
   const navigate = useNavigate();
@@ -20,15 +23,49 @@ function RentalSummary() {
     valorTotal,
   } = location.state || {};
 
+  const [
+    ouvindo,
+    setOuvindo
+  ] = useState(false);
+
+
   // ========================================
-  // ALERTA SONORO
+  // INICIAR RESUMO POR VOZ
   // ========================================
 
-  useAlertaSonoro(
-    veiculo
-      ? `Resumo da reserva do veículo ${veiculo.nome}. Confira as datas e o valor antes de confirmar.`
-      : ""
-  );
+  useEffect(() => {
+    const continuarPorVoz =
+      sessionStorage.getItem(
+        "continuarResumoAluguelPorVoz"
+      );
+
+    if (
+      continuarPorVoz !== "true" ||
+      !veiculo
+    ) {
+      return;
+    }
+
+    const temporizador =
+      setTimeout(() => {
+        sessionStorage.removeItem(
+          "continuarResumoAluguelPorVoz"
+        );
+
+        falarResumoReserva();
+      }, 800);
+
+    return () => {
+      clearTimeout(
+        temporizador
+      );
+    };
+  }, [veiculo]);
+
+
+  // ========================================
+  // FORMATAR DATA
+  // ========================================
 
   function formatarData(data) {
     if (!data) {
@@ -44,7 +81,196 @@ function RentalSummary() {
     return `${dia}/${mes}/${ano}`;
   }
 
-  function confirmarReserva() {
+
+  // ========================================
+  // FORMATAR DATA PARA FALA
+  // ========================================
+
+  function formatarDataFalada(data) {
+    if (!data) {
+      return "";
+    }
+
+    return new Date(
+      `${data}T12:00:00`
+    ).toLocaleDateString(
+      "pt-BR",
+      {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      }
+    );
+  }
+
+
+  // ========================================
+  // FORMATAR VALOR
+  // ========================================
+
+  function formatarValor(valor) {
+    return Number(
+      valor
+    ).toLocaleString(
+      "pt-BR",
+      {
+        style: "currency",
+        currency: "BRL"
+      }
+    );
+  }
+
+
+  // ========================================
+  // FALAR RESUMO COMPLETO
+  // ========================================
+
+  function falarResumoReserva() {
+    const retirada =
+      formatarDataFalada(
+        dataRetirada
+      );
+
+    const devolucao =
+      formatarDataFalada(
+        dataDevolucao
+      );
+
+    const diaria =
+      formatarValor(
+        valorDiaria
+      );
+
+    const total =
+      formatarValor(
+        valorTotal
+      );
+
+    const recursos =
+      veiculo.recursos
+        ? veiculo.recursos.join(", ")
+        : "";
+
+    let mensagem =
+      `Resumo da reserva. ` +
+      `Veículo ${veiculo.nome}. ` +
+      `Categoria ${veiculo.tipo}. ` +
+      `${veiculo.descricao}. `;
+
+    if (recursos) {
+      mensagem +=
+        `Recursos de acessibilidade: ${recursos}. `;
+    }
+
+    mensagem +=
+      `A retirada será em ${retirada}. ` +
+      `A devolução será em ${devolucao}. ` +
+      `A duração do aluguel será de ${quantidadeDias} ${quantidadeDias === 1 ? "dia" : "dias"}. ` +
+      `O valor da diária é ${diaria}. ` +
+      `A quantidade de diárias é ${quantidadeDias}. ` +
+      `O valor total estimado da reserva é ${total}. ` +
+      `Deseja confirmar o aluguel? Diga confirmar aluguel, confirmar, sim ou voltar.`;
+
+    falarEExecutar(
+      mensagem,
+      ouvirConfirmacaoReserva
+    );
+  }
+
+
+  // ========================================
+  // OUVIR CONFIRMAÇÃO
+  // ========================================
+
+  function ouvirConfirmacaoReserva() {
+    reconhecerVoz(
+      (comando) => {
+        if (
+          comando.includes(
+            "confirmar aluguel"
+          ) ||
+          comando.includes(
+            "confirmar reserva"
+          ) ||
+          comando.includes(
+            "confirmar"
+          ) ||
+          comando.includes(
+            "sim"
+          )
+        ) {
+          falarEExecutar(
+            "Reserva confirmada.",
+            () =>
+              confirmarReserva(
+                true
+              )
+          );
+
+          return;
+        }
+
+        if (
+          comando.includes(
+            "voltar"
+          ) ||
+          comando.includes(
+            "alterar"
+          ) ||
+          comando.includes(
+            "mudar"
+          )
+        ) {
+          sessionStorage.setItem(
+            "continuarPeriodoAluguelPorVoz",
+            "true"
+          );
+
+          navigate(
+            `/aluguel/${id}/periodo`
+          );
+
+          return;
+        }
+
+        if (
+          comando.includes(
+            "repetir"
+          ) ||
+          comando.includes(
+            "resumo"
+          )
+        ) {
+          falarResumoReserva();
+
+          return;
+        }
+
+        falarEExecutar(
+          "Não entendi. Diga confirmar aluguel, repetir resumo ou voltar.",
+          ouvirConfirmacaoReserva
+        );
+      }
+    );
+  }
+
+
+  // ========================================
+  // CONFIRMAR RESERVA
+  // ========================================
+
+  function confirmarReserva(
+    porVoz = false
+  ) {
+    if (
+      porVoz
+    ) {
+      sessionStorage.setItem(
+        "continuarAluguelConfirmadoPorVoz",
+        "true"
+      );
+    }
+
     navigate(
       `/aluguel/${id}/confirmado`,
       {
@@ -60,6 +286,126 @@ function RentalSummary() {
     );
   }
 
+
+  // ========================================
+  // FALAR E EXECUTAR
+  // ========================================
+
+  function falarEExecutar(
+    mensagem,
+    callback
+  ) {
+    if (
+      !("speechSynthesis" in window)
+    ) {
+      callback?.();
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const fala =
+      new SpeechSynthesisUtterance(
+        mensagem
+      );
+
+    fala.lang =
+      "pt-BR";
+
+    fala.rate =
+      1;
+
+    fala.pitch =
+      1;
+
+    fala.onend = () => {
+      setTimeout(() => {
+        callback?.();
+      }, 350);
+    };
+
+    window.speechSynthesis.speak(
+      fala
+    );
+  }
+
+
+  // ========================================
+  // RECONHECER VOZ
+  // ========================================
+
+  function reconhecerVoz(
+    callback
+  ) {
+    const SpeechRecognition =
+      window.SpeechRecognition ||
+      window.webkitSpeechRecognition;
+
+    if (
+      !SpeechRecognition
+    ) {
+      alert(
+        "O reconhecimento de voz não é suportado neste navegador."
+      );
+
+      return;
+    }
+
+    const reconhecimento =
+      new SpeechRecognition();
+
+    reconhecimento.lang =
+      "pt-BR";
+
+    reconhecimento.continuous =
+      false;
+
+    reconhecimento.interimResults =
+      false;
+
+    reconhecimento.onstart =
+      () => {
+        setOuvindo(
+          true
+        );
+      };
+
+    reconhecimento.onend =
+      () => {
+        setOuvindo(
+          false
+        );
+      };
+
+    reconhecimento.onerror =
+      (erro) => {
+        console.error(
+          "Erro no reconhecimento de voz:",
+          erro
+        );
+
+        setOuvindo(
+          false
+        );
+      };
+
+    reconhecimento.onresult =
+      (evento) => {
+        const comando =
+          evento.results[0][0]
+            .transcript
+            .toLowerCase()
+            .trim();
+
+        callback?.(
+          comando
+        );
+      };
+
+    reconhecimento.start();
+  }
+
+
   if (!veiculo) {
     return (
       <main className="rental-summary-page">
@@ -73,7 +419,9 @@ function RentalSummary() {
           <button
             type="button"
             onClick={() =>
-              navigate("/aluguel")
+              navigate(
+                "/aluguel"
+              )
             }
           >
             Voltar para veículos
@@ -84,6 +432,7 @@ function RentalSummary() {
       </main>
     );
   }
+
 
   return (
     <main className="rental-summary-page">
@@ -297,7 +646,11 @@ function RentalSummary() {
       <button
         type="button"
         className="rental-summary-confirm"
-        onClick={confirmarReserva}
+        onClick={() =>
+          confirmarReserva(
+            false
+          )
+        }
       >
         <span>
           Confirmar reserva
@@ -307,6 +660,21 @@ function RentalSummary() {
           →
         </span>
       </button>
+
+
+      {ouvindo && (
+        <p
+          aria-live="polite"
+          style={{
+            textAlign:
+              "center",
+            margin:
+              "16px 0 24px"
+          }}
+        >
+          🎙️ Ouvindo...
+        </p>
+      )}
 
     </main>
   );

@@ -1,7 +1,16 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  useEffect,
+  useRef,
+  useState
+} from "react";
+
+import {
+  useNavigate
+} from "react-router-dom";
+
 import AccessiblePlacesMap from "../components/AccessiblePlacesMap";
-import useAlertaSonoro from "../hooks/useAlertaSonoro";
+
+
 /* ========================================
    CALCULAR E FORMATAR DISTÂNCIA
 ======================================== */
@@ -18,16 +27,28 @@ function calcularDistancia(
     graus * (Math.PI / 180);
 
   const diferencaLatitude =
-    paraRadianos(latitude2 - latitude1);
+    paraRadianos(
+      latitude2 - latitude1
+    );
 
   const diferencaLongitude =
-    paraRadianos(longitude2 - longitude1);
+    paraRadianos(
+      longitude2 - longitude1
+    );
 
   const a =
-    Math.sin(diferencaLatitude / 2) ** 2 +
-    Math.cos(paraRadianos(latitude1)) *
-      Math.cos(paraRadianos(latitude2)) *
-      Math.sin(diferencaLongitude / 2) ** 2;
+    Math.sin(
+      diferencaLatitude / 2
+    ) ** 2 +
+    Math.cos(
+      paraRadianos(latitude1)
+    ) *
+      Math.cos(
+        paraRadianos(latitude2)
+      ) *
+      Math.sin(
+        diferencaLongitude / 2
+      ) ** 2;
 
   const c =
     2 *
@@ -39,9 +60,16 @@ function calcularDistancia(
   return raioTerra * c;
 }
 
-function formatarDistancia(distanciaKm) {
-  if (distanciaKm < 1) {
-    return `${Math.round(distanciaKm * 1000)} m`;
+
+function formatarDistancia(
+  distanciaKm
+) {
+  if (
+    distanciaKm < 1
+  ) {
+    return `${Math.round(
+      distanciaKm * 1000
+    )} m`;
   }
 
   return `${distanciaKm
@@ -49,44 +77,62 @@ function formatarDistancia(distanciaKm) {
     .replace(".", ",")} km`;
 }
 
+
 function AccessibleMap() {
   const navigate = useNavigate();
-  
-  // ALERTA SONORO
 
-  useAlertaSonoro(
-    "Mapa acessível. Encontre lugares próximos com recursos de acessibilidade."
-  );
+  const vozIniciadaRef =
+    useRef(false);
 
 
   /* ========================================
      LOCALIZAÇÃO REAL DO USUÁRIO
   ======================================== */
 
-  const [localizacao, setLocalizacao] =
-    useState(null);
+  const [
+    localizacao,
+    setLocalizacao
+  ] = useState(null);
 
-  const [carregandoLocalizacao, setCarregandoLocalizacao] =
-    useState(true);
+  const [
+    carregandoLocalizacao,
+    setCarregandoLocalizacao
+  ] = useState(true);
 
-  const [erroLocalizacao, setErroLocalizacao] =
-    useState("");
+  const [
+    erroLocalizacao,
+    setErroLocalizacao
+  ] = useState("");
 
 
   /* ========================================
      FILTRO SELECIONADO
   ======================================== */
 
-  const [filtroSelecionado, setFiltroSelecionado] =
-    useState("todos");
+  const [
+    filtroSelecionado,
+    setFiltroSelecionado
+  ] = useState("todos");
 
 
   /* ========================================
      LOCAL SELECIONADO
   ======================================== */
 
-  const [localSelecionado, setLocalSelecionado] =
-    useState(null);
+  const [
+    localSelecionado,
+    setLocalSelecionado
+  ] = useState(null);
+
+
+  /* ========================================
+     MICROFONE
+  ======================================== */
+
+  const [
+    ouvindo,
+    setOuvindo
+  ] = useState(false);
 
 
   /* ========================================
@@ -255,33 +301,40 @@ function AccessibleMap() {
      CRIAR LOCAIS PRÓXIMOS AO USUÁRIO
   ======================================== */
 
-  const locais = localizacao
-    ? locaisBase.map((local) => {
-        const latitudeLocal =
-          localizacao.latitude +
-          local.deslocamentoLatitude;
+  const locais =
+    localizacao
+      ? locaisBase.map(
+          (local) => {
+            const latitudeLocal =
+              localizacao.latitude +
+              local.deslocamentoLatitude;
 
-        const longitudeLocal =
-          localizacao.longitude +
-          local.deslocamentoLongitude;
+            const longitudeLocal =
+              localizacao.longitude +
+              local.deslocamentoLongitude;
 
-        const distanciaKm =
-          calcularDistancia(
-            localizacao.latitude,
-            localizacao.longitude,
-            latitudeLocal,
-            longitudeLocal
-          );
+            const distanciaKm =
+              calcularDistancia(
+                localizacao.latitude,
+                localizacao.longitude,
+                latitudeLocal,
+                longitudeLocal
+              );
 
-        return {
-          ...local,
-          latitude: latitudeLocal,
-          longitude: longitudeLocal,
-          distancia:
-            formatarDistancia(distanciaKm)
-        };
-      })
-    : [];
+            return {
+              ...local,
+              latitude:
+                latitudeLocal,
+              longitude:
+                longitudeLocal,
+              distancia:
+                formatarDistancia(
+                  distanciaKm
+                )
+            };
+          }
+        )
+      : [];
 
 
   /* ========================================
@@ -289,77 +342,50 @@ function AccessibleMap() {
   ======================================== */
 
   useEffect(() => {
-
-    /*
-      Aqui verificamos se o navegador
-      consegue acessar o GPS.
-    */
-
-    if (!navigator.geolocation) {
-
+    if (
+      !navigator.geolocation
+    ) {
       setErroLocalizacao(
         "Seu dispositivo não oferece suporte à localização."
       );
 
-      setCarregandoLocalizacao(false);
+      setCarregandoLocalizacao(
+        false
+      );
 
       return;
     }
 
-
-    /*
-      getCurrentPosition pede ao navegador
-      a localização atual do usuário.
-    */
-
     navigator.geolocation.getCurrentPosition(
-
-      /*
-        Se funcionar:
-      */
-
       (posicao) => {
-
         setLocalizacao({
           latitude:
             posicao.coords.latitude,
-
           longitude:
             posicao.coords.longitude,
-
           precisao:
             posicao.coords.accuracy
         });
 
-
-        setCarregandoLocalizacao(false);
+        setCarregandoLocalizacao(
+          false
+        );
       },
 
-
-      /*
-        Se acontecer algum erro:
-      */
-
       (erro) => {
-
         console.error(
           "Erro de localização:",
           erro
         );
 
-
         setErroLocalizacao(
           "Não foi possível acessar sua localização."
         );
 
-
-        setCarregandoLocalizacao(false);
+        setCarregandoLocalizacao(
+          false
+        );
       },
-
-
-      /*
-        Configurações do GPS.
-      */
 
       {
         enableHighAccuracy: true,
@@ -367,7 +393,6 @@ function AccessibleMap() {
         maximumAge: 0
       }
     );
-
   }, []);
 
 
@@ -377,15 +402,641 @@ function AccessibleMap() {
 
   const locaisFiltrados =
     filtroSelecionado === "todos"
-
       ? locais
-
       : locais.filter(
           (local) =>
             local.recursos.includes(
               filtroSelecionado
             )
         );
+
+
+  /* ========================================
+     INICIAR VOZ QUANDO O MAPA CARREGAR
+  ======================================== */
+
+  useEffect(() => {
+    if (
+      !localizacao ||
+      vozIniciadaRef.current
+    ) {
+      return;
+    }
+
+    vozIniciadaRef.current =
+      true;
+
+    const temporizador =
+      setTimeout(() => {
+        falarIntroducaoMapa();
+      }, 800);
+
+    return () => {
+      clearTimeout(
+        temporizador
+      );
+    };
+  }, [localizacao]);
+
+
+  /* ========================================
+     INTRODUÇÃO DO MAPA
+  ======================================== */
+
+  function falarIntroducaoMapa() {
+    falarEExecutar(
+      "Mapa acessível aberto. Encontrei lugares próximos com recursos de acessibilidade. Qual filtro deseja usar? Você pode dizer todos, mobilidade, visual, auditiva ou cognitiva.",
+      ouvirFiltro
+    );
+  }
+
+
+  /* ========================================
+     OUVIR FILTRO
+  ======================================== */
+
+  function ouvirFiltro() {
+    reconhecerVoz(
+      (comando) => {
+        if (
+          comando.includes(
+            "mobilidade"
+          ) ||
+          comando.includes(
+            "cadeira"
+          )
+        ) {
+          aplicarFiltroPorVoz(
+            "mobilidade"
+          );
+
+          return;
+        }
+
+        if (
+          comando.includes(
+            "visual"
+          ) ||
+          comando.includes(
+            "visão"
+          ) ||
+          comando.includes(
+            "visao"
+          )
+        ) {
+          aplicarFiltroPorVoz(
+            "visual"
+          );
+
+          return;
+        }
+
+        if (
+          comando.includes(
+            "auditiva"
+          ) ||
+          comando.includes(
+            "audição"
+          ) ||
+          comando.includes(
+            "audicao"
+          )
+        ) {
+          aplicarFiltroPorVoz(
+            "auditiva"
+          );
+
+          return;
+        }
+
+        if (
+          comando.includes(
+            "cognitiva"
+          )
+        ) {
+          aplicarFiltroPorVoz(
+            "cognitiva"
+          );
+
+          return;
+        }
+
+        if (
+          comando.includes(
+            "todos"
+          ) ||
+          comando.includes(
+            "todas"
+          )
+        ) {
+          aplicarFiltroPorVoz(
+            "todos"
+          );
+
+          return;
+        }
+
+        if (
+          comando.includes(
+            "voltar"
+          ) ||
+          comando.includes(
+            "início"
+          ) ||
+          comando.includes(
+            "inicio"
+          )
+        ) {
+          navigate(
+            "/home"
+          );
+
+          return;
+        }
+
+        falarEExecutar(
+          "Não entendi o filtro. Diga todos, mobilidade, visual, auditiva ou cognitiva.",
+          ouvirFiltro
+        );
+      }
+    );
+  }
+
+
+  /* ========================================
+     APLICAR FILTRO POR VOZ
+  ======================================== */
+
+  function aplicarFiltroPorVoz(
+    filtro
+  ) {
+    setFiltroSelecionado(
+      filtro
+    );
+
+    const encontrados =
+      filtro === "todos"
+        ? locais
+        : locais.filter(
+            (local) =>
+              local.recursos.includes(
+                filtro
+              )
+          );
+
+    anunciarLocais(
+      encontrados,
+      filtro
+    );
+  }
+
+
+  /* ========================================
+     ANUNCIAR LOCAIS
+  ======================================== */
+
+  function anunciarLocais(
+    encontrados,
+    filtro
+  ) {
+    if (
+      encontrados.length === 0
+    ) {
+      falarEExecutar(
+        "Não encontrei lugares com esse recurso. Diga outro filtro.",
+        ouvirFiltro
+      );
+
+      return;
+    }
+
+    const nomes =
+      encontrados
+        .map(
+          (local) =>
+            local.nome
+        )
+        .join(", ");
+
+    const nomeFiltro =
+      filtro === "todos"
+        ? "todos os tipos de acessibilidade"
+        : `acessibilidade ${filtro}`;
+
+    falarEExecutar(
+      `Encontrei ${encontrados.length} lugares com ${nomeFiltro}. ${nomes}. Diga o nome de um lugar para ouvir os detalhes, diga outro filtro, ou diga voltar para o início.`,
+      () =>
+        ouvirEscolhaLocal(
+          encontrados
+        )
+    );
+  }
+
+
+  /* ========================================
+     OUVIR ESCOLHA DO LOCAL
+  ======================================== */
+
+  function ouvirEscolhaLocal(
+    encontrados
+  ) {
+    reconhecerVoz(
+      (comando) => {
+        if (
+          comando.includes(
+            "outro filtro"
+          ) ||
+          comando.includes(
+            "filtro"
+          )
+        ) {
+          falarEExecutar(
+            "Qual filtro deseja usar? Diga todos, mobilidade, visual, auditiva ou cognitiva.",
+            ouvirFiltro
+          );
+
+          return;
+        }
+
+        if (
+          comando.includes(
+            "voltar"
+          ) ||
+          comando.includes(
+            "início"
+          ) ||
+          comando.includes(
+            "inicio"
+          )
+        ) {
+          navigate(
+            "/home"
+          );
+
+          return;
+        }
+
+        const localEncontrado =
+          encontrarLocalPorVoz(
+            comando,
+            encontrados
+          );
+
+        if (
+          localEncontrado
+        ) {
+          abrirLocalPorVoz(
+            localEncontrado
+          );
+
+          return;
+        }
+
+        falarEExecutar(
+          "Não encontrei esse lugar. Diga novamente o nome de um dos locais, diga outro filtro ou diga voltar para o início.",
+          () =>
+            ouvirEscolhaLocal(
+              encontrados
+            )
+        );
+      }
+    );
+  }
+
+
+  /* ========================================
+     NORMALIZAR TEXTO
+  ======================================== */
+
+  function normalizarTexto(
+    texto
+  ) {
+    return texto
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(
+        /[\u0300-\u036f]/g,
+        ""
+      )
+      .replace(
+        /&/g,
+        "e"
+      )
+      .trim();
+  }
+
+
+  /* ========================================
+     ENCONTRAR LOCAL POR VOZ
+  ======================================== */
+
+  function encontrarLocalPorVoz(
+    comando,
+    encontrados
+  ) {
+    const comandoNormalizado =
+      normalizarTexto(
+        comando
+      );
+
+    return encontrados.find(
+      (local) => {
+        const nome =
+          normalizarTexto(
+            local.nome
+          );
+
+        const categoria =
+          normalizarTexto(
+            local.categoria
+          );
+
+        if (
+          comandoNormalizado.includes(
+            nome
+          )
+        ) {
+          return true;
+        }
+
+        const palavrasNome =
+          nome.split(" ");
+
+        const palavrasEncontradas =
+          palavrasNome.filter(
+            (palavra) =>
+              palavra.length > 3 &&
+              comandoNormalizado.includes(
+                palavra
+              )
+          );
+
+        if (
+          palavrasEncontradas.length >= 1
+        ) {
+          return true;
+        }
+
+        if (
+          comandoNormalizado.includes(
+            categoria
+          )
+        ) {
+          return true;
+        }
+
+        return false;
+      }
+    );
+  }
+
+
+  /* ========================================
+     ABRIR LOCAL POR VOZ
+  ======================================== */
+
+  function abrirLocalPorVoz(
+    local
+  ) {
+    setLocalSelecionado(
+      local
+    );
+
+    const recursos =
+      local.acessibilidade
+        .join(", ");
+
+    falarEExecutar(
+      `${local.nome}. Está a ${local.distancia} da sua localização. Recursos de acessibilidade: ${recursos}. Diga fechar para voltar aos lugares, outro filtro para escolher outro tipo de acessibilidade, ou voltar para o início.`,
+      () =>
+        ouvirComandoDetalhes(
+          local
+        )
+    );
+  }
+
+
+  /* ========================================
+     OUVIR COMANDO NOS DETALHES
+  ======================================== */
+
+  function ouvirComandoDetalhes(
+    local
+  ) {
+    reconhecerVoz(
+      (comando) => {
+        if (
+          comando.includes(
+            "fechar"
+          ) ||
+          comando.includes(
+            "voltar aos lugares"
+          )
+        ) {
+          setLocalSelecionado(
+            null
+          );
+
+          const encontrados =
+            filtroSelecionado ===
+            "todos"
+              ? locais
+              : locais.filter(
+                  (item) =>
+                    item.recursos.includes(
+                      filtroSelecionado
+                    )
+                );
+
+          falarEExecutar(
+            "Detalhes fechados. Diga o nome de outro lugar, diga outro filtro ou diga voltar para o início.",
+            () =>
+              ouvirEscolhaLocal(
+                encontrados
+              )
+          );
+
+          return;
+        }
+
+        if (
+          comando.includes(
+            "outro filtro"
+          ) ||
+          comando.includes(
+            "filtro"
+          )
+        ) {
+          setLocalSelecionado(
+            null
+          );
+
+          falarEExecutar(
+            "Qual filtro deseja usar? Diga todos, mobilidade, visual, auditiva ou cognitiva.",
+            ouvirFiltro
+          );
+
+          return;
+        }
+
+        if (
+          comando.includes(
+            "voltar"
+          ) ||
+          comando.includes(
+            "início"
+          ) ||
+          comando.includes(
+            "inicio"
+          )
+        ) {
+          navigate(
+            "/home"
+          );
+
+          return;
+        }
+
+        if (
+          comando.includes(
+            "repetir"
+          ) ||
+          comando.includes(
+            "recursos"
+          )
+        ) {
+          abrirLocalPorVoz(
+            local
+          );
+
+          return;
+        }
+
+        falarEExecutar(
+          "Não entendi. Diga fechar, outro filtro, repetir recursos ou voltar para o início.",
+          () =>
+            ouvirComandoDetalhes(
+              local
+            )
+        );
+      }
+    );
+  }
+
+
+  /* ========================================
+     FALAR E DEPOIS EXECUTAR
+  ======================================== */
+
+  function falarEExecutar(
+    mensagem,
+    callback
+  ) {
+    if (
+      !("speechSynthesis" in window)
+    ) {
+      callback?.();
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const fala =
+      new SpeechSynthesisUtterance(
+        mensagem
+      );
+
+    fala.lang =
+      "pt-BR";
+
+    fala.rate =
+      1;
+
+    fala.pitch =
+      1;
+
+    fala.onend = () => {
+      setTimeout(() => {
+        callback?.();
+      }, 350);
+    };
+
+    window.speechSynthesis.speak(
+      fala
+    );
+  }
+
+
+  /* ========================================
+     RECONHECER VOZ
+  ======================================== */
+
+  function reconhecerVoz(
+    callback
+  ) {
+    const SpeechRecognition =
+      window.SpeechRecognition ||
+      window.webkitSpeechRecognition;
+
+    if (
+      !SpeechRecognition
+    ) {
+      return;
+    }
+
+    const reconhecimento =
+      new SpeechRecognition();
+
+    reconhecimento.lang =
+      "pt-BR";
+
+    reconhecimento.continuous =
+      false;
+
+    reconhecimento.interimResults =
+      false;
+
+    reconhecimento.onstart =
+      () => {
+        setOuvindo(
+          true
+        );
+      };
+
+    reconhecimento.onend =
+      () => {
+        setOuvindo(
+          false
+        );
+      };
+
+    reconhecimento.onerror =
+      (erro) => {
+        console.error(
+          "Erro no reconhecimento de voz:",
+          erro
+        );
+
+        setOuvindo(
+          false
+        );
+      };
+
+    reconhecimento.onresult =
+      (evento) => {
+        const comando =
+          evento.results[0][0]
+            .transcript
+            .toLowerCase()
+            .trim();
+
+        callback?.(
+          comando
+        );
+      };
+
+    reconhecimento.start();
+  }
 
 
   return (
@@ -402,13 +1053,14 @@ function AccessibleMap() {
           type="button"
           className="accessible-map-back"
           onClick={() =>
-            navigate("/home")
+            navigate(
+              "/home"
+            )
           }
           aria-label="Voltar para o início"
         >
           ←
         </button>
-
 
         <div>
 
@@ -440,20 +1092,17 @@ function AccessibleMap() {
           ◎
         </div>
 
-
         <div>
 
           <span>
             Sua localização
           </span>
 
-
           {carregandoLocalizacao && (
             <strong>
               Localizando você...
             </strong>
           )}
-
 
           {!carregandoLocalizacao &&
             localizacao && (
@@ -470,7 +1119,6 @@ function AccessibleMap() {
                 </small>
               </>
             )}
-
 
           {erroLocalizacao && (
             <strong>
@@ -507,12 +1155,15 @@ function AccessibleMap() {
           <button
             type="button"
             className={
-              filtroSelecionado === "todos"
+              filtroSelecionado ===
+              "todos"
                 ? "accessible-filter active"
                 : "accessible-filter"
             }
             onClick={() =>
-              setFiltroSelecionado("todos")
+              setFiltroSelecionado(
+                "todos"
+              )
             }
           >
             Todos
@@ -522,12 +1173,15 @@ function AccessibleMap() {
           <button
             type="button"
             className={
-              filtroSelecionado === "mobilidade"
+              filtroSelecionado ===
+              "mobilidade"
                 ? "accessible-filter active"
                 : "accessible-filter"
             }
             onClick={() =>
-              setFiltroSelecionado("mobilidade")
+              setFiltroSelecionado(
+                "mobilidade"
+              )
             }
           >
             ♿ Mobilidade
@@ -537,12 +1191,15 @@ function AccessibleMap() {
           <button
             type="button"
             className={
-              filtroSelecionado === "visual"
+              filtroSelecionado ===
+              "visual"
                 ? "accessible-filter active"
                 : "accessible-filter"
             }
             onClick={() =>
-              setFiltroSelecionado("visual")
+              setFiltroSelecionado(
+                "visual"
+              )
             }
           >
             👁 Visual
@@ -552,12 +1209,15 @@ function AccessibleMap() {
           <button
             type="button"
             className={
-              filtroSelecionado === "auditiva"
+              filtroSelecionado ===
+              "auditiva"
                 ? "accessible-filter active"
                 : "accessible-filter"
             }
             onClick={() =>
-              setFiltroSelecionado("auditiva")
+              setFiltroSelecionado(
+                "auditiva"
+              )
             }
           >
             🦻 Auditiva
@@ -567,12 +1227,15 @@ function AccessibleMap() {
           <button
             type="button"
             className={
-              filtroSelecionado === "cognitiva"
+              filtroSelecionado ===
+              "cognitiva"
                 ? "accessible-filter active"
                 : "accessible-filter"
             }
             onClick={() =>
-              setFiltroSelecionado("cognitiva")
+              setFiltroSelecionado(
+                "cognitiva"
+              )
             }
           >
             Cognitiva
@@ -589,66 +1252,62 @@ function AccessibleMap() {
 
       <section className="accessible-map-container">
 
-  {carregandoLocalizacao && (
-    <div className="accessible-map-loading">
+        {carregandoLocalizacao && (
+          <div className="accessible-map-loading">
 
-      <div className="map-loading-circle"></div>
+            <div className="map-loading-circle"></div>
 
-      <strong>
-        Preparando mapa acessível...
-      </strong>
+            <strong>
+              Preparando mapa acessível...
+            </strong>
 
-      <p>
-        Aguarde enquanto acessamos
-        sua localização.
-      </p>
+            <p>
+              Aguarde enquanto acessamos
+              sua localização.
+            </p>
 
-    </div>
-  )}
-
-
-  {!carregandoLocalizacao &&
-    localizacao && (
-      <AccessiblePlacesMap
-        latitude={
-          localizacao.latitude
-        }
-
-        longitude={
-          localizacao.longitude
-        }
-
-        locais={
-          locaisFiltrados
-        }
-
-        localSelecionado={
-          localSelecionado
-        }
-
-        onSelecionarLocal={
-          setLocalSelecionado
-        }
-      />
-    )}
+          </div>
+        )}
 
 
-  {!carregandoLocalizacao &&
-    erroLocalizacao && (
-      <div className="accessible-map-loading">
+        {!carregandoLocalizacao &&
+          localizacao && (
+            <AccessiblePlacesMap
+              latitude={
+                localizacao.latitude
+              }
+              longitude={
+                localizacao.longitude
+              }
+              locais={
+                locaisFiltrados
+              }
+              localSelecionado={
+                localSelecionado
+              }
+              onSelecionarLocal={
+                setLocalSelecionado
+              }
+            />
+          )}
 
-        <strong>
-          Não foi possível mostrar o mapa.
-        </strong>
 
-        <p>
-          Verifique a permissão de localização.
-        </p>
+        {!carregandoLocalizacao &&
+          erroLocalizacao && (
+            <div className="accessible-map-loading">
 
-      </div>
-    )}
+              <strong>
+                Não foi possível mostrar o mapa.
+              </strong>
 
-</section>
+              <p>
+                Verifique a permissão de localização.
+              </p>
+
+            </div>
+          )}
+
+      </section>
 
 
       {/* ========================================
@@ -672,20 +1331,27 @@ function AccessibleMap() {
 
         <div className="accessible-places-list">
 
-          {locaisFiltrados.map((local) => (
+          {locaisFiltrados.map(
+            (local) => (
               <button
-                key={local.id}
+                key={
+                  local.id
+                }
                 type="button"
                 className="accessible-place-card"
                 onClick={() =>
-                  setLocalSelecionado(local)
+                  setLocalSelecionado(
+                    local
+                  )
                 }
               >
+
                 <div className="accessible-place-icon">
                   {local.icone}
                 </div>
 
                 <div className="accessible-place-content">
+
                   <span>
                     {local.categoria}
                   </span>
@@ -697,13 +1363,16 @@ function AccessibleMap() {
                   <small>
                     {local.distancia}
                   </small>
+
                 </div>
 
                 <div className="accessible-place-arrow">
                   →
                 </div>
+
               </button>
-            ))}
+            )
+          )}
 
         </div>
 
@@ -715,7 +1384,6 @@ function AccessibleMap() {
       ======================================== */}
 
       {localSelecionado && (
-
         <div className="accessible-place-overlay">
 
           <section className="accessible-place-modal">
@@ -724,7 +1392,9 @@ function AccessibleMap() {
               type="button"
               className="accessible-modal-close"
               onClick={() =>
-                setLocalSelecionado(null)
+                setLocalSelecionado(
+                  null
+                )
               }
               aria-label="Fechar detalhes"
             >
@@ -768,20 +1438,18 @@ function AccessibleMap() {
                 .acessibilidade
                 .map(
                   (recurso) => (
-
                     <div
-                      key={recurso}
+                      key={
+                        recurso
+                      }
                       className="accessible-feature"
                     >
-
                       <span>
                         ✓
                       </span>
 
                       {recurso}
-
                     </div>
-
                   )
                 )}
 
@@ -796,7 +1464,24 @@ function AccessibleMap() {
           </section>
 
         </div>
+      )}
 
+
+      {/* ========================================
+          INDICADOR DE VOZ
+      ======================================== */}
+
+      {ouvindo && (
+        <p
+          aria-live="polite"
+          style={{
+            textAlign: "center",
+            marginTop: "12px",
+            marginBottom: "20px"
+          }}
+        >
+          🎙️ Ouvindo...
+        </p>
       )}
 
     </main>

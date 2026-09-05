@@ -1,4 +1,9 @@
 import {
+  useEffect,
+  useState
+} from "react";
+
+import {
   useNavigate,
   useParams
 } from "react-router-dom";
@@ -7,8 +12,6 @@ import {
   buscarVeiculoPorId
 } from "../data/vehicles";
 
-import useAlertaSonoro from "../hooks/useAlertaSonoro";
-
 function VehicleDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -16,15 +19,286 @@ function VehicleDetails() {
   const veiculo =
     buscarVeiculoPorId(id);
 
+  const [
+    ouvindo,
+    setOuvindo
+  ] = useState(false);
+
+
   // ========================================
-  // ALERTA SONORO
+  // INICIAR FLUXO POR VOZ
   // ========================================
 
-  useAlertaSonoro(
-    veiculo
-      ? `Detalhes do veículo ${veiculo.nome}. Confira as adaptações disponíveis e o valor do aluguel.`
-      : ""
-  );
+  useEffect(() => {
+    const continuarPorVoz =
+      sessionStorage.getItem(
+        "continuarDetalhesAluguelPorVoz"
+      );
+
+    if (
+      continuarPorVoz !== "true" ||
+      !veiculo
+    ) {
+      return;
+    }
+
+    const temporizador =
+      setTimeout(() => {
+        sessionStorage.removeItem(
+          "continuarDetalhesAluguelPorVoz"
+        );
+
+        falarDetalhesVeiculo();
+      }, 800);
+
+    return () => {
+      clearTimeout(
+        temporizador
+      );
+    };
+  }, [veiculo]);
+
+
+  // ========================================
+  // FALAR DETALHES DO VEÍCULO
+  // ========================================
+
+  function falarDetalhesVeiculo() {
+    const recursos =
+      veiculo.recursos
+        .join(", ");
+
+    falarEExecutar(
+      `Você escolheu ${veiculo.nome}. ${veiculo.descricao}. As adaptações disponíveis são: ${recursos}. O valor do aluguel é ${veiculo.valor} ${veiculo.periodo}. O veículo é verificado, adaptado e possui suporte durante o período de aluguel. Deseja escolher o período? Diga continuar, escolher período ou voltar.`,
+      ouvirComandoDetalhes
+    );
+  }
+
+
+  // ========================================
+  // OUVIR COMANDO
+  // ========================================
+
+  function ouvirComandoDetalhes() {
+    reconhecerVoz(
+      (comando) => {
+        if (
+          comando.includes(
+            "continuar"
+          ) ||
+          comando.includes(
+            "escolher período"
+          ) ||
+          comando.includes(
+            "escolher periodo"
+          ) ||
+          comando.includes(
+            "período"
+          ) ||
+          comando.includes(
+            "periodo"
+          ) ||
+          comando.includes(
+            "sim"
+          )
+        ) {
+          irParaPeriodo(
+            true
+          );
+
+          return;
+        }
+
+        if (
+          comando.includes(
+            "voltar"
+          ) ||
+          comando.includes(
+            "outro veículo"
+          ) ||
+          comando.includes(
+            "outro veiculo"
+          )
+        ) {
+          sessionStorage.setItem(
+            "iniciarAluguelPorVoz",
+            "true"
+          );
+
+          navigate(
+            "/aluguel"
+          );
+
+          return;
+        }
+
+        if (
+          comando.includes(
+            "repetir"
+          ) ||
+          comando.includes(
+            "detalhes"
+          )
+        ) {
+          falarDetalhesVeiculo();
+
+          return;
+        }
+
+        falarEExecutar(
+          "Não entendi. Diga continuar, escolher período, repetir detalhes ou voltar.",
+          ouvirComandoDetalhes
+        );
+      }
+    );
+  }
+
+
+  // ========================================
+  // IR PARA PERÍODO
+  // ========================================
+
+  function irParaPeriodo(
+    porVoz = false
+  ) {
+    if (
+      porVoz
+    ) {
+      sessionStorage.setItem(
+        "continuarPeriodoAluguelPorVoz",
+        "true"
+      );
+    }
+
+    navigate(
+      `/aluguel/${id}/periodo`,
+      {
+        state: {
+          veiculo
+        }
+      }
+    );
+  }
+
+
+  // ========================================
+  // FALAR E EXECUTAR
+  // ========================================
+
+  function falarEExecutar(
+    mensagem,
+    callback
+  ) {
+    if (
+      !("speechSynthesis" in window)
+    ) {
+      callback?.();
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const fala =
+      new SpeechSynthesisUtterance(
+        mensagem
+      );
+
+    fala.lang =
+      "pt-BR";
+
+    fala.rate =
+      1;
+
+    fala.pitch =
+      1;
+
+    fala.onend = () => {
+      setTimeout(() => {
+        callback?.();
+      }, 350);
+    };
+
+    window.speechSynthesis.speak(
+      fala
+    );
+  }
+
+
+  // ========================================
+  // RECONHECER VOZ
+  // ========================================
+
+  function reconhecerVoz(
+    callback
+  ) {
+    const SpeechRecognition =
+      window.SpeechRecognition ||
+      window.webkitSpeechRecognition;
+
+    if (
+      !SpeechRecognition
+    ) {
+      alert(
+        "O reconhecimento de voz não é suportado neste navegador."
+      );
+
+      return;
+    }
+
+    const reconhecimento =
+      new SpeechRecognition();
+
+    reconhecimento.lang =
+      "pt-BR";
+
+    reconhecimento.continuous =
+      false;
+
+    reconhecimento.interimResults =
+      false;
+
+    reconhecimento.onstart =
+      () => {
+        setOuvindo(
+          true
+        );
+      };
+
+    reconhecimento.onend =
+      () => {
+        setOuvindo(
+          false
+        );
+      };
+
+    reconhecimento.onerror =
+      (erro) => {
+        console.error(
+          "Erro no reconhecimento de voz:",
+          erro
+        );
+
+        setOuvindo(
+          false
+        );
+      };
+
+    reconhecimento.onresult =
+      (evento) => {
+        const comando =
+          evento.results[0][0]
+            .transcript
+            .toLowerCase()
+            .trim();
+
+        callback?.(
+          comando
+        );
+      };
+
+    reconhecimento.start();
+  }
+
 
   if (!veiculo) {
     return (
@@ -48,7 +322,9 @@ function VehicleDetails() {
           <button
             type="button"
             onClick={() =>
-              navigate("/aluguel")
+              navigate(
+                "/aluguel"
+              )
             }
           >
             Voltar para veículos
@@ -60,6 +336,7 @@ function VehicleDetails() {
     );
   }
 
+
   return (
     <main className="vehicle-details-page">
 
@@ -69,7 +346,9 @@ function VehicleDetails() {
           type="button"
           className="vehicle-details-back"
           onClick={() =>
-            navigate("/aluguel")
+            navigate(
+              "/aluguel"
+            )
           }
           aria-label="Voltar para veículos"
         >
@@ -146,24 +425,24 @@ function VehicleDetails() {
 
         <div className="vehicle-details-features">
 
-          {veiculo.recursos.map((recurso) => (
+          {veiculo.recursos.map(
+            (recurso) => (
+              <div
+                key={recurso}
+                className="vehicle-details-feature"
+              >
 
-            <div
-              key={recurso}
-              className="vehicle-details-feature"
-            >
+                <div>
+                  ✓
+                </div>
 
-              <div>
-                ✓
+                <span>
+                  {recurso}
+                </span>
+
               </div>
-
-              <span>
-                {recurso}
-              </span>
-
-            </div>
-
-          ))}
+            )
+          )}
 
         </div>
 
@@ -257,13 +536,8 @@ function VehicleDetails() {
         type="button"
         className="vehicle-details-continue"
         onClick={() =>
-          navigate(
-            `/aluguel/${id}/periodo`,
-            {
-              state: {
-                veiculo
-              }
-            }
+          irParaPeriodo(
+            false
           )
         }
       >
@@ -274,6 +548,21 @@ function VehicleDetails() {
         </span>
 
       </button>
+
+
+      {ouvindo && (
+        <p
+          aria-live="polite"
+          style={{
+            textAlign:
+              "center",
+            margin:
+              "16px 0 24px"
+          }}
+        >
+          🎙️ Ouvindo...
+        </p>
+      )}
 
     </main>
   );

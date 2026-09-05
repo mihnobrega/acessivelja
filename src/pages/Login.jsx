@@ -119,93 +119,134 @@ function Login() {
     );
   }
 
+  function formatarEmailPorVoz(
+  texto
+) {
+  return texto
+    .toLowerCase()
+    .trim()
+    .replace(
+      /\s+/g,
+      ""
+    )
+    .replace(
+      /arroba/g,
+      "@"
+    )
+    .replace(
+      /ponto/g,
+      "."
+    )
+    .replace(
+      /traço/g,
+      "-"
+    )
+    .replace(
+      /hífen/g,
+      "-"
+    )
+    .replace(
+      /hifen/g,
+      "-"
+    )
+    .replace(
+      /underline/g,
+      "_"
+    )
+    .replace(
+      /sublinhado/g,
+      "_"
+    );
+}
+
 
   // ========================================
   // PREENCHER EMAIL POR VOZ
   // ========================================
 
-  function preencherEmailPorVoz() {
-    const SpeechRecognition =
-      window.SpeechRecognition ||
-      window.webkitSpeechRecognition;
+function preencherEmailPorVoz() {
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
 
-    if (!SpeechRecognition) {
-      alert(
-        "O reconhecimento de voz não é suportado neste navegador."
-      );
+  if (!SpeechRecognition) {
+    alert(
+      "O reconhecimento de voz não é suportado neste navegador."
+    );
 
-      return;
-    }
-
-    const reconhecimento =
-      new SpeechRecognition();
-
-    reconhecimento.lang =
-      "pt-BR";
-
-    reconhecimento.continuous =
-      false;
-
-    reconhecimento.interimResults =
-      false;
-
-    reconhecimento.onstart =
-      () => {
-        setOuvindoEmail(
-          true
-        );
-      };
-
-    reconhecimento.onend =
-      () => {
-        setOuvindoEmail(
-          false
-        );
-      };
-
-    reconhecimento.onerror =
-      (erroVoz) => {
-        console.error(
-          "Erro no reconhecimento de voz:",
-          erroVoz
-        );
-
-        setOuvindoEmail(
-          false
-        );
-      };
-
-    reconhecimento.onresult =
-      (evento) => {
-        let texto =
-          evento.results[0][0]
-            .transcript
-            .toLowerCase();
-
-        texto = texto
-          .replace(
-            /\s+arroba\s+/g,
-            "@"
-          )
-          .replace(
-            /\s+ponto\s+/g,
-            "."
-          )
-          .replace(
-            /\s/g,
-            ""
-          );
-
-        setEmail(
-          texto
-        );
-
-        falarSenha();
-      };
-
-    reconhecimento.start();
+    return;
   }
 
+  const reconhecimento =
+    new SpeechRecognition();
+
+  reconhecimento.lang =
+    "pt-BR";
+
+  reconhecimento.continuous =
+    false;
+
+  reconhecimento.interimResults =
+    false;
+
+  reconhecimento.onstart =
+    () => {
+      setOuvindoEmail(
+        true
+      );
+    };
+
+  reconhecimento.onend =
+    () => {
+      setOuvindoEmail(
+        false
+      );
+    };
+
+  reconhecimento.onerror =
+    (erroVoz) => {
+      console.error(
+        "Erro no reconhecimento de voz:",
+        erroVoz
+      );
+
+      setOuvindoEmail(
+        false
+      );
+    };
+
+  reconhecimento.onresult =
+    (evento) => {
+      const textoFalado =
+        evento.results[0][0]
+          .transcript
+          .toLowerCase()
+          .trim();
+
+      const emailFormatado =
+        formatarEmailPorVoz(
+          textoFalado
+        );
+
+      console.log(
+        "Email falado:",
+        textoFalado
+      );
+
+      console.log(
+        "Email formatado:",
+        emailFormatado
+      );
+
+      setEmail(
+        emailFormatado
+      );
+
+      falarSenha();
+    };
+
+  reconhecimento.start();
+}
 
   // ========================================
   // AVISAR SOBRE A SENHA

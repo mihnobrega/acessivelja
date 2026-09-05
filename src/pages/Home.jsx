@@ -11,8 +11,6 @@ import {
   obterUsuario
 } from "../utils/usuario";
 
-import useAlertaSonoro from "../hooks/useAlertaSonoro";
-
 function Home() {
   const navigate = useNavigate();
 
@@ -46,15 +44,6 @@ function Home() {
 
   const fotoPerfil =
     usuario?.fotoPerfil || "";
-
-
-  // ========================================
-  // ALERTA SONORO
-  // ========================================
-
-  useAlertaSonoro(
-    `Olá, ${primeiroNome}. Você está na página inicial do Acessível Já. Escolha um serviço para continuar.`
-  );
 
 
   // ========================================
@@ -398,28 +387,35 @@ function Home() {
           return;
         }
 
-
         // ========================================
-        // ALUGAR VEÍCULO
-        // ========================================
+// ALUGAR VEÍCULO
+// ========================================
 
-        if (
-          comando.includes(
-            "alugar"
-          ) ||
-          comando.includes(
-            "aluguel"
-          ) ||
-          comando.includes(
-            "veículo"
-          )
-        ) {
-          navigate(
-            "/aluguel"
-          );
+if (
+  comando.includes(
+    "alugar"
+  ) ||
+  comando.includes(
+    "aluguel"
+  ) ||
+  comando.includes(
+    "veículo"
+  ) ||
+  comando.includes(
+    "veiculo"
+  )
+) {
+  sessionStorage.setItem(
+    "iniciarAluguelPorVoz",
+    "true"
+  );
 
-          return;
-        }
+  navigate(
+    "/aluguel"
+  );
+
+  return;
+}
 
 
         // ========================================

@@ -162,13 +162,22 @@ function VoiceAssistant() {
 
       // Aluguel.
       if (
-        comando.includes("alugar") ||
-        comando.includes("aluguel") ||
-        comando.includes("veículo")
-      ) {
-        navigate("/aluguel");
-        return;
-      }
+  comando.includes("alugar") ||
+  comando.includes("aluguel") ||
+  comando.includes("veículo") ||
+  comando.includes("veiculo")
+) {
+  sessionStorage.setItem(
+    "iniciarAluguelPorVoz",
+    "true"
+  );
+
+  navigate(
+    "/aluguel"
+  );
+
+  return;
+}
 
       // Perfil.
       if (
