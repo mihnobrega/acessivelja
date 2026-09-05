@@ -7,8 +7,6 @@ import {
   useNavigate
 } from "react-router-dom";
 
-import useAlertaSonoro from "../../hooks/useAlertaSonoro";
-
 function SearchingDriver() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -21,24 +19,26 @@ function SearchingDriver() {
     destino,
   } = location.state || {};
 
-  // ==================================================
-  // ALERTA SONORO
-  // ==================================================
 
-  useAlertaSonoro(
-    corrida
-      ? "Procurando um motorista disponível próximo de você. Aguarde alguns instantes."
-      : ""
-  );
+useEffect(() => {
+  if (!corrida) {
+    navigate(
+      "/home"
+    );
 
-  useEffect(() => {
-    if (!corrida) {
-      navigate("/home");
-      return;
-    }
+    return;
+  }
 
-    const tempoBusca =
+  let tempoBusca = null;
+
+  function iniciarBusca() {
+    tempoBusca =
       setTimeout(() => {
+        sessionStorage.setItem(
+          "continuarMotoristaPorVoz",
+          "true"
+        );
+
         navigate(
           "/corrida/motorista",
           {
@@ -52,49 +52,112 @@ function SearchingDriver() {
           }
         );
       }, 5000);
+  }
 
-    return () => {
+  if (
+    "speechSynthesis" in window
+  ) {
+    window.speechSynthesis.cancel();
+
+    const fala =
+      new SpeechSynthesisUtterance(
+        "Procurando um motorista disponível próximo de você. Aguarde alguns instantes."
+      );
+
+    fala.lang = "pt-BR";
+    fala.rate = 1;
+    fala.pitch = 1;
+
+    fala.onend = () => {
+      iniciarBusca();
+    };
+
+    window.speechSynthesis.speak(
+      fala
+    );
+  } else {
+    iniciarBusca();
+  }
+
+  return () => {
+    if (
+      tempoBusca
+    ) {
       clearTimeout(
         tempoBusca
       );
-    };
-  }, [
-    corrida,
-    pagamento,
-    distancia,
-    duracao,
-    destino,
-    navigate,
-  ]);
+    }
+  };
+}, [
+  corrida,
+  pagamento,
+  distancia,
+  duracao,
+  destino,
+  navigate,
+]);
+
+
+  // ==================================================
+  // CANCELAR BUSCA
+  // ==================================================
 
   function cancelarBusca() {
-    navigate(-1);
+    sessionStorage.removeItem(
+      "continuarMotoristaPorVoz"
+    );
+
+    navigate(
+      -1
+    );
   }
+
+
+  // ==================================================
+  // VERIFICA CORRIDA
+  // ==================================================
 
   if (!corrida) {
     return null;
   }
 
+
+  // ==================================================
+  // NOME DO PAGAMENTO
+  // ==================================================
+
   function nomePagamento() {
-    if (pagamento === "pix") {
+    if (
+      pagamento === "pix"
+    ) {
       return "Pix";
     }
 
-    if (pagamento === "cartao") {
+    if (
+      pagamento === "cartao"
+    ) {
       return "Cartão";
     }
 
-    if (pagamento === "dinheiro") {
+    if (
+      pagamento === "dinheiro"
+    ) {
       return "Dinheiro";
     }
 
     return "Não informado";
   }
 
+
   return (
     <main className="searching-driver-page">
 
       <section className="searching-driver-content">
+
+
+        {/* ========================================
+            STATUS
+        ======================================== */}
 
         <div className="searching-status">
 
@@ -113,10 +176,17 @@ function SearchingDriver() {
 
         </div>
 
+
+        {/* ========================================
+            RADAR
+        ======================================== */}
+
         <div className="driver-radar">
 
           <div className="radar-circle radar-circle-one"></div>
+
           <div className="radar-circle radar-circle-two"></div>
+
           <div className="radar-circle radar-circle-three"></div>
 
           <div className="radar-car">
@@ -125,12 +195,21 @@ function SearchingDriver() {
 
         </div>
 
+
+        {/* ========================================
+            MENSAGEM DE BUSCA
+        ======================================== */}
+
         <div className="searching-message">
 
           <div className="searching-loading">
+
             <span></span>
+
             <span></span>
+
             <span></span>
+
           </div>
 
           <strong>
@@ -143,11 +222,17 @@ function SearchingDriver() {
 
         </div>
 
+
+        {/* ========================================
+            RESUMO DA CORRIDA
+        ======================================== */}
+
         <section className="searching-trip-card">
 
           <div className="searching-trip-top">
 
             <div>
+
               <span>
                 Tipo de corrida
               </span>
@@ -155,22 +240,32 @@ function SearchingDriver() {
               <strong>
                 {corrida.nome}
               </strong>
+
             </div>
 
             <strong className="searching-price">
+
               R${" "}
+
               {corrida.preco
                 .toFixed(2)
-                .replace(".", ",")}
+                .replace(
+                  ".",
+                  ","
+                )}
+
             </strong>
 
           </div>
 
+
           <div className="searching-trip-divider"></div>
+
 
           <div className="searching-trip-info">
 
             <div>
+
               <span>
                 Pagamento
               </span>
@@ -178,9 +273,12 @@ function SearchingDriver() {
               <strong>
                 {nomePagamento()}
               </strong>
+
             </div>
 
+
             <div>
+
               <span>
                 Distância
               </span>
@@ -190,9 +288,12 @@ function SearchingDriver() {
                   ? `${distancia.toFixed(1)} km`
                   : "--"}
               </strong>
+
             </div>
 
+
             <div>
+
               <span>
                 Viagem
               </span>
@@ -202,16 +303,24 @@ function SearchingDriver() {
                   ? `${Math.ceil(duracao)} min`
                   : "--"}
               </strong>
+
             </div>
 
           </div>
 
         </section>
 
+
+        {/* ========================================
+            CANCELAR
+        ======================================== */}
+
         <button
           type="button"
           className="cancel-search-button"
-          onClick={cancelarBusca}
+          onClick={
+            cancelarBusca
+          }
         >
           Cancelar busca
         </button>

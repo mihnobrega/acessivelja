@@ -14,8 +14,6 @@ import {
   falarMensagem
 } from "../../utils/acessibilidade";
 
-import useAlertaSonoro from "../../hooks/useAlertaSonoro";
-
 function DriverTracking() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -29,8 +27,10 @@ function DriverTracking() {
     motorista,
   } = location.state || {};
 
-  const [localizacao, setLocalizacao] =
-    useState(null);
+  const [
+    localizacao,
+    setLocalizacao
+  ] = useState(null);
 
   const [
     erroLocalizacao,
@@ -56,15 +56,48 @@ function DriverTracking() {
     setMotoristaChegou
   ] = useState(false);
 
+  const [
+    ouvindo,
+    setOuvindo
+  ] = useState(false);
+
+
   // ==================================================
-  // ALERTA AO ENTRAR NA TELA
+  // CONTINUAR FLUXO DE VOZ
   // ==================================================
 
-  useAlertaSonoro(
-    motorista && corrida
-      ? `Acompanhamento do motorista. ${motorista.nome} está a caminho do local de embarque.`
-      : ""
-  );
+  useEffect(() => {
+    const continuarPorVoz =
+      sessionStorage.getItem(
+        "continuarAcompanhamentoPorVoz"
+      );
+
+    if (
+      continuarPorVoz !== "true" ||
+      !motorista ||
+      !corrida
+    ) {
+      return;
+    }
+
+    const temporizador =
+      setTimeout(() => {
+        sessionStorage.removeItem(
+          "continuarAcompanhamentoPorVoz"
+        );
+
+        falarMensagem(
+          `Acompanhamento iniciado. ${motorista.nome} está a caminho do local de embarque. A chegada estimada é de aproximadamente ${motorista.chegada} minutos.`
+        );
+      }, 800);
+
+    return () => {
+      clearTimeout(
+        temporizador
+      );
+    };
+  }, []);
+
 
   // ==================================================
   // GPS
@@ -85,15 +118,15 @@ function DriverTracking() {
           setLocalizacao({
             latitude:
               posicao.coords.latitude,
-
             longitude:
               posicao.coords.longitude,
-
             precisao:
               posicao.coords.accuracy,
           });
 
-          setErroLocalizacao("");
+          setErroLocalizacao(
+            ""
+          );
         },
 
         (erro) => {
@@ -121,30 +154,41 @@ function DriverTracking() {
     };
   }, []);
 
+
+  // ==================================================
+  // RECEBER PROGRESSO DO MOTORISTA
+  // ==================================================
+
   function atualizarProgresso(
     progresso
   ) {
-    if (progresso >= 1) {
-      if (!motoristaChegou) {
-        falarMensagem(
-          "Motorista chegou. Procure pelo veículo e confirme a placa antes de embarcar."
+    if (
+      progresso >= 1
+    ) {
+      if (
+        !motoristaChegou
+      ) {
+        setTempoChegada(
+          0
         );
+
+        setStatusMotorista(
+          "Motorista chegou"
+        );
+
+        setMotoristaChegou(
+          true
+        );
+
+        falarMotoristaChegou();
       }
-
-      setTempoChegada(0);
-
-      setStatusMotorista(
-        "Motorista chegou"
-      );
-
-      setMotoristaChegou(
-        true
-      );
 
       return;
     }
 
-    if (progresso >= 0.72) {
+    if (
+      progresso >= 0.72
+    ) {
       if (
         statusMotorista !==
         "Seu motorista está chegando"
@@ -154,7 +198,9 @@ function DriverTracking() {
         );
       }
 
-      setTempoChegada(1);
+      setTempoChegada(
+        1
+      );
 
       setStatusMotorista(
         "Seu motorista está chegando"
@@ -163,7 +209,9 @@ function DriverTracking() {
       return;
     }
 
-    if (progresso >= 0.42) {
+    if (
+      progresso >= 0.42
+    ) {
       if (
         statusMotorista !==
         "Motorista se aproximando"
@@ -173,7 +221,9 @@ function DriverTracking() {
         );
       }
 
-      setTempoChegada(2);
+      setTempoChegada(
+        2
+      );
 
       setStatusMotorista(
         "Motorista se aproximando"
@@ -191,7 +241,169 @@ function DriverTracking() {
     );
   }
 
+
+  // ==================================================
+  // FALAR QUE O MOTORISTA CHEGOU
+  // ==================================================
+
+  function falarMotoristaChegou() {
+    if (
+      !("speechSynthesis" in window)
+    ) {
+      ouvirInicioCorrida();
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const fala =
+      new SpeechSynthesisUtterance(
+        "Motorista chegou. Procure pelo veículo e confirme a placa antes de embarcar. Quando estiver pronto, diga iniciar corrida."
+      );
+
+    fala.lang = "pt-BR";
+    fala.rate = 1;
+    fala.pitch = 1;
+
+    fala.onend = () => {
+      setTimeout(() => {
+        ouvirInicioCorrida();
+      }, 350);
+    };
+
+    window.speechSynthesis.speak(
+      fala
+    );
+  }
+
+
+  // ==================================================
+  // OUVIR INÍCIO DA CORRIDA
+  // ==================================================
+
+  function ouvirInicioCorrida() {
+    const SpeechRecognition =
+      window.SpeechRecognition ||
+      window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      return;
+    }
+
+    const reconhecimento =
+      new SpeechRecognition();
+
+    reconhecimento.lang =
+      "pt-BR";
+
+    reconhecimento.continuous =
+      false;
+
+    reconhecimento.interimResults =
+      false;
+
+    reconhecimento.onstart = () => {
+      setOuvindo(
+        true
+      );
+    };
+
+    reconhecimento.onend = () => {
+      setOuvindo(
+        false
+      );
+    };
+
+    reconhecimento.onerror = (
+      erro
+    ) => {
+      console.error(
+        "Erro no reconhecimento de voz:",
+        erro
+      );
+
+      setOuvindo(
+        false
+      );
+    };
+
+    reconhecimento.onresult = (
+      evento
+    ) => {
+      const comando =
+        evento.results[0][0]
+          .transcript
+          .toLowerCase();
+
+      if (
+        comando.includes(
+          "iniciar corrida"
+        ) ||
+        comando.includes(
+          "iniciar"
+        ) ||
+        comando.includes(
+          "começar corrida"
+        ) ||
+        comando.includes(
+          "começar"
+        )
+      ) {
+        iniciarCorrida();
+        return;
+      }
+
+      falarInicioNaoEntendido();
+    };
+
+    reconhecimento.start();
+  }
+
+
+  // ==================================================
+  // COMANDO NÃO ENTENDIDO
+  // ==================================================
+
+  function falarInicioNaoEntendido() {
+    if (
+      !("speechSynthesis" in window)
+    ) {
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const fala =
+      new SpeechSynthesisUtterance(
+        "Não entendi. Diga iniciar corrida."
+      );
+
+    fala.lang = "pt-BR";
+    fala.rate = 1;
+    fala.pitch = 1;
+
+    fala.onend = () => {
+      setTimeout(() => {
+        ouvirInicioCorrida();
+      }, 350);
+    };
+
+    window.speechSynthesis.speak(
+      fala
+    );
+  }
+
+
+  // ==================================================
+  // INICIAR CORRIDA
+  // ==================================================
+
   function iniciarCorrida() {
+    sessionStorage.setItem(
+      "continuarViagemPorVoz",
+      "true"
+    );
+
     navigate(
       "/corrida/em-andamento",
       {
@@ -207,11 +419,26 @@ function DriverTracking() {
     );
   }
 
+
+  // ==================================================
+  // CANCELAR CORRIDA
+  // ==================================================
+
   function cancelarCorrida() {
-    navigate("/home");
+    navigate(
+      "/home"
+    );
   }
 
-  if (!motorista || !corrida) {
+
+  // ==================================================
+  // SEGURANÇA
+  // ==================================================
+
+  if (
+    !motorista ||
+    !corrida
+  ) {
     return (
       <main className="driver-tracking-page">
 
@@ -225,7 +452,9 @@ function DriverTracking() {
             className="primary-button"
             type="button"
             onClick={() =>
-              navigate("/home")
+              navigate(
+                "/home"
+              )
             }
           >
             Voltar ao início
@@ -237,6 +466,7 @@ function DriverTracking() {
     );
   }
 
+
   return (
     <main className="driver-tracking-page">
 
@@ -246,7 +476,9 @@ function DriverTracking() {
           type="button"
           className="tracking-back-button"
           onClick={() =>
-            navigate(-1)
+            navigate(
+              -1
+            )
           }
           aria-label="Voltar"
         >
@@ -283,6 +515,7 @@ function DriverTracking() {
 
       </header>
 
+
       <section
         className={`tracking-status-card ${
           motoristaChegou
@@ -316,6 +549,7 @@ function DriverTracking() {
         </div>
 
       </section>
+
 
       <section className="tracking-map-card">
 
@@ -376,6 +610,7 @@ function DriverTracking() {
         )}
 
       </section>
+
 
       <section className="tracking-driver-card">
 
@@ -461,6 +696,7 @@ function DriverTracking() {
 
       </section>
 
+
       <section className="tracking-actions">
 
         <button
@@ -481,11 +717,14 @@ function DriverTracking() {
 
       </section>
 
+
       {motoristaChegou && (
         <button
           type="button"
           className="start-trip-button"
-          onClick={iniciarCorrida}
+          onClick={
+            iniciarCorrida
+          }
         >
           <span>
             Motorista chegou
@@ -497,14 +736,30 @@ function DriverTracking() {
         </button>
       )}
 
+
       {!motoristaChegou && (
         <button
           type="button"
           className="tracking-cancel-button"
-          onClick={cancelarCorrida}
+          onClick={
+            cancelarCorrida
+          }
         >
           Cancelar corrida
         </button>
+      )}
+
+
+      {ouvindo && (
+        <p
+          aria-live="polite"
+          style={{
+            textAlign: "center",
+            marginTop: "12px"
+          }}
+        >
+          🎙️ Ouvindo...
+        </p>
       )}
 
     </main>

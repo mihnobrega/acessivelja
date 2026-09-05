@@ -47,6 +47,12 @@ function RideInProgress() {
     setViagemFinalizada
   ] = useState(false);
 
+
+  const [
+  ouvindo,
+  setOuvindo
+] = useState(false);
+
   // ==================================================
   // ALERTA DE INÍCIO
   // ==================================================
@@ -117,45 +123,196 @@ function RideInProgress() {
   // ========================================
 
   function atualizarProgresso(
+  progresso
+) {
+  setProgressoViagem(
     progresso
+  );
+
+  if (
+    progresso >= 1 &&
+    !viagemFinalizada
   ) {
-    setProgressoViagem(
-      progresso
+    setViagemFinalizada(
+      true
     );
 
-    if (
-      progresso >= 1 &&
-      !viagemFinalizada
-    ) {
-      setViagemFinalizada(
-        true
-      );
-
-      falarMensagem(
-        "Você chegou ao seu destino. A corrida foi concluída."
-      );
-    }
+    falarFimDaViagem();
   }
+}
+
+// ========================================
+// FALAR FINAL DA VIAGEM
+// ========================================
+
+function falarFimDaViagem() {
+  if (
+    !("speechSynthesis" in window)
+  ) {
+    ouvirFinalizacao();
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const fala =
+    new SpeechSynthesisUtterance(
+      "Você chegou ao seu destino. A corrida foi concluída. Diga finalizar corrida para continuar."
+    );
+
+  fala.lang = "pt-BR";
+  fala.rate = 1;
+  fala.pitch = 1;
+
+  fala.onend = () => {
+    setTimeout(() => {
+      ouvirFinalizacao();
+    }, 350);
+  };
+
+  window.speechSynthesis.speak(
+    fala
+  );
+}
+
+
+// ========================================
+// OUVIR FINALIZAÇÃO
+// ========================================
+
+function ouvirFinalizacao() {
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    return;
+  }
+
+  const reconhecimento =
+    new SpeechRecognition();
+
+  reconhecimento.lang =
+    "pt-BR";
+
+  reconhecimento.continuous =
+    false;
+
+  reconhecimento.interimResults =
+    false;
+
+  reconhecimento.onstart = () => {
+    setOuvindo(
+      true
+    );
+  };
+
+  reconhecimento.onend = () => {
+    setOuvindo(
+      false
+    );
+  };
+
+  reconhecimento.onerror = (
+    erro
+  ) => {
+    console.error(
+      "Erro no reconhecimento de voz:",
+      erro
+    );
+
+    setOuvindo(
+      false
+    );
+  };
+
+  reconhecimento.onresult = (
+    evento
+  ) => {
+    const comando =
+      evento.results[0][0]
+        .transcript
+        .toLowerCase();
+
+    if (
+      comando.includes(
+        "finalizar corrida"
+      ) ||
+      comando.includes(
+        "finalizar"
+      ) ||
+      comando.includes(
+        "concluir"
+      )
+    ) {
+      finalizarCorrida();
+      return;
+    }
+
+    falarFinalizacaoNaoEntendida();
+  };
+
+  reconhecimento.start();
+}
+
+
+// ========================================
+// COMANDO NÃO ENTENDIDO
+// ========================================
+
+function falarFinalizacaoNaoEntendida() {
+  if (
+    !("speechSynthesis" in window)
+  ) {
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const fala =
+    new SpeechSynthesisUtterance(
+      "Não entendi. Diga finalizar corrida."
+    );
+
+  fala.lang = "pt-BR";
+  fala.rate = 1;
+  fala.pitch = 1;
+
+  fala.onend = () => {
+    setTimeout(() => {
+      ouvirFinalizacao();
+    }, 350);
+  };
+
+  window.speechSynthesis.speak(
+    fala
+  );
+}
 
   // ========================================
   // FINALIZAR
   // ========================================
 
   function finalizarCorrida() {
-    navigate(
-      "/corrida/resumo",
-      {
-        state: {
-          corrida,
-          pagamento,
-          distancia,
-          duracao,
-          destino,
-          motorista,
-        },
-      }
-    );
-  }
+  sessionStorage.setItem(
+    "continuarResumoPorVoz",
+    "true"
+  );
+
+  navigate(
+    "/corrida/resumo",
+    {
+      state: {
+        corrida,
+        pagamento,
+        distancia,
+        duracao,
+        destino,
+        motorista,
+      },
+    }
+  );
+}
 
   // ========================================
   // SEGURANÇA
@@ -474,6 +631,18 @@ function RideInProgress() {
           </span>
         </button>
       )}
+
+      {ouvindo && (
+  <p
+    aria-live="polite"
+    style={{
+      textAlign: "center",
+      marginTop: "12px"
+    }}
+  >
+    🎙️ Ouvindo...
+  </p>
+)}
 
     </main>
   );
