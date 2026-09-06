@@ -11,6 +11,10 @@ import {
   obterUsuario
 } from "../utils/usuario";
 
+import DriverRegisterModal from "../components/DriverRegisterModal";
+
+import "../css/driver-register-modal.css";
+
 function Home() {
   const navigate = useNavigate();
 
@@ -29,6 +33,11 @@ function Home() {
     setAssistenteAtivo
   ] = useState(false);
 
+  const [
+    modalMotoristaAberto,
+    setModalMotoristaAberto
+  ] = useState(false);
+
 
   // ========================================
   // USUÁRIO
@@ -44,6 +53,11 @@ function Home() {
 
   const fotoPerfil =
     usuario?.fotoPerfil || "";
+
+  const motoristaCadastrado =
+    Boolean(
+      usuario?.perfis?.motorista
+    );
 
 
   // ========================================
@@ -387,35 +401,36 @@ function Home() {
           return;
         }
 
+
         // ========================================
-// ALUGAR VEÍCULO
-// ========================================
+        // ALUGAR VEÍCULO
+        // ========================================
 
-if (
-  comando.includes(
-    "alugar"
-  ) ||
-  comando.includes(
-    "aluguel"
-  ) ||
-  comando.includes(
-    "veículo"
-  ) ||
-  comando.includes(
-    "veiculo"
-  )
-) {
-  sessionStorage.setItem(
-    "iniciarAluguelPorVoz",
-    "true"
-  );
+        if (
+          comando.includes(
+            "alugar"
+          ) ||
+          comando.includes(
+            "aluguel"
+          ) ||
+          comando.includes(
+            "veículo"
+          ) ||
+          comando.includes(
+            "veiculo"
+          )
+        ) {
+          sessionStorage.setItem(
+            "iniciarAluguelPorVoz",
+            "true"
+          );
 
-  navigate(
-    "/aluguel"
-  );
+          navigate(
+            "/aluguel"
+          );
 
-  return;
-}
+          return;
+        }
 
 
         // ========================================
@@ -500,6 +515,55 @@ if (
     }
 
     ativarAssistenteVoz();
+  }
+
+
+  // ========================================
+  // FINALIZAR CADASTRO DE MOTORISTA
+  // ========================================
+
+  function finalizarCadastroMotorista(
+    dadosMotorista
+  ) {
+    const usuarioAtual =
+      obterUsuario();
+
+    if (!usuarioAtual) {
+      alert(
+        "Não foi possível encontrar os dados da sua conta."
+      );
+
+      return;
+    }
+
+    const usuarioAtualizado = {
+      ...usuarioAtual,
+
+      perfis: {
+        ...usuarioAtual.perfis,
+        usuario: true,
+        motorista: true
+      },
+
+      motorista: {
+        ...dadosMotorista,
+        ativo: false,
+        disponivel: false,
+        cadastradoEm:
+          new Date().toISOString()
+      }
+    };
+
+    localStorage.setItem(
+      "acessivelJaUsuario",
+      JSON.stringify(
+        usuarioAtualizado
+      )
+    );
+
+    setModalMotoristaAberto(
+      false
+    );
   }
 
 
@@ -717,6 +781,156 @@ if (
 
 
       {/* ========================================
+          PARTICIPAR DA PLATAFORMA
+      ======================================== */}
+
+      <section className="provider-section">
+
+        <div className="provider-shine provider-shine-one"></div>
+        <div className="provider-shine provider-shine-two"></div>
+
+        <div className="provider-header">
+
+          <span className="provider-label">
+            NOVAS POSSIBILIDADES
+          </span>
+
+          <h2>
+            Faça parte da nossa rede
+          </h2>
+
+          <p>
+            Dirija com o Acessível Já ou conecte
+            sua empresa à nossa plataforma.
+          </p>
+
+        </div>
+
+
+        <div className="provider-options">
+
+
+          {/* MOTORISTA */}
+
+          <button
+            type="button"
+            className={
+              motoristaCadastrado
+                ? "provider-card provider-card-active"
+                : "provider-card"
+            }
+            onClick={() => {
+              if (
+                motoristaCadastrado
+              ) {
+                navigate(
+                  "/motorista"
+                );
+
+                return;
+              }
+
+              setModalMotoristaAberto(
+                true
+              );
+            }}
+          >
+
+            <div className="provider-card-top">
+
+              <div className="provider-card-icon">
+                🚘
+              </div>
+
+              <span className="provider-card-arrow">
+                ↗
+              </span>
+
+            </div>
+
+            <div className="provider-card-content">
+
+              <span className="provider-card-type">
+                MOTORISTA
+              </span>
+
+              <strong>
+                {motoristaCadastrado
+                  ? "Área do motorista"
+                  : "Quero dirigir"}
+              </strong>
+
+              <p>
+                {motoristaCadastrado
+                  ? "Gerencie suas corridas e sua disponibilidade."
+                  : "Cadastre seu perfil e veículo para dirigir pela plataforma."}
+              </p>
+
+            </div>
+
+            <div className="provider-card-line"></div>
+
+            {motoristaCadastrado && (
+              <span className="provider-status">
+                <span></span>
+                Perfil cadastrado
+              </span>
+            )}
+
+          </button>
+
+
+          {/* EMPRESA */}
+
+          <button
+            type="button"
+            className="provider-card"
+            onClick={() =>
+              navigate(
+                "/empresa/cadastro"
+              )
+            }
+          >
+
+            <div className="provider-card-top">
+
+              <div className="provider-card-icon">
+                🏢
+              </div>
+
+              <span className="provider-card-arrow">
+                ↗
+              </span>
+
+            </div>
+
+            <div className="provider-card-content">
+
+              <span className="provider-card-type">
+                EMPRESA
+              </span>
+
+              <strong>
+                Quero divulgar
+              </strong>
+
+              <p>
+                Cadastre seu estabelecimento
+                e destaque sua acessibilidade.
+              </p>
+
+            </div>
+
+            <div className="provider-card-line"></div>
+
+          </button>
+
+        </div>
+
+      </section>
+
+
+      {/* ========================================
           ASSISTENTE POR VOZ
       ======================================== */}
 
@@ -763,6 +977,25 @@ if (
         </button>
 
       </section>
+
+
+      {/* ========================================
+          MODAL MOTORISTA
+      ======================================== */}
+
+      <DriverRegisterModal
+        aberto={
+          modalMotoristaAberto
+        }
+        onClose={() =>
+          setModalMotoristaAberto(
+            false
+          )
+        }
+        onFinalizar={
+          finalizarCadastroMotorista
+        }
+      />
 
     </main>
   );

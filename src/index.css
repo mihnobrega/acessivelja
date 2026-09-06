@@ -2598,6 +2598,274 @@ button {
   }
 }
 
+/*botao cadastro motorista*/
+.provider-section{
+position:relative;
+margin-top:30px;
+padding:24px;
+overflow:hidden;
+border:1px solid #8f9da6;
+border-radius:24px;
+background:linear-gradient(145deg,#173b57 0%,#214f6d 55%,#173b57 100%);
+box-shadow:0 14px 35px rgba(23,59,87,.18),inset 0 1px 0 rgba(255,255,255,.18);
+}
+.provider-section::before{
+content:"";
+position:absolute;
+top:0;
+left:24px;
+right:24px;
+height:1px;
+background:linear-gradient(90deg,transparent,#e4eaed,transparent);
+opacity:.8;
+}
+.provider-shine{
+position:absolute;
+border:1px solid rgba(228,234,237,.18);
+border-radius:50%;
+pointer-events:none;
+}
+.provider-shine-one{
+width:170px;
+height:170px;
+top:-95px;
+right:-50px;
+}
+.provider-shine-two{
+width:100px;
+height:100px;
+bottom:-55px;
+left:-35px;
+}
+.provider-header{
+position:relative;
+z-index:2;
+margin-bottom:20px;
+}
+.provider-label{
+display:inline-flex;
+align-items:center;
+gap:6px;
+margin-bottom:8px;
+font-size:10px;
+font-weight:800;
+letter-spacing:.16em;
+color:#cbd5da;
+}
+.provider-label::before{
+content:"";
+width:20px;
+height:1px;
+background:#cbd5da;
+}
+.provider-header h2{
+margin:0;
+font-size:22px;
+font-weight:800;
+letter-spacing:-.02em;
+color:#ffffff;
+}
+.provider-header p{
+max-width:430px;
+margin:7px 0 0;
+font-size:13px;
+line-height:1.5;
+color:#dbe3e7;
+}
+.provider-options{
+position:relative;
+z-index:2;
+display:grid;
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:12px;
+}
+.provider-card{
+position:relative;
+min-width:0;
+min-height:175px;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+padding:15px;
+overflow:hidden;
+border:1px solid rgba(203,213,218,.75);
+border-radius:18px;
+background:linear-gradient(145deg,rgba(255,255,255,.98),rgba(237,242,245,.96));
+text-align:left;
+cursor:pointer;
+box-shadow:0 8px 20px rgba(5,30,46,.16),inset 0 1px 0 #ffffff;
+transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+}
+.provider-card::before{
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:3px;
+background:linear-gradient(90deg,#8f9da6,#edf2f5,#8f9da6);
+}
+.provider-card::after{
+content:"";
+position:absolute;
+width:65px;
+height:65px;
+right:-30px;
+bottom:-30px;
+border:1px solid rgba(143,157,166,.35);
+border-radius:50%;
+}
+.provider-card:hover{
+transform:translateY(-3px);
+border-color:#edf2f5;
+box-shadow:0 13px 28px rgba(5,30,46,.22),inset 0 1px 0 #ffffff;
+}
+.provider-card:active{
+transform:translateY(0);
+}
+.provider-card-top{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+}
+.provider-card-icon{
+width:43px;
+height:43px;
+display:flex;
+align-items:center;
+justify-content:center;
+flex-shrink:0;
+border:1px solid #b8c3c9;
+border-radius:13px;
+background:linear-gradient(145deg,#ffffff,#dfe7eb);
+font-size:21px;
+box-shadow:inset 0 1px 0 #ffffff,0 4px 10px rgba(23,59,87,.08);
+}
+.provider-card-arrow{
+width:29px;
+height:29px;
+display:flex;
+align-items:center;
+justify-content:center;
+border:1px solid #c8d2d7;
+border-radius:50%;
+background:#edf2f5;
+font-size:13px;
+font-weight:700;
+color:#173b57;
+}
+.provider-card-content{
+display:flex;
+flex-direction:column;
+align-items:flex-start;
+gap:3px;
+margin-top:13px;
+}
+.provider-card-type{
+font-size:9px;
+font-weight:800;
+letter-spacing:.13em;
+color:#7d8d97;
+}
+.provider-card-content strong{
+font-size:16px;
+font-weight:800;
+color:#173b57;
+}
+.provider-card-content p{
+margin:2px 0 0;
+font-size:11px;
+line-height:1.45;
+color:#66737f;
+}
+.provider-card-line{
+width:38px;
+height:2px;
+margin-top:13px;
+border-radius:20px;
+background:linear-gradient(90deg,#173b57,#b8c3c9);
+}
+@media(max-width:600px){
+.provider-section{
+padding:19px 16px;
+border-radius:21px;
+}
+.provider-header{
+margin-bottom:16px;
+}
+.provider-header h2{
+font-size:20px;
+}
+.provider-header p{
+font-size:12px;
+}
+.provider-options{
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:9px;
+}
+.provider-card{
+min-height:168px;
+padding:13px;
+border-radius:16px;
+}
+.provider-card-icon{
+width:39px;
+height:39px;
+font-size:19px;
+}
+.provider-card-content strong{
+font-size:14px;
+}
+.provider-card-content p{
+font-size:10px;
+}
+.provider-card-arrow{
+width:26px;
+height:26px;
+}
+}
+@media(max-width:380px){
+.provider-section{
+padding:17px 12px;
+}
+.provider-options{
+gap:7px;
+}
+.provider-card{
+padding:11px;
+}
+.provider-card-content strong{
+font-size:13px;
+}
+.provider-card-content p{
+font-size:9px;
+}
+}
+
+.provider-card-active{
+border-color:#d8e0e4;
+background:linear-gradient(145deg,#ffffff,#edf2f5);
+}
+.provider-status{
+display:flex;
+align-items:center;
+gap:6px;
+margin-top:8px;
+font-size:9px;
+font-weight:800;
+letter-spacing:.04em;
+color:#667985;
+}
+.provider-status>span{
+width:7px;
+height:7px;
+border:2px solid #ffffff;
+border-radius:50%;
+background:#8f9da6;
+box-shadow:0 0 0 1px #8f9da6;
+}
+
 /* ========================================
    DETALHES DO VEÍCULO
 ======================================== */
