@@ -896,7 +896,7 @@ useEffect(() => {
             className="provider-card"
             onClick={() =>
               navigate(
-                "/empresa/cadastro"
+                "/empresa"
               )
             }
           >

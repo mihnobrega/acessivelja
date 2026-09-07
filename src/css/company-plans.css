@@ -1,0 +1,411 @@
+/* ========================================
+   PÁGINA
+======================================== */
+
+.company-plans-page {
+  min-height: 100vh;
+  padding: 55px 7% 70px;
+  background: #f2f6f8;
+  color: #17212b;
+}
+
+
+/* ========================================
+   CABEÇALHO
+======================================== */
+
+.company-plans-header {
+  max-width: 1200px;
+  margin: 0 auto 45px;
+}
+
+.company-plans-back {
+  margin-bottom: 38px;
+  padding: 10px 0;
+  border: none;
+  background: transparent;
+  color: #66737f;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.company-plans-back:hover {
+  color: #173b57;
+}
+
+.company-plans-heading {
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.company-plans-heading > span {
+  color: #5d8da8;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.company-plans-heading h1 {
+  margin: 12px 0 16px;
+  color: #173b57;
+  font-size: 42px;
+  line-height: 1.12;
+}
+
+.company-plans-heading p {
+  margin: 0;
+  color: #66737f;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+
+/* ========================================
+   MENSAL / ANUAL
+======================================== */
+
+.company-plans-period {
+  width: fit-content;
+  margin: 32px auto 0;
+  padding: 5px;
+  border: 1px solid #d5dde2;
+  border-radius: 14px;
+  background: #ffffff;
+  display: flex;
+  gap: 4px;
+}
+
+.company-plans-period button {
+  min-width: 125px;
+  min-height: 44px;
+  padding: 0 15px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #66737f;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.company-plans-period button.active {
+  background: #173b57;
+  color: #ffffff;
+}
+
+.company-plans-period button span {
+  margin-left: 6px;
+  font-size: 9px;
+  opacity: 0.8;
+}
+
+
+/* ========================================
+   PLANOS
+======================================== */
+
+.company-plans-grid {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: stretch;
+  gap: 22px;
+}
+
+.company-plan-card {
+  padding: 32px;
+  border: 1px solid #d5dde2;
+  border-radius: 22px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: 0.25s;
+}
+
+.company-plan-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 45px rgba(23, 59, 87, 0.1);
+}
+
+.company-plan-featured {
+  border: 2px solid #285c7a;
+  box-shadow: 0 18px 45px rgba(23, 59, 87, 0.1);
+}
+
+
+/* ========================================
+   DESTAQUE PREMIUM
+======================================== */
+
+.company-plan-badge {
+  padding: 8px 15px;
+  border-radius: 999px;
+  background: #173b57;
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  position: absolute;
+  top: -14px;
+  right: 22px;
+}
+
+
+/* ========================================
+   TOPO DO PLANO
+======================================== */
+
+.company-plan-top > span {
+  color: #8f9da6;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.company-plan-top h2 {
+  margin: 8px 0 12px;
+  color: #173b57;
+  font-size: 27px;
+}
+
+.company-plan-top p {
+  min-height: 70px;
+  margin: 0;
+  color: #66737f;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+
+/* ========================================
+   PREÇO
+======================================== */
+
+.company-plan-price {
+  margin-top: 25px;
+  display: flex;
+  align-items: flex-end;
+  gap: 7px;
+}
+
+.company-plan-price strong {
+  color: #173b57;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.company-plan-price span {
+  padding-bottom: 3px;
+  color: #71818b;
+  font-size: 12px;
+}
+
+.company-plan-equivalent {
+  min-height: 35px;
+  margin: 12px 0 0;
+  color: #71818b;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.company-plan-equivalent strong {
+  color: #285c7a;
+}
+
+
+/* ========================================
+   DIVISÓRIA
+======================================== */
+
+.company-plan-divider {
+  width: 100%;
+  height: 1px;
+  margin: 25px 0;
+  background: #e4eaed;
+}
+
+
+/* ========================================
+   RECURSOS
+======================================== */
+
+.company-plan-resources {
+  margin-bottom: 30px;
+  flex: 1;
+}
+
+.company-plan-resources > span {
+  display: block;
+  margin-bottom: 17px;
+  color: #8f9da6;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.company-plan-resource {
+  margin-bottom: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.company-plan-resource div {
+  width: 23px;
+  height: 23px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #edf2f5;
+  color: #285c7a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.company-plan-resource p {
+  margin: 2px 0 0;
+  color: #52616c;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.company-plan-featured .company-plan-resource div {
+  background: #dceaf2;
+  color: #173b57;
+}
+
+
+/* ========================================
+   BOTÃO
+======================================== */
+
+.company-plan-button {
+  width: 100%;
+  min-height: 50px;
+  padding: 0 18px;
+  border: 1px solid #173b57;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #173b57;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.company-plan-button:hover {
+  background: #edf2f5;
+  transform: translateY(-1px);
+}
+
+.company-plan-featured .company-plan-button {
+  background: #173b57;
+  color: #ffffff;
+}
+
+.company-plan-featured .company-plan-button:hover {
+  background: #285c7a;
+}
+
+
+/* ========================================
+   INFORMAÇÃO FINAL
+======================================== */
+
+.company-plans-information {
+  max-width: 750px;
+  margin: 40px auto 0;
+  padding: 20px 24px;
+  border: 1px solid #d5dde2;
+  border-radius: 16px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.company-plans-information > div {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: #edf2f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 21px;
+}
+
+.company-plans-information p {
+  margin: 0;
+  color: #66737f;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+
+/* ========================================
+   RESPONSIVO
+======================================== */
+
+@media (max-width: 950px) {
+  .company-plans-page {
+    padding: 45px 5% 60px;
+  }
+
+  .company-plans-grid {
+    grid-template-columns: 1fr;
+    max-width: 620px;
+  }
+
+  .company-plan-top p {
+    min-height: auto;
+  }
+
+  .company-plan-equivalent {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .company-plans-page {
+    padding: 30px 16px 45px;
+  }
+
+  .company-plans-back {
+    margin-bottom: 28px;
+  }
+
+  .company-plans-heading h1 {
+    font-size: 31px;
+  }
+
+  .company-plans-period {
+    width: 100%;
+  }
+
+  .company-plans-period button {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .company-plan-card {
+    padding: 27px 21px;
+  }
+
+  .company-plan-price strong {
+    font-size: 30px;
+  }
+
+  .company-plans-information {
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,346 @@
+.company-dashboard-page {
+  min-height: 100vh;
+  padding: 50px 7% 70px;
+  background: #f2f6f8;
+  color: #17212b;
+}
+
+.company-dashboard-header {
+  max-width: 1200px;
+  margin: 0 auto 35px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.company-dashboard-header span {
+  color: #5d8da8;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.company-dashboard-header h1 {
+  margin: 8px 0 8px;
+  color: #173b57;
+  font-size: 36px;
+}
+
+.company-dashboard-header p {
+  margin: 0;
+  color: #66737f;
+  font-size: 14px;
+}
+
+.company-dashboard-header button {
+  padding: 12px 18px;
+  border: 1px solid #cbd5da;
+  border-radius: 11px;
+  background: #ffffff;
+  color: #173b57;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.company-dashboard-header button:hover {
+  background: #edf2f5;
+}
+
+.company-dashboard-status {
+  max-width: 1200px;
+  margin: 0 auto 25px;
+  padding: 22px;
+  border: 1px solid #d5dde2;
+  border-radius: 18px;
+  background: #173b57;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.company-dashboard-status > div {
+  padding: 4px 22px;
+  border-right: 1px solid rgba(255, 255, 255, 0.16);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.company-dashboard-status > div:last-child {
+  border-right: none;
+}
+
+.company-dashboard-status span {
+  color: #b8c3c9;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+}
+
+.company-dashboard-status strong {
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.company-dashboard-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+}
+
+.company-dashboard-card {
+  padding: 30px;
+  border: 1px solid #d5dde2;
+  border-radius: 20px;
+  background: #ffffff;
+}
+
+.company-dashboard-card-icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 20px;
+  border-radius: 13px;
+  background: #edf2f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 21px;
+}
+
+.company-dashboard-card > span {
+  color: #8f9da6;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.company-dashboard-card h2 {
+  margin: 8px 0 22px;
+  color: #173b57;
+  font-size: 21px;
+}
+
+.company-dashboard-info {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.company-dashboard-info div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.company-dashboard-info span {
+  color: #8f9da6;
+  font-size: 10px;
+}
+
+.company-dashboard-info strong {
+  color: #52616c;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.company-dashboard-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.company-dashboard-tags span {
+  padding: 9px 12px;
+  border: 1px solid #d5dde2;
+  border-radius: 999px;
+  background: #f7f9fa;
+  color: #52616c;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.company-dashboard-plan {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.company-dashboard-plan div {
+  padding: 16px;
+  border: 1px solid #e4eaed;
+  border-radius: 12px;
+  background: #f7f9fa;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.company-dashboard-plan span {
+  color: #8f9da6;
+  font-size: 10px;
+}
+
+.company-dashboard-plan strong {
+  color: #173b57;
+  font-size: 14px;
+}
+
+.company-dashboard-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.company-dashboard-metrics div {
+  padding: 17px;
+  border: 1px solid #e4eaed;
+  border-radius: 12px;
+  background: #f7f9fa;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.company-dashboard-metrics strong {
+  color: #173b57;
+  font-size: 25px;
+}
+
+.company-dashboard-metrics span {
+  color: #71818b;
+  font-size: 10px;
+}
+
+.company-dashboard-card small {
+  display: block;
+  margin-top: 15px;
+  color: #8f9da6;
+  font-size: 9px;
+}
+
+.company-dashboard-reviews {
+  max-width: 1200px;
+  margin: 22px auto 0;
+  padding: 30px;
+  border: 1px solid #d5dde2;
+  border-radius: 20px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.company-dashboard-reviews > div:first-child {
+  max-width: 560px;
+}
+
+.company-dashboard-reviews span {
+  color: #8f9da6;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.company-dashboard-reviews h2 {
+  margin: 7px 0;
+  color: #173b57;
+}
+
+.company-dashboard-reviews p {
+  margin: 0;
+  color: #66737f;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.company-dashboard-rating {
+  min-width: 170px;
+  padding: 20px;
+  border-radius: 15px;
+  background: #edf2f5;
+  text-align: center;
+}
+
+.company-dashboard-rating strong {
+  display: block;
+  color: #173b57;
+  font-size: 32px;
+}
+
+.company-dashboard-rating span {
+  display: block;
+  margin: 5px 0;
+  color: #285c7a;
+  font-size: 17px;
+  letter-spacing: 2px;
+}
+
+.company-dashboard-rating p {
+  color: #71818b;
+  font-size: 10px;
+}
+
+.company-dashboard-loading {
+  min-height: 100vh;
+  background: #f2f6f8;
+  color: #173b57;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+@media (max-width: 800px) {
+  .company-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .company-dashboard-status {
+    grid-template-columns: 1fr;
+    gap: 17px;
+  }
+
+  .company-dashboard-status > div {
+    padding: 0;
+    border-right: none;
+  }
+
+  .company-dashboard-reviews {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .company-dashboard-rating {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .company-dashboard-page {
+    padding: 30px 16px 45px;
+  }
+
+  .company-dashboard-header {
+    flex-direction: column;
+  }
+
+  .company-dashboard-header h1 {
+    font-size: 29px;
+  }
+
+  .company-dashboard-header button {
+    width: 100%;
+  }
+
+  .company-dashboard-info {
+    grid-template-columns: 1fr;
+  }
+
+  .company-dashboard-plan {
+    grid-template-columns: 1fr;
+  }
+}

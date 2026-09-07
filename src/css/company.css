@@ -1,0 +1,438 @@
+/* ========================================
+   PÁGINA
+======================================== */
+
+.company-page {
+  min-height: 100vh;
+  background: #f2f6f8;
+  color: #17212b;
+}
+
+
+/* ========================================
+   HERO
+======================================== */
+
+.company-hero {
+  min-height: 620px;
+  padding: 90px 8%;
+  background: linear-gradient(
+    135deg,
+    #102f47,
+    #173b57,
+    #285c7a
+  );
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  align-items: center;
+  gap: 70px;
+  overflow: hidden;
+  position: relative;
+}
+
+.company-hero::before {
+  content: "";
+  width: 420px;
+  height: 420px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  position: absolute;
+  top: -180px;
+  right: -80px;
+}
+
+.company-hero::after {
+  content: "";
+  width: 260px;
+  height: 260px;
+  border: 1px solid rgba(203, 213, 218, 0.18);
+  border-radius: 50%;
+  position: absolute;
+  bottom: -130px;
+  left: 35%;
+}
+
+.company-hero-content {
+  max-width: 680px;
+  position: relative;
+  z-index: 2;
+}
+
+.company-label {
+  display: inline-block;
+  margin-bottom: 22px;
+  color: #cbd5da;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.company-hero h1 {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(40px, 5vw, 66px);
+  line-height: 1.05;
+}
+
+.company-hero h1 span {
+  color: #bdc8ce;
+}
+
+.company-hero-content > p {
+  max-width: 590px;
+  margin: 26px 0 34px;
+  color: #e4eaed;
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+.company-primary-button {
+  padding: 16px 26px;
+  border: none;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #173b57;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.company-primary-button:hover {
+  transform: translateY(-2px);
+  background: #edf2f5;
+}
+
+
+/* ========================================
+   CARD DO HERO
+======================================== */
+
+.company-hero-card {
+  padding: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
+  position: relative;
+  z-index: 2;
+}
+
+.company-hero-icon {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 25px;
+  border-radius: 18px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+}
+
+.company-hero-card > span {
+  color: #bdc8ce;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.company-hero-card h2 {
+  max-width: 370px;
+  margin: 10px 0 28px;
+  color: #ffffff;
+  font-size: 29px;
+  line-height: 1.25;
+}
+
+.company-hero-detail {
+  padding: 14px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.company-hero-detail div {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #e4eaed;
+  color: #173b57;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+}
+
+.company-hero-detail p {
+  margin: 0;
+  color: #edf2f5;
+  line-height: 1.5;
+}
+
+
+/* ========================================
+   TÍTULOS DAS SEÇÕES
+======================================== */
+
+.company-section-heading {
+  max-width: 650px;
+  margin-bottom: 45px;
+}
+
+.company-section-heading > span {
+  color: #5d8da8;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.company-section-heading h2 {
+  margin: 10px 0 14px;
+  color: #173b57;
+  font-size: 36px;
+}
+
+.company-section-heading p {
+  margin: 0;
+  color: #66737f;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+
+/* ========================================
+   BENEFÍCIOS
+======================================== */
+
+.company-benefits {
+  padding: 90px 8%;
+  background: #ffffff;
+}
+
+.company-benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.company-benefit-card {
+  min-height: 250px;
+  padding: 30px;
+  border: 1px solid #e4eaed;
+  border-radius: 20px;
+  background: #ffffff;
+  transition: 0.25s;
+}
+
+.company-benefit-card:hover {
+  transform: translateY(-5px);
+  border-color: #b8c3c9;
+  box-shadow: 0 18px 40px rgba(23, 59, 87, 0.09);
+}
+
+.company-benefit-icon {
+  width: 52px;
+  height: 52px;
+  margin-bottom: 25px;
+  border-radius: 14px;
+  background: #edf2f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.company-benefit-card h3 {
+  margin: 0 0 12px;
+  color: #173b57;
+  font-size: 19px;
+}
+
+.company-benefit-card p {
+  margin: 0;
+  color: #66737f;
+  line-height: 1.65;
+}
+
+
+/* ========================================
+   COMO FUNCIONA
+======================================== */
+
+.company-how {
+  padding: 90px 8%;
+  background: #edf2f5;
+}
+
+.company-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.company-step {
+  padding: 28px;
+  border: 1px solid #d5dde2;
+  border-radius: 18px;
+  background: #ffffff;
+}
+
+.company-step > strong {
+  display: block;
+  margin-bottom: 35px;
+  color: #8f9da6;
+  font-size: 28px;
+}
+
+.company-step h3 {
+  margin: 0 0 9px;
+  color: #173b57;
+  font-size: 17px;
+}
+
+.company-step p {
+  margin: 0;
+  color: #66737f;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+
+/* ========================================
+   CHAMADA FINAL
+======================================== */
+
+.company-cta {
+  padding: 90px 8%;
+  background: #173b57;
+  text-align: center;
+}
+
+.company-cta > span {
+  color: #bdc8ce;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.company-cta h2 {
+  max-width: 700px;
+  margin: 14px auto;
+  color: #ffffff;
+  font-size: 38px;
+}
+
+.company-cta p {
+  margin: 0 auto 30px;
+  color: #dceaf2;
+  font-size: 16px;
+}
+
+.company-cta button {
+  padding: 16px 30px;
+  border: 1px solid #ffffff;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #173b57;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.company-cta button:hover {
+  transform: translateY(-2px);
+  background: #edf2f5;
+}
+
+
+/* ========================================
+   RESPONSIVO
+======================================== */
+
+@media (max-width: 900px) {
+  .company-hero {
+    grid-template-columns: 1fr;
+    gap: 45px;
+    padding: 70px 6%;
+  }
+
+  .company-hero-card {
+    max-width: 600px;
+  }
+
+  .company-benefits {
+    padding: 70px 6%;
+  }
+
+  .company-benefits-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .company-how {
+    padding: 70px 6%;
+  }
+
+  .company-steps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .company-cta {
+    padding: 70px 6%;
+  }
+}
+
+@media (max-width: 600px) {
+  .company-hero {
+    min-height: auto;
+    padding: 55px 20px;
+  }
+
+  .company-hero h1 {
+    font-size: 38px;
+  }
+
+  .company-hero-content > p {
+    font-size: 15px;
+  }
+
+  .company-primary-button {
+    width: 100%;
+  }
+
+  .company-hero-card {
+    padding: 26px 22px;
+  }
+
+  .company-benefits {
+    padding: 60px 20px;
+  }
+
+  .company-how {
+    padding: 60px 20px;
+  }
+
+  .company-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .company-section-heading h2 {
+    font-size: 29px;
+  }
+
+  .company-cta {
+    padding: 65px 20px;
+  }
+
+  .company-cta h2 {
+    font-size: 30px;
+  }
+
+  .company-cta button {
+    width: 100%;
+  }
+}

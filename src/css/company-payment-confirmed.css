@@ -1,0 +1,80 @@
+.company-payment-confirmed-page {
+  min-height: 100vh;
+  padding: 30px 16px;
+  background: #f2f6f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.company-payment-confirmed-card {
+  width: 100%;
+  max-width: 520px;
+  padding: 45px 35px;
+  border: 1px solid #d5dde2;
+  border-radius: 24px;
+  background: #ffffff;
+  text-align: center;
+  box-shadow: 0 20px 45px rgba(23, 59, 87, 0.08);
+}
+
+.company-payment-confirmed-icon {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 22px;
+  border-radius: 50%;
+  background: #dceaf2;
+  color: #173b57;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  font-weight: 900;
+}
+
+.company-payment-confirmed-card > span {
+  color: #5d8da8;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.company-payment-confirmed-card h1 {
+  margin: 10px 0 16px;
+  color: #173b57;
+  font-size: 31px;
+}
+
+.company-payment-confirmed-card p {
+  margin: 7px 0;
+  color: #66737f;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.company-payment-confirmed-card button {
+  width: 100%;
+  min-height: 50px;
+  margin-top: 28px;
+  border: none;
+  border-radius: 12px;
+  background: #173b57;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.company-payment-confirmed-card button:hover {
+  background: #285c7a;
+}
+
+@media (max-width: 500px) {
+  .company-payment-confirmed-card {
+    padding: 36px 22px;
+  }
+
+  .company-payment-confirmed-card h1 {
+    font-size: 27px;
+  }
+}

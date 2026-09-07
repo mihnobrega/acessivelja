@@ -7,7 +7,9 @@ import {
 } from "react-router-dom";
 
 import "../../css/driver-ride.css";
+
 import DriverNavigationMap from "../../components/DriverNavigationMap";
+
 
 function DriverRide() {
   const navigate =
@@ -25,12 +27,18 @@ function DriverRide() {
         )
       : null;
 
+
   const [
     etapa,
     setEtapa
   ] = useState(
     "buscar"
   );
+
+  const [
+    chegouDestino,
+    setChegouDestino
+  ] = useState(false);
 
 
   // ========================================
@@ -51,6 +59,10 @@ function DriverRide() {
     if (
       etapa === "chegou"
     ) {
+      setChegouDestino(
+        false
+      );
+
       setEtapa(
         "andamento"
       );
@@ -59,87 +71,119 @@ function DriverRide() {
     }
 
     if (
-      etapa === "andamento"
+      etapa === "andamento" &&
+      chegouDestino
     ) {
       finalizarCorrida();
     }
   }
-
-
-  // ========================================
-  // FINALIZAR CORRIDA
-  // ========================================
-
-  function finalizarCorrida() {
-    const usuarioSalvo =
-      localStorage.getItem(
-        "acessivelJaUsuario"
-      );
-
-    if (usuarioSalvo) {
-      const usuario =
-        JSON.parse(
-          usuarioSalvo
-        );
-
-      const corridasAtuais =
-        usuario.motorista
-          ?.corridasRealizadas ||
-        0;
-
-      const ganhosAtuais =
-        usuario.motorista
-          ?.ganhosHoje ||
-        0;
-
-      const valorCorrida =
-        Number(
-          corrida.valor
-            .replace(
-              "R$",
-              ""
-            )
-            .replace(
-              ".",
-              ""
-            )
-            .replace(
-              ",",
-              "."
-            )
-            .trim()
-        );
-
-      const usuarioAtualizado = {
-        ...usuario,
-
-        motorista: {
-          ...usuario.motorista,
-          corridasRealizadas:
-            corridasAtuais + 1,
-          ganhosHoje:
-            ganhosAtuais +
-            valorCorrida,
-          disponivel: true
-        }
-      };
-
-      localStorage.setItem(
-        "acessivelJaUsuario",
-        JSON.stringify(
-          usuarioAtualizado
-        )
-      );
-    }
-
-    sessionStorage.removeItem(
-      "corridaMotoristaAtual"
+//finalizar corrida
+function finalizarCorrida() {
+  const usuarioSalvo =
+    localStorage.getItem(
+      "acessivelJaUsuario"
     );
 
-    navigate(
-      "/motorista"
+  if (usuarioSalvo) {
+    const usuario =
+      JSON.parse(
+        usuarioSalvo
+      );
+
+    const corridasAtuais =
+      usuario.motorista
+        ?.corridasRealizadas ||
+      0;
+
+    const ganhosAtuais =
+      usuario.motorista
+        ?.ganhosHoje ||
+      0;
+
+    const valorCorrida =
+      Number(
+        corrida.valor
+          .replace(
+            "R$",
+            ""
+          )
+          .replace(
+            ".",
+            ""
+          )
+          .replace(
+            ",",
+            "."
+          )
+          .trim()
+      );
+
+    const usuarioAtualizado = {
+      ...usuario,
+
+      motorista: {
+        ...usuario.motorista,
+
+        corridasRealizadas:
+          corridasAtuais + 1,
+
+        ganhosHoje:
+          ganhosAtuais +
+          valorCorrida,
+
+        disponivel: true
+      }
+    };
+
+    localStorage.setItem(
+      "acessivelJaUsuario",
+      JSON.stringify(
+        usuarioAtualizado
+      )
     );
   }
+
+
+  // Salva os dados para a tela
+  // de corrida concluída
+
+  sessionStorage.setItem(
+    "ultimaCorridaMotorista",
+    JSON.stringify({
+      passageiro:
+        corrida.passageiro,
+
+      destino:
+        corrida.destino,
+
+      embarque:
+        corrida.embarque,
+
+      distancia:
+        corrida.distancia,
+
+      duracao:
+        corrida.duracao,
+
+      valor:
+        corrida.valor
+    })
+  );
+
+
+  // Remove a corrida ativa
+
+  sessionStorage.removeItem(
+    "corridaMotoristaAtual"
+  );
+
+
+  // Vai para a tela de conclusão
+
+  navigate(
+    "/motorista/corrida/concluida"
+  );
+}
 
 
   // ========================================
@@ -196,6 +240,7 @@ function DriverRide() {
           </span>
 
           <h1>
+
             {etapa === "buscar" &&
               "Busque o passageiro"}
 
@@ -203,79 +248,96 @@ function DriverRide() {
               "Passageiro encontrado"}
 
             {etapa === "andamento" &&
-              "Corrida em andamento"}
+              (
+                chegouDestino
+                  ? "Você chegou ao destino"
+                  : "Corrida em andamento"
+              )}
+
           </h1>
 
         </div>
 
       </header>
 
-     <section className="driver-ride-navigation">
 
-  <div className="driver-navigation-header">
+      {/* ========================================
+          MAPA / NAVEGAÇÃO
+      ======================================== */}
 
-    <div>
+      <section className="driver-ride-navigation">
 
-      <span>
-        NAVEGAÇÃO
-      </span>
+        <div className="driver-navigation-header">
 
-      <h2>
-        {etapa === "buscar" &&
-          `Vá buscar ${corrida.passageiro}`}
+          <div>
 
-        {etapa === "chegou" &&
-          `${corrida.passageiro} está no embarque`}
+            <span>
+              NAVEGAÇÃO
+            </span>
 
-        {etapa === "andamento" &&
-          `Siga para ${corrida.destino}`}
-      </h2>
+            <h2>
 
-    </div>
+              {etapa === "buscar" &&
+                `Vá buscar ${corrida.passageiro}`}
 
-    <div className="driver-navigation-info">
+              {etapa === "chegou" &&
+                `${corrida.passageiro} está no embarque`}
 
-      <strong>
-        {corrida.duracao}
-      </strong>
+              {etapa === "andamento" &&
+                (
+                  chegouDestino
+                    ? `Você chegou em ${corrida.destino}`
+                    : `Siga para ${corrida.destino}`
+                )}
 
-      <span>
-        {corrida.distancia}
-      </span>
+            </h2>
 
-    </div>
-
-  </div>
+          </div>
 
 
- <DriverNavigationMap
-  corrida={
-    corrida
-  }
-  etapa={
-    etapa
-  }
-  onChegouPassageiro={() => {
-    if (
-      etapa === "buscar"
-    ) {
-      setEtapa(
-        "chegou"
-      );
-    }
-  }}
-  onChegouDestino={() => {
-    /*
-      Por enquanto não finalizamos
-      automaticamente.
+          <div className="driver-navigation-info">
 
-      O motorista ainda confirma
-      no botão "Finalizar corrida".
-    */
-  }}
-/>
+            <strong>
+              {corrida.duracao}
+            </strong>
 
-</section>
+            <span>
+              {corrida.distancia}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <DriverNavigationMap
+          corrida={
+            corrida
+          }
+          etapa={
+            etapa
+          }
+          onChegouPassageiro={() => {
+            if (
+              etapa === "buscar"
+            ) {
+              setEtapa(
+                "chegou"
+              );
+            }
+          }}
+          onChegouDestino={() => {
+            if (
+              etapa === "andamento"
+            ) {
+              setChegouDestino(
+                true
+              );
+            }
+          }}
+        />
+
+      </section>
 
 
       {/* ========================================
@@ -334,7 +396,9 @@ function DriverRide() {
 
         </div>
 
+
         <div className="driver-ride-line"></div>
+
 
         <div className="driver-ride-route-item">
 
@@ -366,6 +430,7 @@ function DriverRide() {
       <section className="driver-ride-info">
 
         <div>
+
           <span>
             DISTÂNCIA
           </span>
@@ -373,9 +438,12 @@ function DriverRide() {
           <strong>
             {corrida.distancia}
           </strong>
+
         </div>
 
+
         <div>
+
           <span>
             TEMPO
           </span>
@@ -383,9 +451,12 @@ function DriverRide() {
           <strong>
             {corrida.duracao}
           </strong>
+
         </div>
 
+
         <div>
+
           <span>
             VALOR
           </span>
@@ -393,6 +464,7 @@ function DriverRide() {
           <strong>
             {corrida.valor}
           </strong>
+
         </div>
 
       </section>
@@ -430,9 +502,14 @@ function DriverRide() {
             "✓"}
 
           {etapa === "andamento" &&
-            "→"}
+            (
+              chegouDestino
+                ? "✓"
+                : "→"
+            )}
 
         </div>
+
 
         <div>
 
@@ -449,9 +526,14 @@ function DriverRide() {
               "Aguardando passageiro"}
 
             {etapa === "andamento" &&
-              "Indo para o destino"}
+              (
+                chegouDestino
+                  ? "Destino alcançado"
+                  : "Indo para o destino"
+              )}
 
           </h2>
+
 
           <p>
 
@@ -462,7 +544,11 @@ function DriverRide() {
               "Confirme quando o passageiro estiver no veículo."}
 
             {etapa === "andamento" &&
-              "Siga até o destino informado."}
+              (
+                chegouDestino
+                  ? "A corrida chegou ao destino. Finalize após o desembarque do passageiro."
+                  : "Siga até o destino informado."
+              )}
 
           </p>
 
@@ -481,6 +567,10 @@ function DriverRide() {
         onClick={
           avancarCorrida
         }
+        disabled={
+          etapa === "andamento" &&
+          !chegouDestino
+        }
       >
 
         {etapa === "buscar" &&
@@ -490,7 +580,11 @@ function DriverRide() {
           "Iniciar corrida"}
 
         {etapa === "andamento" &&
-          "Finalizar corrida"}
+          (
+            chegouDestino
+              ? "Finalizar corrida"
+              : "A caminho do destino..."
+          )}
 
       </button>
 

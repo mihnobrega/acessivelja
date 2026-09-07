@@ -21,6 +21,13 @@ import Profile from "./pages/Profile";
 import VoiceAssistant from "./components/VoiceAssistant";
 import DriverDashboard from "./pages/motorista/DriverDashboard";
 import DriverRide from "./pages/motorista/DriverRide";
+import DriverRideCompleted from "./pages/motorista/DriverRideCompleted";
+import Company from "./pages/empresa/Company";
+import CompanyRegister from "./pages/empresa/CompanyRegister";
+import CompanyPlans from "./pages/empresa/CompanyPlans";
+import CompanyPayment from "./pages/empresa/CompanyPayment";
+import CompanyPaymentConfirmed from "./pages/empresa/CompanyPaymentConfirmed";
+import CompanyDashboard from "./pages/empresa/CompanyDashboard";
 
 function RotaProtegida({ children }) {
   const estaLogado =
@@ -58,6 +65,13 @@ function App() {
         <Route path="/perfil" element={<RotaProtegida><Profile /></RotaProtegida>} />
         <Route path="/motorista" element={<RotaProtegida> <DriverDashboard /> </RotaProtegida> } />
         <Route path="/motorista/corrida" element={<RotaProtegida><DriverRide /></RotaProtegida>} />
+        <Route path="/motorista/corrida/concluida" element={<RotaProtegida><DriverRideCompleted /></RotaProtegida>} />
+        <Route path="/empresa" element={<RotaProtegida><Company /></RotaProtegida>} />
+        <Route path="/empresa/cadastro" element={<RotaProtegida><CompanyRegister /></RotaProtegida>} />
+        <Route path="/empresa/planos" element={<RotaProtegida><CompanyPlans /></RotaProtegida>} />
+        <Route path="/empresa/pagamento" element={<RotaProtegida><CompanyPayment /></RotaProtegida>} />
+        <Route path="/empresa/pagamento-confirmado" element={<CompanyPaymentConfirmed />} />
+        <Route path="/empresa/painel" element={<RotaProtegida><CompanyDashboard /></RotaProtegida>} />
       </Routes>
 
       <VoiceAssistant />

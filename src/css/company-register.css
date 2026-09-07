@@ -1,0 +1,667 @@
+/* ========================================
+   PÁGINA
+======================================== */
+
+.company-register-page {
+  min-height: 100vh;
+  background: #eef3f6;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  color: #17212b;
+}
+
+
+/* ========================================
+   SIDEBAR
+======================================== */
+
+.company-register-sidebar {
+  min-height: 100vh;
+  padding: 42px 30px;
+  background: linear-gradient(
+    180deg,
+    #102f47,
+    #173b57,
+    #285c7a
+  );
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+}
+
+.company-register-brand > span {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: #bdc8ce;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.company-register-brand h1 {
+  margin: 0 0 14px;
+  font-size: 31px;
+  line-height: 1.15;
+}
+
+.company-register-brand p {
+  margin: 0;
+  color: #dceaf2;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+
+/* ========================================
+   PROGRESSO
+======================================== */
+
+.company-register-progress {
+  margin-top: 42px;
+}
+
+.company-register-progress-top {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.company-register-progress-top span {
+  color: #dceaf2;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.company-register-progress-top strong {
+  color: #ffffff;
+  font-size: 12px;
+}
+
+.company-register-progress-bar {
+  width: 100%;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+}
+
+.company-register-progress-bar div {
+  height: 100%;
+  border-radius: inherit;
+  background: #ffffff;
+  transition: width 0.3s ease;
+}
+
+
+/* ========================================
+   ETAPAS
+======================================== */
+
+.company-register-steps {
+  margin-top: 38px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.company-register-step {
+  padding: 14px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  opacity: 0.65;
+  transition: 0.2s;
+}
+
+.company-register-step.active {
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 1;
+}
+
+.company-register-step.completed {
+  opacity: 1;
+}
+
+.company-register-step-number {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.company-register-step.active .company-register-step-number {
+  background: #ffffff;
+  color: #173b57;
+}
+
+.company-register-step.completed .company-register-step-number {
+  background: #dceaf2;
+  color: #173b57;
+}
+
+.company-register-step > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.company-register-step strong {
+  font-size: 14px;
+}
+
+.company-register-step span {
+  color: #dceaf2;
+  font-size: 12px;
+}
+
+
+/* ========================================
+   NOTA DA SIDEBAR
+======================================== */
+
+.company-register-sidebar-note {
+  margin-top: auto;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.company-register-sidebar-note span {
+  color: #bdc8ce;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+}
+
+.company-register-sidebar-note p {
+  margin: 9px 0 0;
+  color: #edf2f5;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+
+/* ========================================
+   CONTEÚDO
+======================================== */
+
+.company-register-content {
+  min-width: 0;
+  padding: 60px 7%;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+.company-register-panel {
+  width: 100%;
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+
+/* ========================================
+   TÍTULO
+======================================== */
+
+.company-register-heading {
+  max-width: 660px;
+  margin-bottom: 38px;
+}
+
+.company-register-heading > span {
+  color: #5d8da8;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+}
+
+.company-register-heading h2 {
+  margin: 10px 0 12px;
+  color: #173b57;
+  font-size: 36px;
+  line-height: 1.15;
+}
+
+.company-register-heading p {
+  margin: 0;
+  color: #66737f;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+
+/* ========================================
+   FORMULÁRIO
+======================================== */
+
+.company-register-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+}
+
+.company-register-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.company-register-field-full {
+  grid-column: 1 / -1;
+}
+
+.company-register-field label {
+  color: #31424f;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.company-register-field input,
+.company-register-field select,
+.company-register-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #cfd8de;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #17212b;
+  font: inherit;
+  outline: none;
+  transition: 0.2s;
+}
+
+.company-register-field input,
+.company-register-field select {
+  height: 50px;
+  padding: 0 14px;
+}
+
+.company-register-field textarea {
+  min-height: 130px;
+  padding: 14px;
+  resize: vertical;
+}
+
+.company-register-field input::placeholder,
+.company-register-field textarea::placeholder {
+  color: #9aa7af;
+}
+
+.company-register-field input:focus,
+.company-register-field select:focus,
+.company-register-field textarea:focus {
+  border-color: #5d8da8;
+  box-shadow: 0 0 0 3px rgba(93, 141, 168, 0.12);
+}
+
+
+/* ========================================
+   ACESSIBILIDADE
+======================================== */
+
+.company-accessibility-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.company-accessibility-card {
+  min-height: 90px;
+  padding: 18px;
+  border: 1px solid #d5dde2;
+  border-radius: 16px;
+  background: #ffffff;
+  color: #173b57;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.company-accessibility-card:hover {
+  border-color: #8f9da6;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(23, 59, 87, 0.08);
+}
+
+.company-accessibility-card.selected {
+  border-color: #285c7a;
+  background: #edf2f5;
+}
+
+.company-accessibility-check {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 11px;
+  background: #edf2f5;
+  color: #285c7a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.company-accessibility-card.selected .company-accessibility-check {
+  background: #173b57;
+  color: #ffffff;
+}
+
+.company-accessibility-card strong {
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+
+/* ========================================
+   REVISÃO
+======================================== */
+
+.company-review {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.company-review-block {
+  padding: 24px;
+  border: 1px solid #dfe6ea;
+  border-radius: 18px;
+  background: #ffffff;
+}
+
+.company-review-title {
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.company-review-title > span {
+  color: #71818b;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.company-review-title button {
+  border: none;
+  background: transparent;
+  color: #285c7a;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.company-review-title button:hover {
+  text-decoration: underline;
+}
+
+.company-review-block h3 {
+  margin: 0 0 5px;
+  color: #173b57;
+  font-size: 23px;
+}
+
+.company-review-block > p {
+  margin: 0;
+  color: #66737f;
+}
+
+.company-review-grid {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.company-review-grid div {
+  padding: 15px;
+  border-radius: 12px;
+  background: #f2f6f8;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.company-review-grid span {
+  color: #71818b;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.company-review-grid strong {
+  color: #17212b;
+  font-size: 13px;
+  word-break: break-word;
+}
+
+.company-review-address {
+  display: block;
+  margin-bottom: 5px;
+  color: #173b57;
+  font-size: 17px;
+}
+
+.company-review-cep {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  background: #edf2f5;
+  color: #66737f;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.company-review-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.company-review-tags span {
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: #edf2f5;
+  color: #173b57;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+
+/* ========================================
+   AÇÕES
+======================================== */
+
+.company-register-actions {
+  width: 100%;
+  max-width: 920px;
+  margin: 42px auto 0;
+  padding-top: 25px;
+  border-top: 1px solid #e4eaed;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.company-register-back,
+.company-register-next {
+  min-height: 48px;
+  padding: 0 22px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.company-register-back {
+  border: 1px solid #cbd5da;
+  background: #ffffff;
+  color: #52616c;
+}
+
+.company-register-back:hover {
+  background: #f2f6f8;
+}
+
+.company-register-next {
+  border: 1px solid #173b57;
+  background: #173b57;
+  color: #ffffff;
+}
+
+.company-register-next:hover {
+  background: #285c7a;
+  border-color: #285c7a;
+  transform: translateY(-1px);
+}
+
+
+/* ========================================
+   RESPONSIVO
+======================================== */
+
+@media (max-width: 1000px) {
+  .company-register-page {
+    grid-template-columns: 270px 1fr;
+  }
+
+  .company-register-sidebar {
+    padding: 35px 22px;
+  }
+
+  .company-register-content {
+    padding: 50px 5%;
+  }
+
+  .company-register-heading h2 {
+    font-size: 31px;
+  }
+
+  .company-review-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .company-register-page {
+    display: block;
+  }
+
+  .company-register-sidebar {
+    min-height: auto;
+    padding: 30px 20px;
+    position: static;
+  }
+
+  .company-register-brand h1 {
+    font-size: 27px;
+  }
+
+  .company-register-progress {
+    margin-top: 26px;
+  }
+
+  .company-register-steps {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 7px;
+  }
+
+  .company-register-step {
+    padding: 9px 5px;
+    justify-content: center;
+  }
+
+  .company-register-step-number {
+    width: 34px;
+    height: 34px;
+  }
+
+  .company-register-step > div:last-child {
+    display: none;
+  }
+
+  .company-register-sidebar-note {
+    margin-top: 24px;
+  }
+
+  .company-register-content {
+    padding: 38px 20px;
+  }
+
+  .company-register-heading {
+    margin-bottom: 28px;
+  }
+
+  .company-register-heading h2 {
+    font-size: 29px;
+  }
+
+  .company-register-form {
+    grid-template-columns: 1fr;
+  }
+
+  .company-register-field-full {
+    grid-column: auto;
+  }
+
+  .company-accessibility-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .company-register-actions {
+    margin-top: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .company-register-sidebar {
+    padding: 25px 16px;
+  }
+
+  .company-register-content {
+    padding: 32px 16px;
+  }
+
+  .company-register-heading h2 {
+    font-size: 26px;
+  }
+
+  .company-review-block {
+    padding: 18px;
+  }
+
+  .company-register-actions {
+    flex-direction: column-reverse;
+  }
+
+  .company-register-back,
+  .company-register-next {
+    width: 100%;
+  }
+}
