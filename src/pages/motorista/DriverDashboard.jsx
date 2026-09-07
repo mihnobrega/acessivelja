@@ -1,4 +1,5 @@
 import {
+  useEffect,
   useState
 } from "react";
 
@@ -30,6 +31,74 @@ function DriverDashboard() {
     )
   );
 
+  const [
+    procurandoCorrida,
+    setProcurandoCorrida
+  ] = useState(false);
+
+  const [
+    corridaDisponivel,
+    setCorridaDisponivel
+  ] = useState(null);
+
+
+  // ========================================
+  // CORRIDA SIMULADA
+  // ========================================
+
+  const corridaSimulada = {
+    passageiro: "Mariana Costa",
+    avaliacao: "4,9",
+    embarque: "Rua Coronel Diogo, 120",
+    destino: "Shopping Central",
+    distancia: "6,4 km",
+    duracao: "14 min",
+    valor: "R$ 24,90",
+    acessibilidade: "Espaço para cadeira de rodas"
+  };
+
+
+  // ========================================
+  // PROCURAR CORRIDA
+  // ========================================
+
+  useEffect(() => {
+    if (
+      !online ||
+      corridaDisponivel
+    ) {
+      setProcurandoCorrida(
+        false
+      );
+
+      return;
+    }
+
+    setProcurandoCorrida(
+      true
+    );
+
+    const temporizador =
+      setTimeout(() => {
+        setCorridaDisponivel(
+          corridaSimulada
+        );
+
+        setProcurandoCorrida(
+          false
+        );
+      }, 4000);
+
+    return () => {
+      clearTimeout(
+        temporizador
+      );
+    };
+  }, [
+    online,
+    corridaDisponivel
+  ]);
+
 
   // ========================================
   // ALTERAR DISPONIBILIDADE
@@ -42,6 +111,16 @@ function DriverDashboard() {
     setOnline(
       novoEstado
     );
+
+    if (!novoEstado) {
+      setCorridaDisponivel(
+        null
+      );
+
+      setProcurandoCorrida(
+        false
+      );
+    }
 
     const usuarioAtualizado = {
       ...usuario,
@@ -57,6 +136,115 @@ function DriverDashboard() {
       JSON.stringify(
         usuarioAtualizado
       )
+    );
+  }
+
+
+  // ========================================
+  // ACEITAR CORRIDA
+  // ========================================
+
+  function aceitarCorrida() {
+  if (!corridaDisponivel) {
+    return;
+  }
+
+  function salvarCorrida(
+    latitude,
+    longitude
+  ) {
+    const corridaCompleta = {
+      ...corridaDisponivel,
+
+      motoristaPosicao: {
+        latitude,
+        longitude
+      },
+
+      passageiroPosicao: {
+        latitude:
+          latitude + 0.006,
+        longitude:
+          longitude - 0.004
+      },
+
+      destinoPosicao: {
+        latitude:
+          latitude + 0.013,
+        longitude:
+          longitude + 0.009
+      }
+    };
+
+    sessionStorage.setItem(
+      "corridaMotoristaAtual",
+      JSON.stringify(
+        corridaCompleta
+      )
+    );
+
+    navigate(
+      "/motorista/corrida"
+    );
+  }
+
+
+  // GPS REAL DO MOTORISTA
+
+  if (
+    "geolocation" in
+    navigator
+  ) {
+    navigator.geolocation.getCurrentPosition(
+      (
+        posicao
+      ) => {
+        salvarCorrida(
+          posicao.coords.latitude,
+          posicao.coords.longitude
+        );
+      },
+
+      () => {
+        /*
+          Plano B para o protótipo,
+          caso o GPS não seja permitido.
+        */
+
+        salvarCorrida(
+          -23.5505,
+          -46.6333
+        );
+      },
+
+      {
+        enableHighAccuracy: true,
+        timeout: 10000
+      }
+    );
+
+    return;
+  }
+
+
+  salvarCorrida(
+    -23.5505,
+    -46.6333
+  );
+}
+
+
+  // ========================================
+  // RECUSAR CORRIDA
+  // ========================================
+
+  function recusarCorrida() {
+    setCorridaDisponivel(
+      null
+    );
+
+    setProcurandoCorrida(
+      true
     );
   }
 
@@ -213,7 +401,6 @@ function DriverDashboard() {
 
       <section className="driver-dashboard-grid">
 
-
         <article className="driver-info-card">
 
           <span className="driver-info-label">
@@ -257,7 +444,7 @@ function DriverDashboard() {
           </span>
 
           <strong>
-            0
+            {motorista.corridasRealizadas || 0}
           </strong>
 
           <p>
@@ -274,7 +461,15 @@ function DriverDashboard() {
           </span>
 
           <strong>
-            R$ 0,00
+            R$ {
+              Number(
+                motorista.ganhosHoje || 0
+              ).toFixed(2)
+                .replace(
+                  ".",
+                  ","
+                )
+            }
           </strong>
 
           <p>
@@ -345,7 +540,7 @@ function DriverDashboard() {
         </div>
 
 
-        {!online ? (
+        {!online && (
 
           <div className="driver-empty-state">
 
@@ -364,7 +559,12 @@ function DriverDashboard() {
 
           </div>
 
-        ) : (
+        )}
+
+
+        {online &&
+          procurandoCorrida &&
+          !corridaDisponivel && (
 
           <div className="driver-empty-state">
 
@@ -384,6 +584,140 @@ function DriverDashboard() {
             </p>
 
           </div>
+
+        )}
+
+
+        {online &&
+          corridaDisponivel && (
+
+          <article className="driver-request-card">
+
+            <div className="driver-request-top">
+
+              <div>
+
+                <span className="driver-request-label">
+                  NOVA SOLICITAÇÃO
+                </span>
+
+                <h3>
+                  {corridaDisponivel.passageiro}
+                </h3>
+
+                <p>
+                  ★ {corridaDisponivel.avaliacao}
+                </p>
+
+              </div>
+
+              <strong className="driver-request-price">
+                {corridaDisponivel.valor}
+              </strong>
+
+            </div>
+
+
+            <div className="driver-request-route">
+
+              <div className="driver-route-item">
+
+                <span className="driver-route-marker">
+                  A
+                </span>
+
+                <div>
+
+                  <small>
+                    EMBARQUE
+                  </small>
+
+                  <strong>
+                    {corridaDisponivel.embarque}
+                  </strong>
+
+                </div>
+
+              </div>
+
+
+              <div className="driver-route-line"></div>
+
+
+              <div className="driver-route-item">
+
+                <span className="driver-route-marker">
+                  B
+                </span>
+
+                <div>
+
+                  <small>
+                    DESTINO
+                  </small>
+
+                  <strong>
+                    {corridaDisponivel.destino}
+                  </strong>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div className="driver-request-details">
+
+              <span>
+                {corridaDisponivel.distancia}
+              </span>
+
+              <span>
+                {corridaDisponivel.duracao}
+              </span>
+
+            </div>
+
+
+            <div className="driver-request-accessibility">
+
+              <span>
+                ACESSIBILIDADE
+              </span>
+
+              <strong>
+                ♿ {corridaDisponivel.acessibilidade}
+              </strong>
+
+            </div>
+
+
+            <div className="driver-request-actions">
+
+              <button
+                type="button"
+                className="driver-reject-button"
+                onClick={
+                  recusarCorrida
+                }
+              >
+                Recusar
+              </button>
+
+              <button
+                type="button"
+                className="driver-accept-button"
+                onClick={
+                  aceitarCorrida
+                }
+              >
+                Aceitar corrida
+              </button>
+
+            </div>
+
+          </article>
 
         )}
 

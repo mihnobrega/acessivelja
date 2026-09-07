@@ -20,6 +20,7 @@ import RentalConfirmed from "./pages/RentalConfirmed";
 import Profile from "./pages/Profile";
 import VoiceAssistant from "./components/VoiceAssistant";
 import DriverDashboard from "./pages/motorista/DriverDashboard";
+import DriverRide from "./pages/motorista/DriverRide";
 
 function RotaProtegida({ children }) {
   const estaLogado =
@@ -56,6 +57,7 @@ function App() {
         <Route path="/aluguel/:id/confirmado" element={<RotaProtegida><RentalConfirmed /></RotaProtegida>} />
         <Route path="/perfil" element={<RotaProtegida><Profile /></RotaProtegida>} />
         <Route path="/motorista" element={<RotaProtegida> <DriverDashboard /> </RotaProtegida> } />
+        <Route path="/motorista/corrida" element={<RotaProtegida><DriverRide /></RotaProtegida>} />
       </Routes>
 
       <VoiceAssistant />

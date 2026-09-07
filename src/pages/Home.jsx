@@ -469,37 +469,31 @@ function Home() {
   // ========================================
 
   function falarNaoEntendi() {
-    if (
-      !(
-        "speechSynthesis" in
-        window
-      )
-    ) {
-      return;
-    }
-
-    window.speechSynthesis.cancel();
-
-    const fala =
-      new SpeechSynthesisUtterance(
-        "Não entendi. Você pode dizer pedir corrida, mapa acessível, alugar veículo ou abrir perfil."
-      );
-
-    fala.lang = "pt-BR";
-    fala.rate = 1;
-    fala.pitch = 1;
-    fala.volume = 1;
-
-    fala.onend = () => {
-      setTimeout(() => {
-        ativarAssistenteVoz();
-      }, 350);
-    };
-
-    window.speechSynthesis.speak(
-      fala
-    );
+  if (
+    !(
+      "speechSynthesis" in
+      window
+    )
+  ) {
+    return;
   }
+
+  window.speechSynthesis.cancel();
+
+  const fala =
+    new SpeechSynthesisUtterance(
+      "Não entendi o comando. Tente novamente quando quiser."
+    );
+
+  fala.lang = "pt-BR";
+  fala.rate = 1;
+  fala.pitch = 1;
+  fala.volume = 1;
+
+  window.speechSynthesis.speak(
+    fala
+  );
+}
 
 
   // ========================================
@@ -565,6 +559,21 @@ function Home() {
       false
     );
   }
+
+  // ========================================
+// PARAR VOZ AO SAIR DA HOME
+// ========================================
+
+useEffect(() => {
+  return () => {
+    if (
+      "speechSynthesis" in
+      window
+    ) {
+      window.speechSynthesis.cancel();
+    }
+  };
+}, []);
 
 
   return (
