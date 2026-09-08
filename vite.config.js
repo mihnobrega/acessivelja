@@ -18,38 +18,71 @@ export default defineConfig({
 
       manifest: {
         name: "Acessível Já",
+
         short_name: "Acessível Já",
+
         description:
           "Aplicativo de mobilidade, acessibilidade e serviços para pessoas com deficiência.",
 
-        theme_color: "#173b57",
-        background_color: "#faf9f5",
+        theme_color:
+          "#173b57",
 
-        display: "standalone",
+        background_color:
+          "#faf9f5",
 
-        start_url: "/",
-        scope: "/",
+        display:
+          "standalone",
 
-        orientation: "portrait",
+        start_url:
+          "/",
+
+        scope:
+          "/",
+
+        orientation:
+          "portrait",
 
         icons: [
           {
-            src: "/pwa-192x192.png",
-            sizes: "192x192",
-            type: "image/png"
+            src:
+              "/pwa-192x192.png",
+
+            sizes:
+              "192x192",
+
+            type:
+              "image/png",
+
+            purpose:
+              "any"
           },
 
           {
-            src: "/pwa-512x512.png",
-            sizes: "512x512",
-            type: "image/png"
+            src:
+              "/pwa-512x512.png",
+
+            sizes:
+              "512x512",
+
+            type:
+              "image/png",
+
+            purpose:
+              "any"
           },
 
           {
-            src: "/pwa-512x512.png",
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "maskable"
+            src:
+              "/pwa-512x512.png",
+
+            sizes:
+              "512x512",
+
+            type:
+              "image/png",
+
+            purpose:
+              "maskable"
           }
         ]
       },
