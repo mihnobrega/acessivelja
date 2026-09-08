@@ -7,9 +7,14 @@ import {
   useNavigate
 } from "react-router-dom";
 
+
 function SearchingDriver() {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const navigate =
+    useNavigate();
+
+  const location =
+    useLocation();
+
 
   const {
     corrida,
@@ -17,85 +22,161 @@ function SearchingDriver() {
     distancia,
     duracao,
     destino,
+    porVoz
   } = location.state || {};
 
 
-useEffect(() => {
-  if (!corrida) {
-    navigate(
-      "/home"
-    );
+  // ==================================================
+  // BUSCAR MOTORISTA
+  // ==================================================
 
-    return;
-  }
-
-  let tempoBusca = null;
-
-  function iniciarBusca() {
-    tempoBusca =
-      setTimeout(() => {
-        sessionStorage.setItem(
-          "continuarMotoristaPorVoz",
-          "true"
-        );
-
-        navigate(
-          "/corrida/motorista",
-          {
-            state: {
-              corrida,
-              pagamento,
-              distancia,
-              duracao,
-              destino,
-            },
-          }
-        );
-      }, 5000);
-  }
-
-  if (
-    "speechSynthesis" in window
-  ) {
-    window.speechSynthesis.cancel();
-
-    const fala =
-      new SpeechSynthesisUtterance(
-        "Procurando um motorista disponível próximo de você. Aguarde alguns instantes."
+  useEffect(() => {
+    if (
+      !corrida
+    ) {
+      navigate(
+        "/home"
       );
 
-    fala.lang = "pt-BR";
-    fala.rate = 1;
-    fala.pitch = 1;
+      return;
+    }
 
-    fala.onend = () => {
+
+    let tempoBusca =
+      null;
+
+
+    function iniciarBusca() {
+      tempoBusca =
+        setTimeout(() => {
+
+          if (
+            porVoz === true
+          ) {
+            sessionStorage.setItem(
+              "continuarMotoristaPorVoz",
+              "true"
+            );
+          } else {
+            sessionStorage.removeItem(
+              "continuarMotoristaPorVoz"
+            );
+          }
+
+
+          navigate(
+            "/corrida/motorista",
+            {
+              state: {
+                corrida,
+                pagamento,
+                distancia,
+                duracao,
+                destino,
+                porVoz:
+                  porVoz === true
+              }
+            }
+          );
+
+        }, 5000);
+    }
+
+
+    // ========================================
+    // FLUXO NORMAL
+    // ========================================
+
+    if (
+      porVoz !== true
+    ) {
+      if (
+        "speechSynthesis" in window
+      ) {
+        window.speechSynthesis.cancel();
+      }
+
       iniciarBusca();
+
+      return () => {
+        if (
+          tempoBusca
+        ) {
+          clearTimeout(
+            tempoBusca
+          );
+        }
+      };
+    }
+
+
+    // ========================================
+    // FLUXO POR VOZ
+    // ========================================
+
+    if (
+      "speechSynthesis" in window
+    ) {
+      window.speechSynthesis.cancel();
+
+
+      const fala =
+        new SpeechSynthesisUtterance(
+          "Procurando um motorista disponível próximo de você. Aguarde alguns instantes."
+        );
+
+
+      fala.lang =
+        "pt-BR";
+
+      fala.rate =
+        1;
+
+      fala.pitch =
+        1;
+
+
+      fala.onend =
+        () => {
+          iniciarBusca();
+        };
+
+
+      window.speechSynthesis.speak(
+        fala
+      );
+
+    } else {
+      iniciarBusca();
+    }
+
+
+    return () => {
+      if (
+        tempoBusca
+      ) {
+        clearTimeout(
+          tempoBusca
+        );
+      }
+
+
+      if (
+        "speechSynthesis" in window
+      ) {
+        window.speechSynthesis.cancel();
+      }
     };
 
-    window.speechSynthesis.speak(
-      fala
-    );
-  } else {
-    iniciarBusca();
-  }
-
-  return () => {
-    if (
-      tempoBusca
-    ) {
-      clearTimeout(
-        tempoBusca
-      );
-    }
-  };
-}, [
-  corrida,
-  pagamento,
-  distancia,
-  duracao,
-  destino,
-  navigate,
-]);
+  }, [
+    corrida,
+    pagamento,
+    distancia,
+    duracao,
+    destino,
+    porVoz,
+    navigate
+  ]);
 
 
   // ==================================================
@@ -107,6 +188,14 @@ useEffect(() => {
       "continuarMotoristaPorVoz"
     );
 
+
+    if (
+      "speechSynthesis" in window
+    ) {
+      window.speechSynthesis.cancel();
+    }
+
+
     navigate(
       -1
     );
@@ -117,7 +206,9 @@ useEffect(() => {
   // VERIFICA CORRIDA
   // ==================================================
 
-  if (!corrida) {
+  if (
+    !corrida
+  ) {
     return null;
   }
 
@@ -133,17 +224,20 @@ useEffect(() => {
       return "Pix";
     }
 
+
     if (
       pagamento === "cartao"
     ) {
       return "Cartão";
     }
 
+
     if (
       pagamento === "dinheiro"
     ) {
       return "Dinheiro";
     }
+
 
     return "Não informado";
   }

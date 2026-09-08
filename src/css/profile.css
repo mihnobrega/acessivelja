@@ -435,6 +435,35 @@
   background:#f7fafb;
 }
 
+/* ========================================
+   TEXTOS SECUNDÁRIOS MAIS LEGÍVEIS
+======================================== */
+
+.profile-header p {
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.profile-user-card p {
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.profile-section-title p {
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.profile-need-text span {
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.profile-setting span {
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 @media (max-width: 480px) {
   .profile-header {
     padding: 36px 20px 65px;

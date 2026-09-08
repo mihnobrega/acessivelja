@@ -11,10 +11,42 @@ function Company() {
 
 
   // ========================================
-  // IR PARA CADASTRO
+  // VERIFICAR SE JÁ EXISTE EMPRESA
   // ========================================
 
-  function irParaCadastro() {
+  const usuarioSalvo =
+    localStorage.getItem(
+      "acessivelJaUsuario"
+    );
+
+  const usuario =
+    usuarioSalvo
+      ? JSON.parse(
+          usuarioSalvo
+        )
+      : null;
+
+  const possuiEmpresa =
+    Boolean(
+      usuario?.empresa
+    );
+
+
+  // ========================================
+  // ABRIR ÁREA DA EMPRESA
+  // ========================================
+
+  function abrirAreaEmpresa() {
+    if (
+      possuiEmpresa
+    ) {
+      navigate(
+        "/empresa/painel"
+      );
+
+      return;
+    }
+
     navigate(
       "/empresa/cadastro"
     );
@@ -23,6 +55,18 @@ function Company() {
 
   return (
     <main className="company-page">
+
+      <button
+        type="button"
+        className="company-back-button"
+        onClick={() =>
+          navigate(
+            "/home"
+          )
+        }
+      >
+        ← Voltar
+      </button>
 
 
       {/* ========================================
@@ -53,10 +97,12 @@ function Company() {
             type="button"
             className="company-primary-button"
             onClick={
-              irParaCadastro
+              abrirAreaEmpresa
             }
           >
-            Cadastrar minha empresa
+            {possuiEmpresa
+              ? "Ver minha empresa"
+              : "Cadastrar minha empresa"}
           </button>
 
         </div>
@@ -332,10 +378,12 @@ function Company() {
         <button
           type="button"
           onClick={
-            irParaCadastro
+            abrirAreaEmpresa
           }
         >
-          Quero ser parceiro
+          {possuiEmpresa
+            ? "Acessar minha empresa"
+            : "Quero ser parceiro"}
         </button>
 
       </section>

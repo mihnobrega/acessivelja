@@ -9,8 +9,6 @@ import {
   useNavigate
 } from "react-router-dom";
 
-import useAlertaSonoro from "../../hooks/useAlertaSonoro";
-
 function RideOptions() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -20,15 +18,6 @@ function RideOptions() {
     duracao,
     destino
   } = location.state || {};
-
-  // ========================================
-  // ALERTA SONORO
-  // ========================================
-
-  useAlertaSonoro(
-    "Escolha uma opção de corrida. Confira o preço, o tempo estimado e os recursos disponíveis."
-  );
-
 
   // ========================================
   // ESTADOS
@@ -54,6 +43,9 @@ function RideOptions() {
 
 const pagamentoRef =
   useRef("pix");
+
+const modoVozRef =
+  useRef(false);
 
 
   // ========================================
@@ -187,14 +179,19 @@ const pagamentoRef =
     "/corrida/procurando",
     {
       state: {
-        corrida:
-          corridaAtual,
-        pagamento:
-          pagamentoAtual,
-        distancia,
-        duracao,
-        destino,
-      },
+  corrida:
+    corridaAtual,
+
+  pagamento:
+    pagamentoAtual,
+
+  distancia,
+  duracao,
+  destino,
+
+  porVoz:
+    modoVozRef.current === true
+}
     }
   );
 }
@@ -420,6 +417,12 @@ const pagamentoRef =
     corrida
   );
 
+  if (
+    !modoVozRef.current
+  ) {
+    return;
+  }
+
   falarEExecutar(
     `${corrida.nome} selecionado. Como deseja pagar? Diga Pix, cartão ou dinheiro.`,
     ouvirPagamento
@@ -507,6 +510,12 @@ const pagamentoRef =
   setPagamento(
     tipo
   );
+
+  if (
+    !modoVozRef.current
+  ) {
+    return;
+  }
 
   falarEExecutar(
     `Pagamento por ${nome} selecionado. Diga confirmar corrida para continuar.`,
@@ -730,36 +739,69 @@ const pagamentoRef =
     destino
   ]);
 
-  useEffect(() => {
-  const iniciarPorVoz =
-    sessionStorage.getItem(
-      "iniciarOpcoesCorridaPorVoz"
-    );
-
-  if (
-    iniciarPorVoz !== "true"
-  ) {
-    return;
-  }
-
-  const temporizador =
-    setTimeout(() => {
-      sessionStorage.removeItem(
+    useEffect(() => {
+    const iniciarPorVoz =
+      sessionStorage.getItem(
         "iniciarOpcoesCorridaPorVoz"
       );
 
-      falarEExecutar(
-        "Escolha sua corrida. Você pode dizer Acessível Já, Acessível Adaptado ou Acessível Confort.",
-        ouvirOpcaoCorrida
-      );
-    }, 800);
+    if (
+      iniciarPorVoz !== "true"
+    ) {
+      modoVozRef.current =
+        false;
 
-  return () => {
-    clearTimeout(
-      temporizador
-    );
-  };
-}, []);
+      return;
+    }
+
+    modoVozRef.current =
+      true;
+
+    const temporizador =
+      setTimeout(() => {
+        sessionStorage.removeItem(
+          "iniciarOpcoesCorridaPorVoz"
+        );
+
+        falarEExecutar(
+          "Escolha sua corrida. Você pode dizer Acessível Já, Acessível Adaptado ou Acessível Confort.",
+          ouvirOpcaoCorrida
+        );
+      }, 800);
+
+    return () => {
+      clearTimeout(
+        temporizador
+      );
+
+      modoVozRef.current =
+        false;
+
+      if (
+        "speechSynthesis" in window
+      ) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
+
+  // ========================================
+  // LIMPAR VOZ AO SAIR DA TELA
+  // ========================================
+
+  useEffect(() => {
+    return () => {
+      modoVozRef.current =
+        false;
+
+      if (
+        "speechSynthesis" in window
+      ) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
 
 
   return (
@@ -899,6 +941,15 @@ const pagamentoRef =
                     : ""
                 }`}
                 onClick={() => {
+                  modoVozRef.current =
+                    false;
+
+                  if (
+                    "speechSynthesis" in window
+                  ) {
+                    window.speechSynthesis.cancel();
+                  }
+
                   corridaSelecionadaRef.current =
                     opcao;
 
@@ -1013,6 +1064,15 @@ const pagamentoRef =
                   : ""
               }`}
               onClick={() => {
+                modoVozRef.current =
+                  false;
+
+                if (
+                  "speechSynthesis" in window
+                ) {
+                  window.speechSynthesis.cancel();
+                }
+
                 pagamentoRef.current =
                   "pix";
 
@@ -1053,6 +1113,15 @@ const pagamentoRef =
                   : ""
               }`}
               onClick={() => {
+                modoVozRef.current =
+                  false;
+
+                if (
+                  "speechSynthesis" in window
+                ) {
+                  window.speechSynthesis.cancel();
+                }
+
                 pagamentoRef.current =
                   "cartao";
 
@@ -1093,6 +1162,15 @@ const pagamentoRef =
                   : ""
               }`}
               onClick={() => {
+                modoVozRef.current =
+                  false;
+
+                if (
+                  "speechSynthesis" in window
+                ) {
+                  window.speechSynthesis.cancel();
+                }
+
                 pagamentoRef.current =
                   "dinheiro";
 
@@ -1129,9 +1207,18 @@ const pagamentoRef =
           <button
             className="confirm-ride-button"
             type="button"
-            onClick={
-              confirmarCorrida
-            }
+            onClick={() => {
+              modoVozRef.current =
+                false;
+
+              if (
+                "speechSynthesis" in window
+              ) {
+                window.speechSynthesis.cancel();
+              }
+
+              confirmarCorrida();
+            }}
           >
 
             <span>

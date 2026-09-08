@@ -13,38 +13,89 @@ function CompanyRegister() {
   const navigate =
     useNavigate();
 
+
+  // ========================================
+  // RECUPERAR USUÁRIO E EMPRESA SALVA
+  // ========================================
+
+  const usuarioSalvo =
+    localStorage.getItem(
+      "acessivelJaUsuario"
+    );
+
+  const usuarioInicial =
+    usuarioSalvo
+      ? JSON.parse(usuarioSalvo)
+      : null;
+
+  const empresaSalva =
+    usuarioInicial?.empresa;
+
+
+  // ========================================
+  // ETAPA ATUAL
+  // ========================================
+
   const [
     etapa,
     setEtapa
   ] = useState(1);
 
+
+  // ========================================
+  // DADOS DA EMPRESA
+  // ========================================
+
   const [
     dados,
     setDados
   ] = useState({
-    nomeEmpresa: "",
-    cnpj: "",
-    categoria: "",
-    descricao: "",
-    telefone: "",
-    emailComercial: "",
+    nomeEmpresa:
+      empresaSalva?.nomeEmpresa || "",
 
-    cep: "",
-    endereco: "",
-    numero: "",
-    bairro: "",
-    cidade: "",
-    estado: "",
+    cnpj:
+      empresaSalva?.cnpj || "",
 
-    acessibilidade: []
+    categoria:
+      empresaSalva?.categoria || "",
+
+    descricao:
+      empresaSalva?.descricao || "",
+
+    telefone:
+      empresaSalva?.telefone || "",
+
+    emailComercial:
+      empresaSalva?.emailComercial || "",
+
+    cep:
+      empresaSalva?.cep || "",
+
+    endereco:
+      empresaSalva?.endereco || "",
+
+    numero:
+      empresaSalva?.numero || "",
+
+    bairro:
+      empresaSalva?.bairro || "",
+
+    cidade:
+      empresaSalva?.cidade || "",
+
+    estado:
+      empresaSalva?.estado || "",
+
+    acessibilidade:
+      empresaSalva?.acessibilidade || []
   });
 
 
   // ========================================
-  // OPÇÕES
+  // OPÇÕES DE ACESSIBILIDADE
   // ========================================
 
-  const recursosAcessibilidade = [
+  const opcoesAcessibilidade = [
     "Entrada acessível",
     "Banheiro adaptado",
     "Vaga acessível",
@@ -57,7 +108,7 @@ function CompanyRegister() {
 
 
   // ========================================
-  // ALTERAR CAMPOS
+  // ATUALIZAR CAMPOS
   // ========================================
 
   function atualizarCampo(
@@ -71,14 +122,16 @@ function CompanyRegister() {
     setDados(
       (dadosAtuais) => ({
         ...dadosAtuais,
-        [name]: value
+
+        [name]:
+          value
       })
     );
   }
 
 
   // ========================================
-  // ACESSIBILIDADE
+  // SELECIONAR ACESSIBILIDADE
   // ========================================
 
   function alternarAcessibilidade(
@@ -86,7 +139,7 @@ function CompanyRegister() {
   ) {
     setDados(
       (dadosAtuais) => {
-        const selecionado =
+        const jaSelecionado =
           dadosAtuais.acessibilidade.includes(
             recurso
           );
@@ -95,7 +148,7 @@ function CompanyRegister() {
           ...dadosAtuais,
 
           acessibilidade:
-            selecionado
+            jaSelecionado
               ? dadosAtuais.acessibilidade.filter(
                   (item) =>
                     item !== recurso
@@ -111,60 +164,73 @@ function CompanyRegister() {
 
 
   // ========================================
-  // VALIDAÇÃO
+  // VALIDAR ETAPAS
   // ========================================
 
-  function validarEtapaAtual() {
+  function validarEtapa() {
     if (etapa === 1) {
-      return (
-        dados.nomeEmpresa.trim() &&
-        dados.cnpj.trim() &&
-        dados.categoria.trim() &&
-        dados.descricao.trim() &&
-        dados.telefone.trim() &&
-        dados.emailComercial.trim()
-      );
+      if (
+        !dados.nomeEmpresa ||
+        !dados.cnpj ||
+        !dados.categoria ||
+        !dados.descricao ||
+        !dados.telefone ||
+        !dados.emailComercial
+      ) {
+        alert(
+          "Preencha todos os dados da empresa."
+        );
+
+        return false;
+      }
     }
+
 
     if (etapa === 2) {
-      return (
-        dados.cep.trim() &&
-        dados.endereco.trim() &&
-        dados.numero.trim() &&
-        dados.bairro.trim() &&
-        dados.cidade.trim() &&
-        dados.estado.trim()
-      );
+      if (
+        !dados.cep ||
+        !dados.endereco ||
+        !dados.numero ||
+        !dados.bairro ||
+        !dados.cidade ||
+        !dados.estado
+      ) {
+        alert(
+          "Preencha todos os dados de localização."
+        );
+
+        return false;
+      }
     }
 
+
     if (etapa === 3) {
-      return (
-        dados.acessibilidade.length > 0
-      );
+      if (
+        dados.acessibilidade.length === 0
+      ) {
+        alert(
+          "Selecione pelo menos um recurso de acessibilidade."
+        );
+
+        return false;
+      }
     }
+
 
     return true;
   }
 
 
   // ========================================
-  // PRÓXIMA ETAPA
+  // AVANÇAR
   // ========================================
 
   function avancar() {
-    if (
-      !validarEtapaAtual()
-    ) {
-      alert(
-        "Preencha todos os campos obrigatórios antes de continuar."
-      );
-
+    if (!validarEtapa()) {
       return;
     }
 
-    if (
-      etapa < 4
-    ) {
+    if (etapa < 4) {
       setEtapa(
         etapa + 1
       );
@@ -173,13 +239,11 @@ function CompanyRegister() {
 
 
   // ========================================
-  // VOLTAR ETAPA
+  // VOLTAR
   // ========================================
 
   function voltar() {
-    if (
-      etapa > 1
-    ) {
+    if (etapa > 1) {
       setEtapa(
         etapa - 1
       );
@@ -194,16 +258,16 @@ function CompanyRegister() {
 
 
   // ========================================
-  // FINALIZAR CADASTRO
+  // FINALIZAR / SALVAR CADASTRO
   // ========================================
 
   function finalizarCadastro() {
-    const usuarioSalvo =
+    const usuarioAtualSalvo =
       localStorage.getItem(
         "acessivelJaUsuario"
       );
 
-    if (!usuarioSalvo) {
+    if (!usuarioAtualSalvo) {
       alert(
         "Usuário não encontrado."
       );
@@ -215,35 +279,70 @@ function CompanyRegister() {
       return;
     }
 
-    const usuario =
+
+    const usuarioAtual =
       JSON.parse(
-        usuarioSalvo
+        usuarioAtualSalvo
       );
 
+
+    const empresaAnterior =
+      usuarioAtual.empresa || {};
+
+
     const usuarioAtualizado = {
-      ...usuario,
+      ...usuarioAtual,
 
       perfis: {
-        ...usuario.perfis,
-        usuario: true,
-        empresa: true
+        ...usuarioAtual.perfis,
+
+        usuario:
+          true,
+
+        empresa:
+          true
       },
 
       empresa: {
+
+        localizacao: {
+          latitude:
+            empresaAnterior.localizacao?.latitude ||
+            -21.4678,
+
+          longitude:
+            empresaAnterior.localizacao?.longitude ||
+            -47.0046
+        },
+        // Mantém informações antigas,
+        // como plano e pagamento.
+        ...empresaAnterior,
+
+        // Atualiza os dados do cadastro.
         ...dados,
 
-        plano: null,
+        plano:
+          empresaAnterior.plano ||
+          null,
 
         pagamentoAtivo:
+          empresaAnterior.pagamentoAtivo ||
           false,
 
         visivelPublicamente:
+          empresaAnterior.visivelPublicamente ||
           false,
 
         cadastradaEm:
+          empresaAnterior.cadastradaEm ||
+          new Date().toISOString(),
+
+        atualizadaEm:
           new Date().toISOString()
+
       }
     };
+
 
     localStorage.setItem(
       "acessivelJaUsuario",
@@ -252,26 +351,40 @@ function CompanyRegister() {
       )
     );
 
+
+    // ========================================
+    // SE JÁ TEM PLANO, VOLTA AO PAINEL
+    // ========================================
+
+    if (
+      usuarioAtualizado.empresa
+        .pagamentoAtivo
+    ) {
+      navigate(
+        "/empresa/painel"
+      );
+
+      return;
+    }
+
+
+    // ========================================
+    // PRIMEIRO CADASTRO
+    // ========================================
+
     navigate(
       "/empresa/planos"
     );
   }
 
 
-  // ========================================
-  // PROGRESSO
-  // ========================================
-
-  const progresso =
-    etapa * 25;
-
-
   return (
     <main className="company-register-page">
 
 
+
       {/* ========================================
-          SIDEBAR
+          BARRA LATERAL
       ======================================== */}
 
       <aside className="company-register-sidebar">
@@ -282,29 +395,30 @@ function CompanyRegister() {
             ACESSÍVEL JÁ
           </span>
 
-          <h1>
-            Área para empresas
-          </h1>
+          <h2>
+            Cadastro da empresa
+          </h2>
 
           <p>
-            Cadastre seu estabelecimento
-            e mostre seus recursos de
-            acessibilidade.
+            Complete as informações para
+            divulgar seu estabelecimento.
           </p>
 
         </div>
 
+
+        {/* PROGRESSO */}
 
         <div className="company-register-progress">
 
           <div className="company-register-progress-top">
 
             <span>
-              Etapa {etapa} de 4
+              PROGRESSO
             </span>
 
             <strong>
-              {progresso}%
+              {etapa * 25}%
             </strong>
 
           </div>
@@ -314,7 +428,7 @@ function CompanyRegister() {
             <div
               style={{
                 width:
-                  `${progresso}%`
+                  `${etapa * 25}%`
               }}
             ></div>
 
@@ -322,6 +436,8 @@ function CompanyRegister() {
 
         </div>
 
+
+        {/* ETAPAS */}
 
         <div className="company-register-steps">
 
@@ -337,21 +453,13 @@ function CompanyRegister() {
             }
           >
 
-            <div className="company-register-step-number">
-              {etapa > 1 ? "✓" : "01"}
-            </div>
-
             <div>
-
-              <strong>
-                Empresa
-              </strong>
-
-              <span>
-                Dados principais
-              </span>
-
+              1
             </div>
+
+            <span>
+              Empresa
+            </span>
 
           </div>
 
@@ -368,21 +476,13 @@ function CompanyRegister() {
             }
           >
 
-            <div className="company-register-step-number">
-              {etapa > 2 ? "✓" : "02"}
-            </div>
-
             <div>
-
-              <strong>
-                Localização
-              </strong>
-
-              <span>
-                Endereço do local
-              </span>
-
+              2
             </div>
+
+            <span>
+              Localização
+            </span>
 
           </div>
 
@@ -399,21 +499,13 @@ function CompanyRegister() {
             }
           >
 
-            <div className="company-register-step-number">
-              {etapa > 3 ? "✓" : "03"}
-            </div>
-
             <div>
-
-              <strong>
-                Acessibilidade
-              </strong>
-
-              <span>
-                Recursos disponíveis
-              </span>
-
+              3
             </div>
+
+            <span>
+              Acessibilidade
+            </span>
 
           </div>
 
@@ -428,21 +520,13 @@ function CompanyRegister() {
             }
           >
 
-            <div className="company-register-step-number">
-              04
-            </div>
-
             <div>
-
-              <strong>
-                Revisão
-              </strong>
-
-              <span>
-                Confirme os dados
-              </span>
-
+              4
             </div>
+
+            <span>
+              Revisão
+            </span>
 
           </div>
 
@@ -452,13 +536,13 @@ function CompanyRegister() {
         <div className="company-register-sidebar-note">
 
           <span>
-            PARCERIA ACESSÍVEL JÁ
+            ♿
           </span>
 
           <p>
-            Seu estabelecimento só ficará
-            visível publicamente após a
-            ativação de um plano.
+            Sua empresa será exibida
+            publicamente após a ativação
+            de um plano.
           </p>
 
         </div>
@@ -478,23 +562,21 @@ function CompanyRegister() {
         ======================================== */}
 
         {etapa === 1 && (
-          <div className="company-register-panel">
+          <>
 
             <div className="company-register-heading">
 
               <span>
-                DADOS DA EMPRESA
+                ETAPA 1 DE 4
               </span>
 
-              <h2>
-                Conte um pouco sobre
-                seu estabelecimento.
-              </h2>
+              <h1>
+                Sobre sua empresa
+              </h1>
 
               <p>
-                Essas informações serão
-                usadas para identificar
-                sua empresa na plataforma.
+                Informe os principais dados
+                do estabelecimento.
               </p>
 
             </div>
@@ -502,10 +584,10 @@ function CompanyRegister() {
 
             <div className="company-register-form">
 
-              <div className="company-register-field company-register-field-full">
+              <div className="company-register-field company-register-full">
 
                 <label>
-                  Nome do estabelecimento
+                  Nome da empresa
                 </label>
 
                 <input
@@ -517,7 +599,7 @@ function CompanyRegister() {
                   onChange={
                     atualizarCampo
                   }
-                  placeholder="Ex.: Café Central"
+                  placeholder="Ex.: Café Central Mococa"
                 />
 
               </div>
@@ -572,20 +654,12 @@ function CompanyRegister() {
                     Cafeteria
                   </option>
 
-                  <option value="Loja">
-                    Loja
-                  </option>
-
-                  <option value="Mercado">
-                    Mercado
-                  </option>
-
                   <option value="Hotel">
                     Hotel
                   </option>
 
-                  <option value="Transporte">
-                    Transporte
+                  <option value="Loja">
+                    Loja
                   </option>
 
                   <option value="Clínica">
@@ -594,6 +668,10 @@ function CompanyRegister() {
 
                   <option value="Academia">
                     Academia
+                  </option>
+
+                  <option value="Transporte">
+                    Transporte
                   </option>
 
                   <option value="Outro">
@@ -605,10 +683,30 @@ function CompanyRegister() {
               </div>
 
 
+              <div className="company-register-field company-register-full">
+
+                <label>
+                  Descrição
+                </label>
+
+                <textarea
+                  name="descricao"
+                  value={
+                    dados.descricao
+                  }
+                  onChange={
+                    atualizarCampo
+                  }
+                  placeholder="Conte um pouco sobre sua empresa..."
+                ></textarea>
+
+              </div>
+
+
               <div className="company-register-field">
 
                 <label>
-                  Telefone comercial
+                  Telefone
                 </label>
 
                 <input
@@ -641,35 +739,14 @@ function CompanyRegister() {
                   onChange={
                     atualizarCampo
                   }
-                  placeholder="contato@empresa.com"
-                />
-
-              </div>
-
-
-              <div className="company-register-field company-register-field-full">
-
-                <label>
-                  Descrição
-                </label>
-
-                <textarea
-                  name="descricao"
-                  value={
-                    dados.descricao
-                  }
-                  onChange={
-                    atualizarCampo
-                  }
-                  placeholder="Conte brevemente sobre seu estabelecimento..."
-                  rows="5"
+                  placeholder="empresa@email.com"
                 />
 
               </div>
 
             </div>
 
-          </div>
+          </>
         )}
 
 
@@ -678,23 +755,22 @@ function CompanyRegister() {
         ======================================== */}
 
         {etapa === 2 && (
-          <div className="company-register-panel">
+          <>
 
             <div className="company-register-heading">
 
               <span>
-                LOCALIZAÇÃO
+                ETAPA 2 DE 4
               </span>
 
-              <h2>
-                Onde seu estabelecimento
-                está localizado?
-              </h2>
+              <h1>
+                Localização
+              </h1>
 
               <p>
-                O endereço será usado para
-                posicionar sua empresa no
-                Mapa Acessível.
+                Informe onde seu
+                estabelecimento está
+                localizado.
               </p>
 
             </div>
@@ -726,25 +802,25 @@ function CompanyRegister() {
               <div className="company-register-field">
 
                 <label>
-                  Estado
+                  Número
                 </label>
 
                 <input
                   type="text"
-                  name="estado"
+                  name="numero"
                   value={
-                    dados.estado
+                    dados.numero
                   }
                   onChange={
                     atualizarCampo
                   }
-                  placeholder="SP"
+                  placeholder="123"
                 />
 
               </div>
 
 
-              <div className="company-register-field company-register-field-full">
+              <div className="company-register-field company-register-full">
 
                 <label>
                   Endereço
@@ -768,27 +844,6 @@ function CompanyRegister() {
               <div className="company-register-field">
 
                 <label>
-                  Número
-                </label>
-
-                <input
-                  type="text"
-                  name="numero"
-                  value={
-                    dados.numero
-                  }
-                  onChange={
-                    atualizarCampo
-                  }
-                  placeholder="120"
-                />
-
-              </div>
-
-
-              <div className="company-register-field">
-
-                <label>
                   Bairro
                 </label>
 
@@ -801,13 +856,13 @@ function CompanyRegister() {
                   onChange={
                     atualizarCampo
                   }
-                  placeholder="Centro"
+                  placeholder="Bairro"
                 />
 
               </div>
 
 
-              <div className="company-register-field company-register-field-full">
+              <div className="company-register-field">
 
                 <label>
                   Cidade
@@ -827,9 +882,30 @@ function CompanyRegister() {
 
               </div>
 
+
+              <div className="company-register-field">
+
+                <label>
+                  Estado
+                </label>
+
+                <input
+                  type="text"
+                  name="estado"
+                  value={
+                    dados.estado
+                  }
+                  onChange={
+                    atualizarCampo
+                  }
+                  placeholder="SP"
+                />
+
+              </div>
+
             </div>
 
-          </div>
+          </>
         )}
 
 
@@ -838,32 +914,32 @@ function CompanyRegister() {
         ======================================== */}
 
         {etapa === 3 && (
-          <div className="company-register-panel">
+          <>
 
             <div className="company-register-heading">
 
               <span>
-                ACESSIBILIDADE
+                ETAPA 3 DE 4
               </span>
 
-              <h2>
-                Quais recursos sua
-                empresa oferece?
-              </h2>
+              <h1>
+                Recursos de acessibilidade
+              </h1>
 
               <p>
-                Selecione tudo que estiver
-                realmente disponível no
+                Selecione os recursos
+                realmente disponíveis no
                 estabelecimento.
               </p>
 
             </div>
 
 
-            <div className="company-accessibility-grid">
+            <div className="company-register-accessibility">
 
-              {recursosAcessibilidade.map(
+              {opcoesAcessibilidade.map(
                 (recurso) => {
+
                   const selecionado =
                     dados.acessibilidade.includes(
                       recurso
@@ -876,7 +952,7 @@ function CompanyRegister() {
                       }
                       type="button"
                       className={
-                        `company-accessibility-card ${
+                        `company-register-accessibility-card ${
                           selecionado
                             ? "selected"
                             : ""
@@ -889,15 +965,15 @@ function CompanyRegister() {
                       }
                     >
 
-                      <div className="company-accessibility-check">
+                      <div>
                         {selecionado
                           ? "✓"
-                          : "+"}
+                          : "♿"}
                       </div>
 
-                      <strong>
+                      <span>
                         {recurso}
-                      </strong>
+                      </span>
 
                     </button>
                   );
@@ -906,7 +982,7 @@ function CompanyRegister() {
 
             </div>
 
-          </div>
+          </>
         )}
 
 
@@ -915,44 +991,43 @@ function CompanyRegister() {
         ======================================== */}
 
         {etapa === 4 && (
-          <div className="company-register-panel">
+          <>
 
             <div className="company-register-heading">
 
               <span>
-                REVISÃO
+                ETAPA 4 DE 4
               </span>
 
-              <h2>
-                Confira os dados
-                antes de continuar.
-              </h2>
+              <h1>
+                Revise as informações
+              </h1>
 
               <p>
-                Depois do cadastro,
-                você poderá escolher
-                o plano da sua empresa.
+                Confira os dados antes de
+                salvar sua empresa.
               </p>
 
             </div>
 
 
-            <div className="company-review">
+            <div className="company-register-review">
 
-              <section className="company-review-block">
 
-                <div className="company-review-title">
+              {/* EMPRESA */}
 
-                  <span>
-                    EMPRESA
-                  </span>
+              <div className="company-register-review-block">
+
+                <div className="company-register-review-title">
+
+                  <h3>
+                    Empresa
+                  </h3>
 
                   <button
                     type="button"
                     onClick={() =>
-                      setEtapa(
-                        1
-                      )
+                      setEtapa(1)
                     }
                   >
                     Editar
@@ -960,15 +1035,21 @@ function CompanyRegister() {
 
                 </div>
 
-                <h3>
-                  {dados.nomeEmpresa}
-                </h3>
 
-                <p>
-                  {dados.categoria}
-                </p>
+                <div className="company-register-review-grid">
 
-                <div className="company-review-grid">
+                  <div>
+
+                    <span>
+                      Nome
+                    </span>
+
+                    <strong>
+                      {dados.nomeEmpresa}
+                    </strong>
+
+                  </div>
+
 
                   <div>
 
@@ -982,6 +1063,20 @@ function CompanyRegister() {
 
                   </div>
 
+
+                  <div>
+
+                    <span>
+                      Categoria
+                    </span>
+
+                    <strong>
+                      {dados.categoria}
+                    </strong>
+
+                  </div>
+
+
                   <div>
 
                     <span>
@@ -993,6 +1088,7 @@ function CompanyRegister() {
                     </strong>
 
                   </div>
+
 
                   <div>
 
@@ -1008,23 +1104,23 @@ function CompanyRegister() {
 
                 </div>
 
-              </section>
+              </div>
 
 
-              <section className="company-review-block">
+              {/* LOCALIZAÇÃO */}
 
-                <div className="company-review-title">
+              <div className="company-register-review-block">
 
-                  <span>
-                    LOCALIZAÇÃO
-                  </span>
+                <div className="company-register-review-title">
+
+                  <h3>
+                    Localização
+                  </h3>
 
                   <button
                     type="button"
                     onClick={() =>
-                      setEtapa(
-                        2
-                      )
+                      setEtapa(2)
                     }
                   >
                     Editar
@@ -1032,38 +1128,93 @@ function CompanyRegister() {
 
                 </div>
 
-                <strong className="company-review-address">
-                  {dados.endereco},{" "}
-                  {dados.numero}
-                </strong>
 
-                <p>
-                  {dados.bairro} —{" "}
-                  {dados.cidade} /{" "}
-                  {dados.estado}
-                </p>
+                <div className="company-register-review-grid">
 
-                <span className="company-review-cep">
-                  CEP {dados.cep}
-                </span>
+                  <div>
 
-              </section>
+                    <span>
+                      Endereço
+                    </span>
+
+                    <strong>
+                      {dados.endereco},{" "}
+                      {dados.numero}
+                    </strong>
+
+                  </div>
 
 
-              <section className="company-review-block">
+                  <div>
 
-                <div className="company-review-title">
+                    <span>
+                      Bairro
+                    </span>
 
-                  <span>
-                    ACESSIBILIDADE
-                  </span>
+                    <strong>
+                      {dados.bairro}
+                    </strong>
+
+                  </div>
+
+
+                  <div>
+
+                    <span>
+                      Cidade
+                    </span>
+
+                    <strong>
+                      {dados.cidade}
+                    </strong>
+
+                  </div>
+
+
+                  <div>
+
+                    <span>
+                      Estado
+                    </span>
+
+                    <strong>
+                      {dados.estado}
+                    </strong>
+
+                  </div>
+
+
+                  <div>
+
+                    <span>
+                      CEP
+                    </span>
+
+                    <strong>
+                      {dados.cep}
+                    </strong>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              {/* ACESSIBILIDADE */}
+
+              <div className="company-register-review-block">
+
+                <div className="company-register-review-title">
+
+                  <h3>
+                    Acessibilidade
+                  </h3>
 
                   <button
                     type="button"
                     onClick={() =>
-                      setEtapa(
-                        3
-                      )
+                      setEtapa(3)
                     }
                   >
                     Editar
@@ -1071,32 +1222,33 @@ function CompanyRegister() {
 
                 </div>
 
-                <div className="company-review-tags">
+
+                <div className="company-register-review-tags">
 
                   {dados.acessibilidade.map(
-                    (item) => (
+                    (recurso) => (
                       <span
                         key={
-                          item
+                          recurso
                         }
                       >
-                        ✓ {item}
+                        {recurso}
                       </span>
                     )
                   )}
 
                 </div>
 
-              </section>
+              </div>
 
             </div>
 
-          </div>
+          </>
         )}
 
 
         {/* ========================================
-            AÇÕES
+            BOTÕES
         ======================================== */}
 
         <div className="company-register-actions">
@@ -1112,7 +1264,8 @@ function CompanyRegister() {
           </button>
 
 
-          {etapa < 4 && (
+          {etapa < 4 ? (
+
             <button
               type="button"
               className="company-register-next"
@@ -1122,10 +1275,9 @@ function CompanyRegister() {
             >
               Continuar →
             </button>
-          )}
 
+          ) : (
 
-          {etapa === 4 && (
             <button
               type="button"
               className="company-register-next"
@@ -1133,8 +1285,11 @@ function CompanyRegister() {
                 finalizarCadastro
               }
             >
-              Confirmar cadastro
+              {empresaSalva
+                ? "Salvar alterações"
+                : "Confirmar cadastro"}
             </button>
+
           )}
 
         </div>

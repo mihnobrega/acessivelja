@@ -14,8 +14,6 @@ import {
   falarMensagem
 } from "../../utils/acessibilidade";
 
-import useAlertaSonoro from "../../hooks/useAlertaSonoro";
-
 function RideInProgress() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,6 +25,7 @@ function RideInProgress() {
     duracao,
     destino,
     motorista,
+    porVoz
   } = location.state || {};
 
   const [localizacao, setLocalizacao] =
@@ -54,14 +53,51 @@ function RideInProgress() {
 ] = useState(false);
 
   // ==================================================
-  // ALERTA DE INÍCIO
+  // ALERTA DE INÍCIO SOMENTE POR VOZ
   // ==================================================
 
-  useAlertaSonoro(
-    motorista && destino
-      ? "Sua corrida foi iniciada. Você pode acompanhar o percurso até o destino."
-      : ""
-  );
+  useEffect(() => {
+    sessionStorage.removeItem(
+      "continuarViagemPorVoz"
+    );
+
+    if (
+      porVoz !== true ||
+      !motorista ||
+      !destino
+    ) {
+      if (
+        "speechSynthesis" in window
+      ) {
+        window.speechSynthesis.cancel();
+      }
+
+      return;
+    }
+
+    const temporizador =
+      setTimeout(() => {
+        falarMensagem(
+          "Sua corrida foi iniciada. Você pode acompanhar o percurso até o destino."
+        );
+      }, 800);
+
+    return () => {
+      clearTimeout(
+        temporizador
+      );
+
+      if (
+        "speechSynthesis" in window
+      ) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, [
+    porVoz,
+    motorista,
+    destino
+  ]);
 
   // ========================================
   // GPS REAL DO USUÁRIO
@@ -137,7 +173,11 @@ function RideInProgress() {
       true
     );
 
-    falarFimDaViagem();
+    if (
+      porVoz === true
+    ) {
+      falarFimDaViagem();
+    }
   }
 }
 
@@ -146,6 +186,12 @@ function RideInProgress() {
 // ========================================
 
 function falarFimDaViagem() {
+  if (
+    porVoz !== true
+  ) {
+    return;
+  }
+
   if (
     !("speechSynthesis" in window)
   ) {
@@ -181,6 +227,12 @@ function falarFimDaViagem() {
 // ========================================
 
 function ouvirFinalizacao() {
+  if (
+    porVoz !== true
+  ) {
+    return;
+  }
+
   const SpeechRecognition =
     window.SpeechRecognition ||
     window.webkitSpeechRecognition;
@@ -262,6 +314,12 @@ function ouvirFinalizacao() {
 
 function falarFinalizacaoNaoEntendida() {
   if (
+    porVoz !== true
+  ) {
+    return;
+  }
+
+  if (
     !("speechSynthesis" in window)
   ) {
     return;
@@ -294,25 +352,41 @@ function falarFinalizacaoNaoEntendida() {
   // ========================================
 
   function finalizarCorrida() {
-  sessionStorage.setItem(
-    "continuarResumoPorVoz",
-    "true"
-  );
+    if (
+      porVoz === true
+    ) {
+      sessionStorage.setItem(
+        "continuarResumoPorVoz",
+        "true"
+      );
+    } else {
+      sessionStorage.removeItem(
+        "continuarResumoPorVoz"
+      );
 
-  navigate(
-    "/corrida/resumo",
-    {
-      state: {
-        corrida,
-        pagamento,
-        distancia,
-        duracao,
-        destino,
-        motorista,
-      },
+      if (
+        "speechSynthesis" in window
+      ) {
+        window.speechSynthesis.cancel();
+      }
     }
-  );
-}
+
+    navigate(
+      "/corrida/resumo",
+      {
+        state: {
+          corrida,
+          pagamento,
+          distancia,
+          duracao,
+          destino,
+          motorista,
+          porVoz:
+            porVoz === true
+        }
+      }
+    );
+  }
 
   // ========================================
   // SEGURANÇA

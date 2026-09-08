@@ -296,12 +296,111 @@ function AccessibleMap() {
     }
   ];
 
-
   /* ========================================
-     CRIAR LOCAIS PRÓXIMOS AO USUÁRIO
+     EMPRESA CADASTRADA
   ======================================== */
 
-  const locais =
+  const usuarioSalvo =
+    localStorage.getItem(
+      "acessivelJaUsuario"
+    );
+
+  const usuario =
+    usuarioSalvo
+      ? JSON.parse(
+          usuarioSalvo
+        )
+      : null;
+
+  const empresaCadastrada =
+    usuario?.empresa;
+
+
+  /* ========================================
+     DESCOBRIR FILTROS DA EMPRESA
+  ======================================== */
+
+  function descobrirRecursosEmpresa(
+    acessibilidade = []
+  ) {
+    const texto =
+      acessibilidade
+        .join(" ")
+        .toLowerCase();
+
+    const recursos =
+      new Set();
+
+
+    if (
+      texto.includes("entrada") ||
+      texto.includes("banheiro") ||
+      texto.includes("vaga") ||
+      texto.includes("elevador") ||
+      texto.includes("cadeira") ||
+      texto.includes("mobilidade")
+    ) {
+      recursos.add(
+        "mobilidade"
+      );
+    }
+
+
+    if (
+      texto.includes("braile") ||
+      texto.includes("piso tátil") ||
+      texto.includes("piso tatil") ||
+      texto.includes("visual")
+    ) {
+      recursos.add(
+        "visual"
+      );
+    }
+
+
+    if (
+      texto.includes("libras") ||
+      texto.includes("auditiva") ||
+      texto.includes("audição") ||
+      texto.includes("audicao")
+    ) {
+      recursos.add(
+        "auditiva"
+      );
+    }
+
+
+    if (
+      texto.includes("cognitiva") ||
+      texto.includes("sinalização simplificada") ||
+      texto.includes("sinalizacao simplificada")
+    ) {
+      recursos.add(
+        "cognitiva"
+      );
+    }
+
+
+    if (
+      recursos.size === 0
+    ) {
+      recursos.add(
+        "mobilidade"
+      );
+    }
+
+
+    return Array.from(
+      recursos
+    );
+  }
+
+
+  /* ========================================
+     CRIAR LOCAIS DEMONSTRATIVOS
+  ======================================== */
+
+  const locaisDemonstrativos =
     localizacao
       ? locaisBase.map(
           (local) => {
@@ -323,10 +422,13 @@ function AccessibleMap() {
 
             return {
               ...local,
+
               latitude:
                 latitudeLocal,
+
               longitude:
                 longitudeLocal,
+
               distancia:
                 formatarDistancia(
                   distanciaKm
@@ -335,6 +437,131 @@ function AccessibleMap() {
           }
         )
       : [];
+
+
+  /* ========================================
+     COLOCAR EMPRESA CADASTRADA NO MAPA
+  ======================================== */
+
+  let empresaNoMapa =
+    null;
+
+
+  if (
+    localizacao &&
+    empresaCadastrada?.pagamentoAtivo &&
+    empresaCadastrada?.visivelPublicamente
+  ) {
+    const latitudeEmpresa =
+      Number(
+        empresaCadastrada
+          ?.localizacao
+          ?.latitude
+      ) ||
+      (
+        localizacao.latitude +
+        0.0025
+      );
+
+    const longitudeEmpresa =
+      Number(
+        empresaCadastrada
+          ?.localizacao
+          ?.longitude
+      ) ||
+      (
+        localizacao.longitude +
+        0.002
+      );
+
+    const distanciaEmpresaKm =
+      calcularDistancia(
+        localizacao.latitude,
+        localizacao.longitude,
+        latitudeEmpresa,
+        longitudeEmpresa
+      );
+
+
+    empresaNoMapa = {
+      id:
+        "empresa-cadastrada",
+
+      nome:
+        empresaCadastrada.nomeEmpresa ||
+        "Empresa parceira",
+
+      categoria:
+        empresaCadastrada.categoria ||
+        "Empresa",
+
+      icone:
+        empresaCadastrada.categoria ===
+        "Transporte"
+          ? "🚐"
+          : "🏢",
+
+      recursos:
+        descobrirRecursosEmpresa(
+          empresaCadastrada
+            .acessibilidade
+        ),
+
+      acessibilidade:
+        empresaCadastrada
+          .acessibilidade ||
+        [],
+
+      latitude:
+        latitudeEmpresa,
+
+      longitude:
+        longitudeEmpresa,
+
+      distancia:
+        formatarDistancia(
+          distanciaEmpresaKm
+        ),
+
+      destaque:
+        empresaCadastrada
+          .plano
+          ?.id ===
+        "intermediario" ||
+        empresaCadastrada
+          .plano
+          ?.id ===
+        "premium",
+
+      avaliacao:
+        empresaCadastrada
+          .plano
+          ?.id ===
+        "premium"
+          ? 4.8
+          : null,
+
+      cadastrada:
+        true
+    };
+  }
+
+
+  /* ========================================
+     LISTA FINAL DE LOCAIS
+  ======================================== */
+
+ const locais = [
+  ...(
+    empresaNoMapa
+      ? [
+          empresaNoMapa
+        ]
+      : []
+  ),
+
+  ...locaisDemonstrativos
+];
 
 
   /* ========================================
@@ -416,27 +643,39 @@ function AccessibleMap() {
   ======================================== */
 
   useEffect(() => {
-    if (
-      !localizacao ||
-      vozIniciadaRef.current
-    ) {
-      return;
-    }
+  const iniciarPorVoz =
+    sessionStorage.getItem(
+      "mapaAcessivelPorVoz"
+    );
 
-    vozIniciadaRef.current =
-      true;
+  if (
+    iniciarPorVoz !== "true" ||
+    !localizacao ||
+    vozIniciadaRef.current
+  ) {
+    return;
+  }
 
-    const temporizador =
-      setTimeout(() => {
-        falarIntroducaoMapa();
-      }, 800);
+  vozIniciadaRef.current =
+    true;
 
-    return () => {
-      clearTimeout(
-        temporizador
+  const temporizador =
+    setTimeout(() => {
+      sessionStorage.removeItem(
+        "mapaAcessivelPorVoz"
       );
-    };
-  }, [localizacao]);
+
+      falarIntroducaoMapa();
+    }, 800);
+
+  return () => {
+    clearTimeout(
+      temporizador
+    );
+
+    window.speechSynthesis.cancel();
+  };
+}, [localizacao]);
 
 
   /* ========================================
@@ -1364,6 +1603,18 @@ function AccessibleMap() {
                     {local.distancia}
                   </small>
 
+                  {local.destaque && (
+                    <small>
+                      Destaque
+                    </small>
+                  )}
+
+                  {local.avaliacao && (
+                    <small>
+                      ⭐ {local.avaliacao}
+                    </small>
+                  )}
+
                 </div>
 
                 <div className="accessible-place-arrow">
@@ -1423,6 +1674,21 @@ function AccessibleMap() {
             </p>
 
 
+            {localSelecionado.destaque && (
+              <p>
+                Destaque no Acessível Já
+              </p>
+            )}
+
+
+            {localSelecionado.avaliacao && (
+              <p>
+                ⭐ {localSelecionado.avaliacao}
+                {" "}de avaliação
+              </p>
+            )}
+
+
             <div className="accessible-modal-divider">
             </div>
 
@@ -1457,8 +1723,9 @@ function AccessibleMap() {
 
 
             <small className="accessible-data-warning">
-              Informações demonstrativas
-              para o protótipo.
+              {localSelecionado.cadastrada
+                ? "Empresa cadastrada no Acessível Já."
+                : "Informações demonstrativas para o protótipo."}
             </small>
 
           </section>

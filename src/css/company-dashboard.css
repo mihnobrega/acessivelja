@@ -294,6 +294,26 @@
   font-weight: 700;
 }
 
+.company-dashboard-edit-button {
+  width: 100%;
+  min-height: 46px;
+  margin-top: 24px;
+  padding: 0 18px;
+  border: 1px solid #cbd5da;
+  border-radius: 11px;
+  background: #ffffff;
+  color: #173b57;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.company-dashboard-edit-button:hover {
+  border-color: #173b57;
+  background: #edf2f5;
+}
+
 @media (max-width: 800px) {
   .company-dashboard-grid {
     grid-template-columns: 1fr;

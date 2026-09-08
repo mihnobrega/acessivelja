@@ -25,6 +25,7 @@ function DriverTracking() {
     duracao,
     destino,
     motorista,
+    porVoz
   } = location.state || {};
 
   const [
@@ -67,25 +68,26 @@ function DriverTracking() {
   // ==================================================
 
   useEffect(() => {
-    const continuarPorVoz =
-      sessionStorage.getItem(
-        "continuarAcompanhamentoPorVoz"
-      );
+    sessionStorage.removeItem(
+      "continuarAcompanhamentoPorVoz"
+    );
 
     if (
-      continuarPorVoz !== "true" ||
+      porVoz !== true ||
       !motorista ||
       !corrida
     ) {
+      if (
+        "speechSynthesis" in window
+      ) {
+        window.speechSynthesis.cancel();
+      }
+
       return;
     }
 
     const temporizador =
       setTimeout(() => {
-        sessionStorage.removeItem(
-          "continuarAcompanhamentoPorVoz"
-        );
-
         falarMensagem(
           `Acompanhamento iniciado. ${motorista.nome} está a caminho do local de embarque. A chegada estimada é de aproximadamente ${motorista.chegada} minutos.`
         );
@@ -95,8 +97,18 @@ function DriverTracking() {
       clearTimeout(
         temporizador
       );
+
+      if (
+        "speechSynthesis" in window
+      ) {
+        window.speechSynthesis.cancel();
+      }
     };
-  }, []);
+  }, [
+    porVoz,
+    motorista,
+    corrida
+  ]);
 
 
   // ==================================================
@@ -180,7 +192,11 @@ function DriverTracking() {
           true
         );
 
-        falarMotoristaChegou();
+        if (
+          porVoz === true
+        ) {
+          falarMotoristaChegou();
+        }
       }
 
       return;
@@ -190,6 +206,7 @@ function DriverTracking() {
       progresso >= 0.72
     ) {
       if (
+        porVoz === true &&
         statusMotorista !==
         "Seu motorista está chegando"
       ) {
@@ -213,6 +230,7 @@ function DriverTracking() {
       progresso >= 0.42
     ) {
       if (
+        porVoz === true &&
         statusMotorista !==
         "Motorista se aproximando"
       ) {
@@ -248,6 +266,12 @@ function DriverTracking() {
 
   function falarMotoristaChegou() {
     if (
+      porVoz !== true
+    ) {
+      return;
+    }
+
+    if (
       !("speechSynthesis" in window)
     ) {
       ouvirInicioCorrida();
@@ -282,6 +306,12 @@ function DriverTracking() {
   // ==================================================
 
   function ouvirInicioCorrida() {
+    if (
+      porVoz !== true
+    ) {
+      return;
+    }
+
     const SpeechRecognition =
       window.SpeechRecognition ||
       window.webkitSpeechRecognition;
@@ -366,6 +396,12 @@ function DriverTracking() {
 
   function falarInicioNaoEntendido() {
     if (
+      porVoz !== true
+    ) {
+      return;
+    }
+
+    if (
       !("speechSynthesis" in window)
     ) {
       return;
@@ -399,10 +435,24 @@ function DriverTracking() {
   // ==================================================
 
   function iniciarCorrida() {
-    sessionStorage.setItem(
-      "continuarViagemPorVoz",
-      "true"
-    );
+    if (
+      porVoz === true
+    ) {
+      sessionStorage.setItem(
+        "continuarViagemPorVoz",
+        "true"
+      );
+    } else {
+      sessionStorage.removeItem(
+        "continuarViagemPorVoz"
+      );
+
+      if (
+        "speechSynthesis" in window
+      ) {
+        window.speechSynthesis.cancel();
+      }
+    }
 
     navigate(
       "/corrida/em-andamento",
@@ -414,7 +464,9 @@ function DriverTracking() {
           duracao,
           destino,
           motorista,
-        },
+          porVoz:
+            porVoz === true
+        }
       }
     );
   }
@@ -425,6 +477,20 @@ function DriverTracking() {
   // ==================================================
 
   function cancelarCorrida() {
+    sessionStorage.removeItem(
+      "continuarAcompanhamentoPorVoz"
+    );
+
+    sessionStorage.removeItem(
+      "continuarViagemPorVoz"
+    );
+
+    if (
+      "speechSynthesis" in window
+    ) {
+      window.speechSynthesis.cancel();
+    }
+
     navigate(
       "/home"
     );
@@ -722,9 +788,16 @@ function DriverTracking() {
         <button
           type="button"
           className="start-trip-button"
-          onClick={
-            iniciarCorrida
-          }
+          onClick={() => {
+            if (
+              porVoz !== true &&
+              "speechSynthesis" in window
+            ) {
+              window.speechSynthesis.cancel();
+            }
+
+            iniciarCorrida();
+          }}
         >
           <span>
             Motorista chegou

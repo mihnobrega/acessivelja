@@ -208,6 +208,16 @@ function CompanyDashboard() {
 
           </div>
 
+          <button
+  type="button"
+  className="company-dashboard-edit-button"
+  onClick={() =>
+    navigate("/empresa/cadastro")
+  }
+>
+  Editar perfil
+</button>
+
         </article>
 
 

@@ -143,7 +143,7 @@ button {
 .home-greeting {
   margin-bottom: 5px;
   color: rgba(255, 255, 255, 0.7);
-  font-size: 13px;
+  font-size: 15px;
 }
 .home-header h1 {
   color: #ffffff;
@@ -193,7 +193,7 @@ button {
   border-radius: 50px;
   background: #e3edf3;
   color: #285c7a;
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 1.3px;
 }
 .home-introduction h2 {
@@ -207,7 +207,7 @@ button {
 }
 .home-introduction > p:last-child {
   color: #66737f;
-  font-size: 15px;
+  font-size: 17px;
 }
 /* ========================================
    SERVIÇOS
@@ -355,7 +355,7 @@ button {
 .service-text span {
   max-width: 350px;
   color: #66737f;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.5;
 }
 .service-primary .service-text strong {
@@ -443,12 +443,12 @@ button {
 }
 .voice-assistant-card strong {
   color: #173b57;
-  font-size: 15px;
+  font-size: 17px;
 }
 .voice-assistant-card p {
   margin-top: 4px;
   color: #66737f;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.4;
 }
 .voice-button {
@@ -457,7 +457,7 @@ button {
   border-radius: 12px;
   background: #173b57;
   color: #ffffff;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   transition:
     background 0.2s ease,
@@ -622,7 +622,7 @@ button {
   display: inline-block;
   margin: 0 0 5px;
   color: #dfe5e9;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1.4px;
@@ -677,7 +677,7 @@ button {
 .ride-header p {
   margin-bottom: 3px;
   color: var(--cinza);
-  font-size: 12px;
+  font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 1.3px;
 }
@@ -720,11 +720,11 @@ button {
 }
 .ride-location-info span {
   color: var(--cinza);
-  font-size: 12px;
+  font-size: 14px;
 }
 .ride-location-info strong {
   color: var(--azul-principal);
-  font-size: 14px;
+  font-size: 16px;
 }
 .location-error {
   color: #a34040 !important;
@@ -733,7 +733,7 @@ button {
 .location-accuracy {
   margin-top: 2px;
   color: var(--cinza);
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.4;
 }
 /* ========================================
@@ -787,7 +787,7 @@ button {
 .map-loading p {
   max-width: 280px;
   color: var(--cinza);
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.5;
 }
 /* ========================================
@@ -921,7 +921,7 @@ button {
 }
 .destination-result-item span:last-child {
   color: var(--texto);
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.5;
 }
 /* ========================================
@@ -938,14 +938,14 @@ button {
   display: block;
   margin-bottom: 5px;
   color: var(--cinza);
-  font-size: 11px;
+  font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 .selected-destination strong {
   display: block;
   color: var(--azul-principal);
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.5;
 }
 /* ========================================
@@ -959,7 +959,7 @@ button {
   background:
     rgba(23, 59, 87, 0.06);
   color: var(--cinza);
-  font-size: 11px;
+  font-size: 13px;
 }
 /* ========================================
    INFORMAÇÕES DA ROTA
@@ -1008,13 +1008,13 @@ button {
 .route-info-item small {
   color:
     rgba(255, 255, 255, 0.68);
-  font-size: 10px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.7px;
 }
 .route-info-item strong {
   color: #ffffff;
-  font-size: 15px;
+  font-size: 17px;
 }
 .route-divider {
   width: 1px;
@@ -1035,7 +1035,7 @@ button {
   border-radius: 14px;
   background: #eef4f7;
   color: var(--azul-principal);
-  font-size: 13px;
+  font-size: 15px;
 }
 .route-loading .map-loading-circle {
   width: 19px;
@@ -1051,7 +1051,7 @@ button {
   border-radius: 14px;
   background: #fff1f1;
   color: #913f3f;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.5;
 }
 /* ========================================
@@ -1101,7 +1101,7 @@ button {
 .ride-options-header p {
   margin-bottom: 3px;
   color: rgba(255, 255, 255, 0.65);
-  font-size: 12px;
+  font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 1.2px;
 }
@@ -1140,7 +1140,7 @@ button {
 }
 .ride-summary span {
   color: rgba(255, 255, 255, 0.68);
-  font-size: 10px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.8px;
 }
@@ -1171,14 +1171,14 @@ button {
   display: block;
   margin-bottom: 5px;
   color: var(--cinza);
-  font-size: 10px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 .ride-options-destination strong {
   display: block;
   color: var(--azul-principal);
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.45;
 }
 /* ========================================
@@ -1209,12 +1209,12 @@ button {
 }
 .personalized-message strong {
   color: var(--azul-principal);
-  font-size: 14px;
+  font-size: 16px;
 }
 .personalized-message p {
   margin-top: 4px;
   color: var(--cinza);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.45;
 }
 /* ========================================
@@ -1297,7 +1297,7 @@ button {
   border-radius: 50px;
   background: var(--azul-principal);
   color: #ffffff;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -1315,7 +1315,7 @@ button {
   border-radius: 50px;
   background: #e4eef3;
   color: var(--azul-principal);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -1358,13 +1358,13 @@ button {
 }
 .ride-option-title span {
   color: var(--azul-secundario);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
 }
 .ride-option-content > p {
   margin-bottom: 12px;
   color: var(--cinza);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.45;
 }
 .ride-option-bottom {
@@ -1376,7 +1376,7 @@ button {
 .ride-option-bottom small {
   max-width: 220px;
   color: var(--cinza);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.4;
 }
 .ride-option-bottom strong {
@@ -1426,7 +1426,7 @@ button {
   display: block;
   margin-bottom: 4px;
   color: var(--azul-secundario);
-  font-size: 10px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -1485,11 +1485,11 @@ button {
 }
 .payment-option strong {
   color: var(--azul-principal);
-  font-size: 14px;
+  font-size: 16px;
 }
 .payment-option small {
   color: var(--cinza);
-  font-size: 11px;
+  font-size: 13px;
 }
 .payment-check {
   width: 25px;
@@ -1501,7 +1501,7 @@ button {
   border: 1px solid var(--prata);
   border-radius: 50%;
   color: #ffffff;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
 }
 .payment-selected .payment-check {
@@ -1525,7 +1525,7 @@ button {
   background: linear-gradient(135deg, #123a56, #285c7a);
   color: #ffffff;
   box-shadow: 0 10px 26px rgba(23, 59, 87, 0.22);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -1561,7 +1561,7 @@ button {
     font-size: 23px;
   }
   .ride-option-title strong {
-    font-size: 15px;
+    font-size: 17px;
   }
   .ride-option-bottom {
     gap: 8px;
@@ -1698,7 +1698,7 @@ button {
   border-radius: 50px;
   background: rgba(191, 216, 204, 0.1);
   color: #dcece4;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -1713,7 +1713,7 @@ button {
 .accessible-map-header p {
   margin-top: 6px;
   color: rgba(255, 255, 255, 0.67);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .accessible-location-card {
@@ -1752,19 +1752,19 @@ button {
 
 .accessible-location-card span {
   color: var(--mapa-cinza);
-  font-size: 8px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.8px;
 }
 
 .accessible-location-card strong {
   color: var(--mapa-azul-escuro);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .accessible-location-card small {
   color: var(--mapa-cinza);
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .accessible-filter-section,
@@ -1792,7 +1792,7 @@ button {
   display: block;
   margin-bottom: 3px;
   color: var(--mapa-azul-claro);
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -1819,7 +1819,7 @@ button {
   border-radius: 50px;
   background: linear-gradient(145deg, #ffffff, #edf2f3);
   color: var(--mapa-azul-escuro);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
 }
 
@@ -1897,7 +1897,7 @@ button {
 
 .accessible-place-content span {
   color: var(--mapa-azul-claro);
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.7px;
@@ -1905,12 +1905,12 @@ button {
 
 .accessible-place-content strong {
   color: var(--mapa-azul-escuro);
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .accessible-place-content small {
   color: var(--mapa-cinza);
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .accessible-place-arrow {
@@ -1924,7 +1924,7 @@ button {
   border-radius: 50%;
   background: var(--mapa-pastel-claro);
   color: var(--mapa-azul-escuro);
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .accessible-place-overlay {
@@ -1985,7 +1985,7 @@ button {
 
 .accessible-place-modal > span {
   color: var(--mapa-azul-claro);
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.9px;
@@ -2000,7 +2000,7 @@ button {
 .accessible-place-modal > p {
   margin-top: 5px;
   color: var(--mapa-cinza);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .accessible-modal-divider {
@@ -2013,7 +2013,7 @@ button {
 .accessible-place-modal h3 {
   margin-bottom: 11px;
   color: var(--mapa-azul-escuro);
-  font-size: 13px;
+  font-size: 15px;
 }
 
 
@@ -2032,7 +2032,7 @@ button {
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.72);
   color: var(--mapa-texto);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .accessible-feature span {
@@ -2045,7 +2045,7 @@ button {
   border-radius: 8px;
   background: var(--mapa-pastel);
   color: var(--mapa-azul-escuro);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 800;
 }
 
@@ -2057,7 +2057,7 @@ button {
   border-radius: 11px;
   background: var(--mapa-pastel-claro);
   color: #526c61;
-  font-size: 8px;
+  font-size: 10px;
   line-height: 1.5;
 }
 
@@ -2194,7 +2194,7 @@ button {
   display: block;
   margin-bottom: 5px;
   color: #d8e1e6;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 1.3px;
 }
@@ -2209,7 +2209,7 @@ button {
 .rental-header p {
   margin: 7px 0 0;
   color: rgba(255, 255, 255, 0.7);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .rental-intro {
@@ -2261,7 +2261,7 @@ button {
   display: block;
   margin-bottom: 3px;
   color: var(--rental-blue-medium);
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 1.2px;
 }
@@ -2276,7 +2276,7 @@ button {
   margin: 0;
   max-width: 430px;
   color: var(--rental-gray);
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.5;
 }
 
@@ -2305,7 +2305,7 @@ button {
   display: block;
   margin-bottom: 3px;
   color: var(--rental-blue-medium);
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 1.2px;
 }
@@ -2401,7 +2401,7 @@ button {
 .rental-card-heading span {
   margin-bottom: 3px;
   color: var(--rental-blue-medium);
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.7px;
@@ -2423,13 +2423,13 @@ button {
   border-radius: 10px;
   background: linear-gradient(145deg, #ffffff, #e1e7ea);
   color: var(--rental-blue);
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .rental-description {
   margin: 13px 0 12px;
   color: var(--rental-gray);
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.5;
 }
 
@@ -2445,7 +2445,7 @@ button {
   border-radius: 8px;
   background: #ffffff;
   color: var(--rental-blue);
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 600;
 }
 
@@ -2460,7 +2460,7 @@ button {
 
 .rental-card-footer > span {
   color: var(--rental-gray);
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .rental-card-footer > div {
@@ -2476,7 +2476,7 @@ button {
 
 .rental-card-footer small {
   color: var(--rental-gray);
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .cadastro-foto {
@@ -2487,7 +2487,7 @@ button {
   display: block;
   margin-bottom: 8px;
   color: #173b57;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
 }
 .cadastro-foto-area {
@@ -2531,12 +2531,12 @@ button {
 .cadastro-foto-info strong {
   margin-bottom: 3px;
   color: #102f47;
-  font-size: 12px;
+  font-size: 14px;
 }
 .cadastro-foto-info span {
   margin-bottom: 9px;
   color: #71818b;
-  font-size: 9px;
+  font-size: 11px;
 }
 .cadastro-foto-button {
   padding: 8px 13px;
@@ -2544,7 +2544,7 @@ button {
   border-radius: 10px;
   background: #173b57;
   color: #ffffff;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   cursor: pointer;
   transition: 0.2s ease;
@@ -2647,7 +2647,7 @@ display:inline-flex;
 align-items:center;
 gap:6px;
 margin-bottom:8px;
-font-size:10px;
+font-size: 12px;
 font-weight:800;
 letter-spacing:.16em;
 color:#cbd5da;
@@ -2668,7 +2668,7 @@ color:#ffffff;
 .provider-header p{
 max-width:430px;
 margin:7px 0 0;
-font-size:13px;
+font-size: 15px;
 line-height:1.5;
 color:#dbe3e7;
 }
@@ -2751,7 +2751,7 @@ justify-content:center;
 border:1px solid #c8d2d7;
 border-radius:50%;
 background:#edf2f5;
-font-size:13px;
+font-size: 15px;
 font-weight:700;
 color:#173b57;
 }
@@ -2763,7 +2763,7 @@ gap:3px;
 margin-top:13px;
 }
 .provider-card-type{
-font-size:9px;
+font-size: 11px;
 font-weight:800;
 letter-spacing:.13em;
 color:#7d8d97;
@@ -2775,7 +2775,7 @@ color:#173b57;
 }
 .provider-card-content p{
 margin:2px 0 0;
-font-size:11px;
+font-size: 13px;
 line-height:1.45;
 color:#66737f;
 }
@@ -2798,7 +2798,7 @@ margin-bottom:16px;
 font-size:20px;
 }
 .provider-header p{
-font-size:12px;
+font-size: 14px;
 }
 .provider-options{
 grid-template-columns:repeat(2,minmax(0,1fr));
@@ -2815,10 +2815,10 @@ height:39px;
 font-size:19px;
 }
 .provider-card-content strong{
-font-size:14px;
+font-size: 16px;
 }
 .provider-card-content p{
-font-size:10px;
+font-size: 12px;
 }
 .provider-card-arrow{
 width:26px;
@@ -2836,10 +2836,10 @@ gap:7px;
 padding:11px;
 }
 .provider-card-content strong{
-font-size:13px;
+font-size: 15px;
 }
 .provider-card-content p{
-font-size:9px;
+font-size: 11px;
 }
 }
 
@@ -2852,7 +2852,7 @@ display:flex;
 align-items:center;
 gap:6px;
 margin-top:8px;
-font-size:9px;
+font-size: 11px;
 font-weight:800;
 letter-spacing:.04em;
 color:#667985;
@@ -2959,7 +2959,7 @@ box-shadow:0 0 0 1px #8f9da6;
   display: block;
   margin-bottom: 5px;
   color: #d8e1e6;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: 1.3px;
 }
@@ -2974,7 +2974,7 @@ box-shadow:0 0 0 1px #8f9da6;
 .vehicle-details-header p {
   margin-top: 7px;
   color: rgba(255, 255, 255, 0.68);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .vehicle-details-hero {
@@ -3079,7 +3079,7 @@ box-shadow:0 0 0 1px #8f9da6;
   margin: 0;
   max-width: 500px;
   color: #6d7d87;
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.5;
 }
 
@@ -3107,7 +3107,7 @@ box-shadow:0 0 0 1px #8f9da6;
   display: block;
   margin-bottom: 3px;
   color: var(--details-blue-medium);
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 1.2px;
 }
@@ -3160,7 +3160,7 @@ box-shadow:0 0 0 1px #8f9da6;
   border-radius: 10px;
   background: linear-gradient(145deg, #173b57, #285c7a);
   color: #ffffff;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 800;
   box-shadow:
     0 4px 10px rgba(23, 59, 87, 0.18),
@@ -3171,7 +3171,7 @@ box-shadow:0 0 0 1px #8f9da6;
   position: relative;
   z-index: 2;
   color: var(--details-blue-dark);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -3212,7 +3212,7 @@ box-shadow:0 0 0 1px #8f9da6;
 .vehicle-details-price > div:first-child > span {
   margin-bottom: 5px;
   color: #cbd5da;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: 1px;
 }
@@ -3225,7 +3225,7 @@ box-shadow:0 0 0 1px #8f9da6;
 .vehicle-details-price small {
   margin-top: 2px;
   color: rgba(255, 255, 255, 0.64);
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .vehicle-details-price-icon {
@@ -3290,13 +3290,13 @@ box-shadow:0 0 0 1px #8f9da6;
   display: block;
   margin-bottom: 2px;
   color: var(--details-blue-dark);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .vehicle-details-info-item p {
   margin: 0;
   color: var(--details-gray);
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.4;
 }
 
@@ -3314,7 +3314,7 @@ box-shadow:0 0 0 1px #8f9da6;
   border-radius: 17px;
   background: linear-gradient(120deg, #102f47, #173b57, #285c7a);
   color: #ffffff;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   box-shadow:
     0 10px 24px rgba(23, 59, 87, 0.2),
@@ -3331,7 +3331,7 @@ box-shadow:0 0 0 1px #8f9da6;
   border-radius: 11px;
   background: rgba(255, 255, 255, 0.1);
   color: #ffffff;
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .vehicle-details-empty {
@@ -3361,7 +3361,7 @@ box-shadow:0 0 0 1px #8f9da6;
 .vehicle-details-empty p {
   margin-bottom: 20px;
   color: var(--details-gray);
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .vehicle-details-empty button {
@@ -3428,7 +3428,7 @@ box-shadow:0 0 0 1px #8f9da6;
   display: block;
   margin-bottom: 6px;
   color: #cbd5da;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1.2px;
@@ -3448,7 +3448,7 @@ box-shadow:0 0 0 1px #8f9da6;
   z-index: 2;
   margin-top: 8px;
   color: rgba(255, 255, 255, 0.72);
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.5;
 }
 
@@ -3542,7 +3542,7 @@ box-shadow:0 0 0 1px #8f9da6;
   display: block;
   margin-bottom: 3px;
   color: #6d7d87;
-  font-size: 9px;
+  font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.8px;
 }
@@ -3561,17 +3561,17 @@ box-shadow:0 0 0 1px #8f9da6;
 
 .driver-rating span {
   color: #173b57;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .driver-rating strong {
   color: #173b57;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .driver-rating small {
   color: #7a8992;
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .driver-arrival {
@@ -3601,7 +3601,7 @@ box-shadow:0 0 0 1px #8f9da6;
 .driver-arrival span {
   margin-top: 2px;
   color: #71818b;
-  font-size: 8px;
+  font-size: 10px;
   text-transform: uppercase;
 }
 
@@ -3649,7 +3649,7 @@ box-shadow:0 0 0 1px #8f9da6;
 
 .driver-car-info > div:nth-child(2) span {
   color: #71818b;
-  font-size: 8px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.7px;
 }
@@ -3657,13 +3657,13 @@ box-shadow:0 0 0 1px #8f9da6;
 .driver-car-info > div:nth-child(2) strong {
   margin-top: 2px;
   color: #102f47;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .driver-car-info > div:nth-child(2) small {
   margin-top: 2px;
   color: #7b8991;
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .driver-plate {
@@ -3685,7 +3685,7 @@ box-shadow:0 0 0 1px #8f9da6;
 .driver-plate strong {
   margin-top: 2px;
   color: #173b57;
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.5px;
 }
 
@@ -3723,13 +3723,13 @@ box-shadow:0 0 0 1px #8f9da6;
   display: block;
   margin-bottom: 2px;
   color: #102f47;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .driver-accessibility p {
   margin: 0;
   color: #6d7d87;
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.4;
 }
 
@@ -3765,7 +3765,7 @@ box-shadow:0 0 0 1px #8f9da6;
 }
 
 .driver-contact-button strong {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .driver-trip-summary {
@@ -3800,14 +3800,14 @@ box-shadow:0 0 0 1px #8f9da6;
 
 .driver-trip-summary span {
   color: #cbd5da;
-  font-size: 8px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.7px;
 }
 
 .driver-trip-summary strong {
   color: #ffffff;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .track-driver-button {
@@ -3828,7 +3828,7 @@ box-shadow:0 0 0 1px #8f9da6;
       #285c7a
     );
   color: #ffffff;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   box-shadow:
     0 10px 24px rgba(23, 59, 87, 0.18);
@@ -3853,7 +3853,7 @@ box-shadow:0 0 0 1px #8f9da6;
   border-radius: 14px;
   background: #ffffff;
   color: #6d7d87;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -3939,7 +3939,7 @@ box-shadow:0 0 0 1px #8f9da6;
   display: block;
   margin-bottom: 4px;
   color: #cbd5da;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1.1px;
@@ -3955,7 +3955,7 @@ box-shadow:0 0 0 1px #8f9da6;
 .tracking-header-content p {
   margin-top: 7px;
   color: rgba(255, 255, 255, 0.72);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .tracking-header-content p strong {
@@ -4004,19 +4004,19 @@ box-shadow:0 0 0 1px #8f9da6;
 
 .tracking-status-card span {
   color: #71818b;
-  font-size: 8px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.7px;
 }
 
 .tracking-status-card strong {
   color: #102f47;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .tracking-status-card small {
   color: #6d7d87;
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.4;
 }
 
@@ -4045,7 +4045,7 @@ box-shadow:0 0 0 1px #8f9da6;
   border-radius: 10px;
   background: rgba(16, 47, 71, 0.9);
   color: #ffffff;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 700;
   backdrop-filter: blur(7px);
 }
@@ -4074,13 +4074,13 @@ box-shadow:0 0 0 1px #8f9da6;
 
 .tracking-map-loading strong {
   color: #173b57;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .tracking-map-loading p {
   max-width: 280px;
   color: #6d7d87;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
@@ -4127,7 +4127,7 @@ box-shadow:0 0 0 1px #8f9da6;
 
 .tracking-driver-name span {
   color: #71818b;
-  font-size: 8px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.7px;
 }
@@ -4141,7 +4141,7 @@ box-shadow:0 0 0 1px #8f9da6;
 .tracking-driver-name small {
   margin-top: 4px;
   color: #6d7d87;
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .tracking-time {
@@ -4166,7 +4166,7 @@ box-shadow:0 0 0 1px #8f9da6;
 .tracking-time span {
   margin-top: 2px;
   color: #71818b;
-  font-size: 8px;
+  font-size: 10px;
   text-transform: uppercase;
 }
 
@@ -4203,7 +4203,7 @@ box-shadow:0 0 0 1px #8f9da6;
 
 .tracking-car-description span {
   color: #71818b;
-  font-size: 8px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.7px;
 }
@@ -4211,13 +4211,13 @@ box-shadow:0 0 0 1px #8f9da6;
 .tracking-car-description strong {
   margin-top: 2px;
   color: #102f47;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .tracking-car-description small {
   margin-top: 2px;
   color: #7b8991;
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .tracking-plate {
@@ -4239,7 +4239,7 @@ box-shadow:0 0 0 1px #8f9da6;
 .tracking-plate strong {
   margin-top: 2px;
   color: #173b57;
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.5px;
 }
 
@@ -4270,7 +4270,7 @@ box-shadow:0 0 0 1px #8f9da6;
 }
 
 .tracking-action-button strong {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .start-trip-button {
@@ -4290,11 +4290,11 @@ box-shadow:0 0 0 1px #8f9da6;
 }
 
 .start-trip-button span {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .start-trip-button strong {
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .tracking-cancel-button {
@@ -4307,7 +4307,7 @@ box-shadow:0 0 0 1px #8f9da6;
   border-radius: 14px;
   background: #ffffff;
   color: #6d7d87;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -4406,7 +4406,7 @@ box-shadow:0 0 0 1px #8f9da6;
   display: block;
   margin-bottom: 5px;
   color: #cbd5da;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1.2px;
@@ -4426,7 +4426,7 @@ box-shadow:0 0 0 1px #8f9da6;
   z-index: 2;
   margin-top: 8px;
   color: rgba(255, 255, 255, 0.72);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
@@ -4550,13 +4550,13 @@ box-shadow:0 0 0 1px #8f9da6;
 
 .searching-message strong {
   color: #102f47;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .searching-message p {
   margin-top: 4px;
   color: #6d7d87;
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .searching-trip-card {
@@ -4599,14 +4599,14 @@ box-shadow:0 0 0 1px #8f9da6;
 .searching-trip-top span {
   margin-bottom: 4px;
   color: #71818b;
-  font-size: 8px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.8px;
 }
 
 .searching-trip-top strong {
   color: #102f47;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .searching-price {
@@ -4652,7 +4652,7 @@ box-shadow:0 0 0 1px #8f9da6;
 .searching-trip-info strong {
   overflow: hidden;
   color: #173b57;
-  font-size: 10px;
+  font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -4665,7 +4665,7 @@ box-shadow:0 0 0 1px #8f9da6;
   border-radius: 14px;
   background: #ffffff;
   color: #6d7d87;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   box-shadow: 0 4px 12px rgba(23, 59, 87, 0.04);
   transition:
@@ -4731,7 +4731,7 @@ box-shadow:0 0 0 1px #8f9da6;
   display: block;
   margin-bottom: 5px;
   color: #cbd5da;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1.2px;
@@ -4747,7 +4747,7 @@ box-shadow:0 0 0 1px #8f9da6;
 .ride-progress-header-content p {
   margin-top: 7px;
   color: rgba(255, 255, 255, 0.72);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
@@ -4793,7 +4793,7 @@ box-shadow:0 0 0 1px #8f9da6;
 
 .ride-progress-status-top span {
   color: #71818b;
-  font-size: 8px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.7px;
 }
@@ -4805,7 +4805,7 @@ box-shadow:0 0 0 1px #8f9da6;
 
 .ride-progress-status-top small {
   color: #6d7d87;
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .ride-progress-bar {
@@ -4855,7 +4855,7 @@ box-shadow:0 0 0 1px #8f9da6;
   border-radius: 10px;
   background: rgba(16, 47, 71, 0.9);
   color: #ffffff;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 700;
   backdrop-filter: blur(7px);
 }
@@ -4905,14 +4905,14 @@ box-shadow:0 0 0 1px #8f9da6;
 
 .ride-progress-destination span {
   color: #71818b;
-  font-size: 8px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.7px;
 }
 
 .ride-progress-destination strong {
   color: #102f47;
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.4;
 }
 
@@ -4946,7 +4946,7 @@ box-shadow:0 0 0 1px #8f9da6;
 .ride-progress-info strong {
   overflow: hidden;
   color: #173b57;
-  font-size: 10px;
+  font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -4995,12 +4995,12 @@ box-shadow:0 0 0 1px #8f9da6;
 
 .ride-progress-action strong {
   color: #173b57;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .ride-progress-action small {
   color: #6d7d87;
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .ride-arrived-card {
@@ -5034,7 +5034,7 @@ box-shadow:0 0 0 1px #8f9da6;
 
 .ride-arrived-card span {
   color: #71818b;
-  font-size: 8px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.7px;
 }
@@ -5048,7 +5048,7 @@ box-shadow:0 0 0 1px #8f9da6;
 .ride-arrived-card p {
   margin: 0;
   color: #6d7d87;
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.45;
 }
 
@@ -5065,7 +5065,7 @@ box-shadow:0 0 0 1px #8f9da6;
   border-radius: 16px;
   background: linear-gradient(120deg, #102f47, #173b57, #285c7a);
   color: #ffffff;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   box-shadow: 0 10px 24px rgba(23, 59, 87, 0.18);
 }
@@ -5129,7 +5129,7 @@ box-shadow:0 0 0 1px #8f9da6;
   display: block;
   margin-bottom: 5px;
   color: #cbd5da;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1.2px;
@@ -5145,7 +5145,7 @@ box-shadow:0 0 0 1px #8f9da6;
 .ride-summary-header p {
   margin-top: 8px;
   color: rgba(255, 255, 255, 0.72);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
@@ -5186,7 +5186,7 @@ box-shadow:0 0 0 1px #8f9da6;
 
 .ride-summary-driver span {
   color: #71818b;
-  font-size: 8px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.7px;
 }
@@ -5200,7 +5200,7 @@ box-shadow:0 0 0 1px #8f9da6;
 .ride-summary-driver small {
   margin-top: 4px;
   color: #6d7d87;
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .ride-summary-details {
@@ -5232,7 +5232,7 @@ box-shadow:0 0 0 1px #8f9da6;
 
 .ride-summary-details strong {
   color: #173b57;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .ride-summary-destination {
@@ -5252,14 +5252,14 @@ box-shadow:0 0 0 1px #8f9da6;
 
 .ride-summary-destination span {
   color: #71818b;
-  font-size: 8px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.7px;
 }
 
 .ride-summary-destination strong {
   color: #102f47;
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.45;
 }
 
@@ -5280,7 +5280,7 @@ box-shadow:0 0 0 1px #8f9da6;
   display: block;
   margin-bottom: 4px;
   color: #71818b;
-  font-size: 8px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.8px;
 }
@@ -5338,7 +5338,7 @@ box-shadow:0 0 0 1px #8f9da6;
   background: #ffffff;
   color: #17212b;
   font-family: inherit;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.5;
   outline: none;
 }
@@ -5365,7 +5365,7 @@ box-shadow:0 0 0 1px #8f9da6;
   border-radius: 16px;
   background: linear-gradient(120deg, #102f47, #173b57, #285c7a);
   color: #ffffff;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   box-shadow: 0 10px 24px rgba(23, 59, 87, 0.18);
 }
@@ -5472,7 +5472,7 @@ box-shadow:0 0 0 1px #8f9da6;
   display: block;
   margin-bottom: 4px;
   color: #cbd5da;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1.1px;
@@ -5488,7 +5488,7 @@ box-shadow:0 0 0 1px #8f9da6;
 .rental-period-header p {
   margin-top: 7px;
   color: rgba(255, 255, 255, 0.72);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
@@ -5538,7 +5538,7 @@ box-shadow:0 0 0 1px #8f9da6;
   display: block;
   margin-bottom: 3px;
   color: #285c7a;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -5558,12 +5558,12 @@ box-shadow:0 0 0 1px #8f9da6;
 
 .rental-period-vehicle-info strong {
   color: #173b57;
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .rental-period-vehicle-info small {
   color: #6d7d87;
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .rental-period-selection {
@@ -5587,7 +5587,7 @@ box-shadow:0 0 0 1px #8f9da6;
   display: block;
   margin-bottom: 3px;
   color: #285c7a;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 1px;
 }
@@ -5612,7 +5612,7 @@ box-shadow:0 0 0 1px #8f9da6;
 
 .rental-date-field span {
   color: #173b57;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
 }
 
@@ -5624,7 +5624,7 @@ box-shadow:0 0 0 1px #8f9da6;
   border-radius: 12px;
   background: #ffffff;
   color: #173b57;
-  font-size: 10px;
+  font-size: 12px;
   outline: none;
 }
 
@@ -5658,7 +5658,7 @@ box-shadow:0 0 0 1px #8f9da6;
   display: block;
   margin-bottom: 3px;
   color: #285c7a;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 1px;
 }
@@ -5694,7 +5694,7 @@ box-shadow:0 0 0 1px #8f9da6;
 
 .rental-period-summary-info strong {
   color: #173b57;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .rental-period-total {
@@ -5716,14 +5716,14 @@ box-shadow:0 0 0 1px #8f9da6;
 
 .rental-period-total span {
   color: #cbd5da;
-  font-size: 8px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.7px;
 }
 
 .rental-period-total small {
   color: rgba(255, 255, 255, 0.65);
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .rental-period-total strong {
@@ -5744,7 +5744,7 @@ box-shadow:0 0 0 1px #8f9da6;
   border-radius: 16px;
   background: linear-gradient(120deg, #102f47, #173b57, #285c7a);
   color: #ffffff;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   box-shadow: 0 10px 24px rgba(23, 59, 87, 0.18);
 }
@@ -5867,7 +5867,7 @@ box-shadow:0 0 0 1px #8f9da6;
   display: block;
   margin-bottom: 4px;
   color: #cbd5da;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1.1px;
@@ -5883,7 +5883,7 @@ box-shadow:0 0 0 1px #8f9da6;
 .rental-summary-header p {
   margin-top: 7px;
   color: rgba(255, 255, 255, 0.72);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
@@ -5932,7 +5932,7 @@ box-shadow:0 0 0 1px #8f9da6;
   display: block;
   margin-bottom: 3px;
   color: #285c7a;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -5947,7 +5947,7 @@ box-shadow:0 0 0 1px #8f9da6;
 .rental-summary-vehicle-info p {
   margin: 0;
   color: #71818b;
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.45;
 }
 
@@ -5973,7 +5973,7 @@ box-shadow:0 0 0 1px #8f9da6;
   display: block;
   margin-bottom: 3px;
   color: #285c7a;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 1px;
 }
@@ -6011,7 +6011,7 @@ box-shadow:0 0 0 1px #8f9da6;
 .rental-summary-date-grid strong,
 .rental-summary-days strong {
   color: #173b57;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .rental-summary-days {
@@ -6034,12 +6034,12 @@ box-shadow:0 0 0 1px #8f9da6;
 
 .rental-summary-value-row span {
   color: #71818b;
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .rental-summary-value-row strong {
   color: #173b57;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .rental-summary-divider {
@@ -6066,14 +6066,14 @@ box-shadow:0 0 0 1px #8f9da6;
 
 .rental-summary-total span {
   color: #cbd5da;
-  font-size: 8px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.7px;
 }
 
 .rental-summary-total small {
   color: rgba(255, 255, 255, 0.65);
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .rental-summary-total strong {
@@ -6104,14 +6104,14 @@ box-shadow:0 0 0 1px #8f9da6;
   border-radius: 10px;
   background: #173b57;
   color: #ffffff;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 800;
 }
 
 .rental-summary-notice p {
   margin: 0;
   color: #657680;
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.5;
 }
 
@@ -6128,7 +6128,7 @@ box-shadow:0 0 0 1px #8f9da6;
   border-radius: 16px;
   background: linear-gradient(120deg, #102f47, #173b57, #285c7a);
   color: #ffffff;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 10px 24px rgba(23, 59, 87, 0.18);
@@ -6625,7 +6625,7 @@ html.alto-contraste [class*="total"][class*="card"] * {
   }
 
   .rental-summary-vehicle-info p {
-    font-size: 8px;
+    font-size: 10px;
   }
 
   .rental-summary-date-grid {
@@ -6677,7 +6677,7 @@ html.alto-contraste [class*="total"][class*="card"] * {
   display: block;
   margin-bottom: 5px;
   color: #285c7a;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 1.1px;
 }
@@ -6692,7 +6692,7 @@ html.alto-contraste [class*="total"][class*="card"] * {
   max-width: 430px;
   margin: 8px auto 0;
   color: #71818b;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
@@ -6739,7 +6739,7 @@ html.alto-contraste [class*="total"][class*="card"] * {
   display: block;
   margin-bottom: 3px;
   color: #285c7a;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -6754,7 +6754,7 @@ html.alto-contraste [class*="total"][class*="card"] * {
 .rental-confirmed-vehicle-info p {
   margin: 0;
   color: #71818b;
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.45;
 }
 
@@ -6785,7 +6785,7 @@ html.alto-contraste [class*="total"][class*="card"] * {
 
 .rental-confirmed-details strong {
   color: #173b57;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .rental-confirmed-total {
@@ -6808,14 +6808,14 @@ html.alto-contraste [class*="total"][class*="card"] * {
 
 .rental-confirmed-total span {
   color: #cbd5da;
-  font-size: 8px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.7px;
 }
 
 .rental-confirmed-total small {
   color: rgba(255, 255, 255, 0.65);
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .rental-confirmed-total strong {
@@ -6844,14 +6844,14 @@ html.alto-contraste [class*="total"][class*="card"] * {
   border-radius: 10px;
   background: #173b57;
   color: #ffffff;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 800;
 }
 
 .rental-confirmed-notice p {
   margin: 0;
   color: #657680;
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.5;
 }
 
@@ -6866,7 +6866,7 @@ html.alto-contraste [class*="total"][class*="card"] * {
   border-radius: 16px;
   background: linear-gradient(120deg, #102f47, #173b57, #285c7a);
   color: #ffffff;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 10px 24px rgba(23, 59, 87, 0.18);
@@ -6922,7 +6922,7 @@ html.alto-contraste [class*="total"][class*="card"] * {
   border-radius:16px;
   background:linear-gradient(135deg,#173b57,#285c7a);
   color:#ffffff;
-  font-size:15px;
+  font-size: 17px;
   font-weight:800;
   cursor:pointer;
   box-shadow:0 10px 22px rgba(23,59,87,.18);

@@ -19,6 +19,7 @@ function RideSummary() {
     duracao,
     destino,
     motorista,
+    porVoz
   } = location.state || {};
 
   const [
@@ -42,25 +43,26 @@ function RideSummary() {
   // ==================================================
 
   useEffect(() => {
-    const continuarPorVoz =
-      sessionStorage.getItem(
-        "continuarResumoPorVoz"
-      );
+    sessionStorage.removeItem(
+      "continuarResumoPorVoz"
+    );
 
     if (
-      continuarPorVoz !== "true" ||
+      porVoz !== true ||
       !corrida ||
       !motorista
     ) {
+      if (
+        "speechSynthesis" in window
+      ) {
+        window.speechSynthesis.cancel();
+      }
+
       return;
     }
 
     const temporizador =
       setTimeout(() => {
-        sessionStorage.removeItem(
-          "continuarResumoPorVoz"
-        );
-
         falarAvaliacao();
       }, 800);
 
@@ -68,8 +70,18 @@ function RideSummary() {
       clearTimeout(
         temporizador
       );
+
+      if (
+        "speechSynthesis" in window
+      ) {
+        window.speechSynthesis.cancel();
+      }
     };
-  }, []);
+  }, [
+    porVoz,
+    corrida,
+    motorista
+  ]);
 
 
   // ==================================================
@@ -77,6 +89,12 @@ function RideSummary() {
   // ==================================================
 
   function falarAvaliacao() {
+    if (
+      porVoz !== true
+    ) {
+      return;
+    }
+
     if (
       !("speechSynthesis" in window)
     ) {
@@ -112,6 +130,12 @@ function RideSummary() {
   // ==================================================
 
   function ouvirAvaliacao() {
+    if (
+      porVoz !== true
+    ) {
+      return;
+    }
+
     reconhecerVoz(
       (comando) => {
         const nota =
@@ -189,6 +213,12 @@ function RideSummary() {
   // ==================================================
 
   function falarAvaliacaoNaoEntendida() {
+    if (
+      porVoz !== true
+    ) {
+      return;
+    }
+
     falarEExecutar(
       "Não entendi sua avaliação. Diga uma, duas, três, quatro ou cinco estrelas.",
       ouvirAvaliacao
@@ -203,6 +233,12 @@ function RideSummary() {
   function perguntarComentario(
     nota
   ) {
+    if (
+      porVoz !== true
+    ) {
+      return;
+    }
+
     falarEExecutar(
       `Avaliação de ${nota} estrelas registrada. Deseja deixar um comentário? Diga sim ou não.`,
       ouvirRespostaComentario
@@ -215,6 +251,12 @@ function RideSummary() {
   // ==================================================
 
   function ouvirRespostaComentario() {
+    if (
+      porVoz !== true
+    ) {
+      return;
+    }
+
     reconhecerVoz(
       (comando) => {
         if (
@@ -250,6 +292,12 @@ function RideSummary() {
   // ==================================================
 
   function pedirComentario() {
+    if (
+      porVoz !== true
+    ) {
+      return;
+    }
+
     falarEExecutar(
       "Diga agora o seu comentário sobre a viagem.",
       ouvirComentario
@@ -262,6 +310,12 @@ function RideSummary() {
   // ==================================================
 
   function ouvirComentario() {
+    if (
+      porVoz !== true
+    ) {
+      return;
+    }
+
     reconhecerVoz(
       (comando) => {
         setComentario(
@@ -282,6 +336,12 @@ function RideSummary() {
   // ==================================================
 
   function pedirConclusao() {
+    if (
+      porVoz !== true
+    ) {
+      return;
+    }
+
     falarEExecutar(
       "Avaliação registrada. Diga concluir para voltar à página inicial.",
       ouvirConclusao
@@ -294,6 +354,12 @@ function RideSummary() {
   // ==================================================
 
   function ouvirConclusao() {
+    if (
+      porVoz !== true
+    ) {
+      return;
+    }
+
     reconhecerVoz(
       (comando) => {
         if (
@@ -322,6 +388,12 @@ function RideSummary() {
     mensagem,
     callback
   ) {
+    if (
+      porVoz !== true
+    ) {
+      return;
+    }
+
     if (
       !("speechSynthesis" in window)
     ) {
@@ -359,6 +431,12 @@ function RideSummary() {
   function reconhecerVoz(
     callback
   ) {
+    if (
+      porVoz !== true
+    ) {
+      return;
+    }
+
     const SpeechRecognition =
       window.SpeechRecognition ||
       window.webkitSpeechRecognition;
@@ -454,6 +532,10 @@ function RideSummary() {
   // ==================================================
 
   function concluir() {
+    sessionStorage.removeItem(
+      "continuarResumoPorVoz"
+    );
+
     window.speechSynthesis?.cancel();
 
     navigate(
@@ -644,11 +726,18 @@ function RideSummary() {
                     ? "ride-star active"
                     : "ride-star"
                 }
-                onClick={() =>
+                onClick={() => {
+                  if (
+                    porVoz !== true &&
+                    "speechSynthesis" in window
+                  ) {
+                    window.speechSynthesis.cancel();
+                  }
+
                   setAvaliacao(
                     estrela
-                  )
-                }
+                  );
+                }}
                 aria-label={`Dar ${estrela} estrelas`}
               >
                 ★
@@ -660,11 +749,18 @@ function RideSummary() {
 
         <textarea
           value={comentario}
-          onChange={(evento) =>
+          onChange={(evento) => {
+            if (
+              porVoz !== true &&
+              "speechSynthesis" in window
+            ) {
+              window.speechSynthesis.cancel();
+            }
+
             setComentario(
               evento.target.value
-            )
-          }
+            );
+          }}
           placeholder="Quer deixar algum comentário?"
         />
 

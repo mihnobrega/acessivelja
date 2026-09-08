@@ -9,8 +9,6 @@ import {
 
 import LocationMap from "../../components/LocationMap";
 
-import useAlertaSonoro from "../../hooks/useAlertaSonoro";
-
 function RideRequest() {
   const navigate = useNavigate();
 
@@ -66,14 +64,6 @@ function RideRequest() {
   ouvindoDestino,
   setOuvindoDestino
 ] = useState(false);
-
-  // ==================================================
-  // ALERTA SONORO
-  // ==================================================
-
-  useAlertaSonoro(
-    "Pedir corrida. Informe para onde você deseja ir."
-  );
 
   useEffect(() => {
   if (!navigator.geolocation) {
@@ -306,22 +296,19 @@ useEffect(() => {
         evento.detail.entendido =
           true;
 
-        sessionStorage.setItem(
-  "iniciarOpcoesCorridaPorVoz",
-  "true"
-);
-
-navigate(
-  "/corrida/opcoes",
-  {
-    state: {
-      distancia,
-      duracao,
-      destino:
-        destinoSelecionado
-    }
-  }
-);
+        navigate(
+          "/corrida/opcoes",
+          {
+            state: {
+              distancia,
+              duracao,
+              destino:
+                destinoSelecionado,
+              porVoz:
+                true
+            }
+          }
+        );
       }
 
       return;
@@ -357,11 +344,6 @@ useEffect(() => {
       "iniciarCorridaPorVoz"
     );
 
-  console.log(
-    "Corrida por voz:",
-    iniciarPorVoz
-  );
-
   if (
     iniciarPorVoz !== "true"
   ) {
@@ -374,10 +356,6 @@ useEffect(() => {
         "iniciarCorridaPorVoz"
       );
 
-      console.log(
-        "Iniciando corrida por voz"
-      );
-
       perguntarDestino();
     }, 800);
 
@@ -385,6 +363,23 @@ useEffect(() => {
     clearTimeout(
       temporizador
     );
+
+    if (
+      "speechSynthesis" in window
+    ) {
+      window.speechSynthesis.cancel();
+    }
+  };
+}, []);
+
+
+useEffect(() => {
+  return () => {
+    if (
+      "speechSynthesis" in window
+    ) {
+      window.speechSynthesis.cancel();
+    }
   };
 }, []);
 
@@ -956,10 +951,15 @@ function ouvirDestino() {
               className="primary-button ride-continue-button"
               type="button"
               onClick={() => {
-                sessionStorage.setItem(
-                  "iniciarOpcoesCorridaPorVoz",
-                  "true"
+                sessionStorage.removeItem(
+                  "iniciarOpcoesCorridaPorVoz"
                 );
+
+                if (
+                  "speechSynthesis" in window
+                ) {
+                  window.speechSynthesis.cancel();
+                }
 
                 navigate(
                   "/corrida/opcoes",
@@ -969,7 +969,9 @@ function ouvirDestino() {
                       duracao,
                       destino:
                         destinoSelecionado,
-                    },
+                      porVoz:
+                        false
+                    }
                   }
                 );
               }}

@@ -436,3 +436,32 @@
     width: 100%;
   }
 }
+
+.company-back-button {
+  position: absolute;
+  top: 24px;
+  left: 28px;
+  z-index: 10;
+  padding: 10px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+}
+
+.company-back-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 600px) {
+  .company-back-button {
+    top: 16px;
+    left: 16px;
+    padding: 9px 13px;
+    font-size: 12px;
+  }
+}

@@ -15,7 +15,7 @@ export const veiculos = [
     imagem: kenguruImage,
     icone: "♿",
 
-    valor: "R$ 120",
+    valor: "R$ 360",
     periodo: "por dia",
 
     recomendado: true,
@@ -60,7 +60,7 @@ export const veiculos = [
     imagem: compactAdaptImage,
     icone: "🚗",
 
-    valor: "R$ 95",
+    valor: "R$ 195",
     periodo: "por dia",
 
     recomendado: false,
