@@ -297,7 +297,7 @@ function AccessibleMap() {
   ];
 
   /* ========================================
-     EMPRESA CADASTRADA
+     EMPRESAS CADASTRADAS
   ======================================== */
 
   const usuarioSalvo =
@@ -312,8 +312,62 @@ function AccessibleMap() {
         )
       : null;
 
-  const empresaCadastrada =
+
+  const empresasSalvas =
+    JSON.parse(
+      localStorage.getItem(
+        "acessivelJaEmpresas"
+      ) || "[]"
+    );
+
+
+  // ========================================
+  // INCLUIR TAMBÉM A EMPRESA DO USUÁRIO
+  // ATUAL, CASO ELA AINDA NÃO ESTEJA NA LISTA
+  // ========================================
+
+  const empresaUsuario =
     usuario?.empresa;
+
+
+  let empresasCadastradas = [
+    ...empresasSalvas
+  ];
+
+
+  if (
+    empresaUsuario
+  ) {
+    const indiceEmpresaAtual =
+      empresasCadastradas.findIndex(
+        (empresa) =>
+          empresa.id ===
+            empresaUsuario.id ||
+          (
+            empresa.cnpj &&
+            empresa.cnpj ===
+              empresaUsuario.cnpj
+          )
+      );
+
+
+    if (
+      indiceEmpresaAtual >= 0
+    ) {
+      empresasCadastradas =
+        empresasCadastradas.map(
+          (empresa, indice) =>
+            indice === indiceEmpresaAtual
+              ? empresaUsuario
+              : empresa
+        );
+    } else {
+      empresasCadastradas = [
+        empresaUsuario,
+        ...empresasCadastradas
+      ];
+    }
+  }
 
 
   /* ========================================
@@ -440,128 +494,142 @@ function AccessibleMap() {
 
 
   /* ========================================
-     COLOCAR EMPRESA CADASTRADA NO MAPA
+     COLOCAR TODAS AS EMPRESAS NO MAPA
   ======================================== */
 
-  let empresaNoMapa =
-    null;
+  const empresasNoMapa =
+    localizacao
+      ? empresasCadastradas
+          .filter(
+            (empresa) =>
+              empresa?.pagamentoAtivo &&
+              empresa?.visivelPublicamente
+          )
+          .map(
+            (empresa, indice) => {
+              const latitudeSalva =
+                Number(
+                  empresa
+                    ?.localizacao
+                    ?.latitude
+                );
+
+              const longitudeSalva =
+                Number(
+                  empresa
+                    ?.localizacao
+                    ?.longitude
+                );
 
 
-  if (
-    localizacao &&
-    empresaCadastrada?.pagamentoAtivo &&
-    empresaCadastrada?.visivelPublicamente
-  ) {
-    const latitudeEmpresa =
-      Number(
-        empresaCadastrada
-          ?.localizacao
-          ?.latitude
-      ) ||
-      (
-        localizacao.latitude +
-        0.0025
-      );
-
-    const longitudeEmpresa =
-      Number(
-        empresaCadastrada
-          ?.localizacao
-          ?.longitude
-      ) ||
-      (
-        localizacao.longitude +
-        0.002
-      );
-
-    const distanciaEmpresaKm =
-      calcularDistancia(
-        localizacao.latitude,
-        localizacao.longitude,
-        latitudeEmpresa,
-        longitudeEmpresa
-      );
+              const latitudeEmpresa =
+                Number.isFinite(
+                  latitudeSalva
+                ) &&
+                latitudeSalva !== 0
+                  ? latitudeSalva
+                  : (
+                      localizacao.latitude +
+                      0.0025 +
+                      indice * 0.001
+                    );
 
 
-    empresaNoMapa = {
-      id:
-        "empresa-cadastrada",
+              const longitudeEmpresa =
+                Number.isFinite(
+                  longitudeSalva
+                ) &&
+                longitudeSalva !== 0
+                  ? longitudeSalva
+                  : (
+                      localizacao.longitude +
+                      0.002 +
+                      indice * 0.001
+                    );
 
-      nome:
-        empresaCadastrada.nomeEmpresa ||
-        "Empresa parceira",
 
-      categoria:
-        empresaCadastrada.categoria ||
-        "Empresa",
+              const distanciaEmpresaKm =
+                calcularDistancia(
+                  localizacao.latitude,
+                  localizacao.longitude,
+                  latitudeEmpresa,
+                  longitudeEmpresa
+                );
 
-      icone:
-        empresaCadastrada.categoria ===
-        "Transporte"
-          ? "🚐"
-          : "🏢",
 
-      recursos:
-        descobrirRecursosEmpresa(
-          empresaCadastrada
-            .acessibilidade
-        ),
+              return {
+                id:
+                  empresa.id ||
+                  `empresa-${empresa.cnpj || indice}`,
 
-      acessibilidade:
-        empresaCadastrada
-          .acessibilidade ||
-        [],
+                nome:
+                  empresa.nomeEmpresa ||
+                  "Empresa parceira",
 
-      latitude:
-        latitudeEmpresa,
+                categoria:
+                  empresa.categoria ||
+                  "Empresa",
 
-      longitude:
-        longitudeEmpresa,
+                icone:
+                  empresa.categoria ===
+                  "Transporte"
+                    ? "🚐"
+                    : "🏢",
 
-      distancia:
-        formatarDistancia(
-          distanciaEmpresaKm
-        ),
+                recursos:
+                  descobrirRecursosEmpresa(
+                    empresa.acessibilidade
+                  ),
 
-      destaque:
-        empresaCadastrada
-          .plano
-          ?.id ===
-        "intermediario" ||
-        empresaCadastrada
-          .plano
-          ?.id ===
-        "premium",
+                acessibilidade:
+                  empresa.acessibilidade ||
+                  [],
 
-      avaliacao:
-        empresaCadastrada
-          .plano
-          ?.id ===
-        "premium"
-          ? 4.8
-          : null,
+                latitude:
+                  latitudeEmpresa,
 
-      cadastrada:
-        true
-    };
-  }
+                longitude:
+                  longitudeEmpresa,
+
+                distancia:
+                  formatarDistancia(
+                    distanciaEmpresaKm
+                  ),
+
+                destaque:
+                  empresa
+                    .plano
+                    ?.id ===
+                    "intermediario" ||
+                  empresa
+                    .plano
+                    ?.id ===
+                    "premium",
+
+                avaliacao:
+                  empresa
+                    .plano
+                    ?.id ===
+                    "premium"
+                    ? 4.8
+                    : null,
+
+                cadastrada:
+                  true
+              };
+            }
+          )
+      : [];
 
 
   /* ========================================
      LISTA FINAL DE LOCAIS
   ======================================== */
 
- const locais = [
-  ...(
-    empresaNoMapa
-      ? [
-          empresaNoMapa
-        ]
-      : []
-  ),
-
-  ...locaisDemonstrativos
-];
+  const locais = [
+    ...empresasNoMapa,
+    ...locaisDemonstrativos
+  ];
 
 
   /* ========================================

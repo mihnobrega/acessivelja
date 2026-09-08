@@ -80,85 +80,153 @@ function CompanyPayment() {
   // SIMULAR PAGAMENTO
   // ========================================
 
-  function simularPagamento() {
-    const usuarioSalvo =
-      localStorage.getItem(
-        "acessivelJaUsuario"
-      );
-
-    if (!usuarioSalvo) {
-      alert(
-        "Usuário não encontrado."
-      );
-
-      return;
-    }
-
-    const usuario =
-      JSON.parse(
-        usuarioSalvo
-      );
-
-    const usuarioAtualizado = {
-      ...usuario,
-
-      perfis: {
-        ...usuario.perfis,
-        usuario: true,
-        empresa: true
-      },
-
-      empresa: {
-        ...usuario.empresa,
-
-        plano: {
-          id:
-            plano.id,
-
-          nome:
-            plano.nome,
-
-          periodo:
-            plano.periodo,
-
-          valor:
-            plano.valor,
-
-          recursos:
-            plano.recursos
-        },
-
-        pagamentoAtivo:
-          true,
-
-        visivelPublicamente:
-          true,
-
-        pagamento: {
-          metodo:
-            "pix",
-
-          status:
-            "aprovado",
-
-          pagoEm:
-            new Date().toISOString()
-        }
-      }
-    };
-
-    localStorage.setItem(
-      "acessivelJaUsuario",
-      JSON.stringify(
-        usuarioAtualizado
-      )
+ function simularPagamento() {
+  const usuarioSalvo =
+    localStorage.getItem(
+      "acessivelJaUsuario"
     );
 
-    setPagamentoConcluido(
-      true
+  if (!usuarioSalvo) {
+    alert(
+      "Usuário não encontrado."
     );
+
+    return;
   }
 
+  const usuario =
+    JSON.parse(
+      usuarioSalvo
+    );
+
+
+  const empresaAtualizada = {
+    ...usuario.empresa,
+
+    plano: {
+      id:
+        plano.id,
+
+      nome:
+        plano.nome,
+
+      periodo:
+        plano.periodo,
+
+      valor:
+        plano.valor,
+
+      recursos:
+        plano.recursos
+    },
+
+    pagamentoAtivo:
+      true,
+
+    visivelPublicamente:
+      true,
+
+    pagamento: {
+      metodo:
+        "pix",
+
+      status:
+        "aprovado",
+
+      pagoEm:
+        new Date().toISOString()
+    }
+  };
+
+
+  const usuarioAtualizado = {
+    ...usuario,
+
+    perfis: {
+      ...usuario.perfis,
+
+      usuario:
+        true,
+
+      empresa:
+        true
+    },
+
+    empresa:
+      empresaAtualizada
+  };
+
+
+  // ========================================
+  // SALVAR USUÁRIO ATUALIZADO
+  // ========================================
+
+  localStorage.setItem(
+    "acessivelJaUsuario",
+    JSON.stringify(
+      usuarioAtualizado
+    )
+  );
+
+
+  // ========================================
+  // ATUALIZAR LISTA GLOBAL DE EMPRESAS
+  // ========================================
+
+  const empresasSalvas =
+    JSON.parse(
+      localStorage.getItem(
+        "acessivelJaEmpresas"
+      ) || "[]"
+    );
+
+
+  const indiceEmpresa =
+    empresasSalvas.findIndex(
+      (empresa) =>
+        empresa.id ===
+          empresaAtualizada.id ||
+        (
+          empresa.cnpj &&
+          empresa.cnpj ===
+            empresaAtualizada.cnpj
+        )
+    );
+
+
+  let empresasAtualizadas;
+
+
+  if (
+    indiceEmpresa >= 0
+  ) {
+    empresasAtualizadas =
+      empresasSalvas.map(
+        (empresa, indice) =>
+          indice === indiceEmpresa
+            ? empresaAtualizada
+            : empresa
+      );
+  } else {
+    empresasAtualizadas = [
+      empresaAtualizada,
+      ...empresasSalvas
+    ];
+  }
+
+
+  localStorage.setItem(
+    "acessivelJaEmpresas",
+    JSON.stringify(
+      empresasAtualizadas
+    )
+  );
+
+
+  setPagamentoConcluido(
+    true
+  );
+}
 
   // ========================================
   // IR PARA O PAINEL

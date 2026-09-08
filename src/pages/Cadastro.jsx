@@ -617,33 +617,96 @@ function reconhecerVoz(
   }
 
 
-  // ========================================
-  // CADASTRAR USUÁRIO
-  // ========================================
+// ========================================
+// CADASTRAR USUÁRIO
+// ========================================
 
-  function cadastrarUsuario(evento) {
-    evento.preventDefault();
+function cadastrarUsuario(evento) {
+  evento.preventDefault();
 
-    const usuario = {
-      nome,
-      email: email.trim(),
-      senha,
-      necessidades,
-      outraNecessidade,
-      fotoPerfil,
-    };
+  console.log("CADASTRO NOVO EXECUTADO");
 
-    localStorage.setItem(
-  "acessivelJaUsuario",
-  JSON.stringify(usuario)
-);
+  const emailNormalizado =
+    email.trim().toLowerCase();
 
-localStorage.setItem(
-  "acessivelJaLogado",
-  "true"
-);
+  const usuariosSalvos =
+    JSON.parse(
+      localStorage.getItem(
+        "acessivelJaUsuarios"
+      )
+    ) || [];
 
-navigate("/home");
+  console.log(
+    "Usuários antes:",
+    usuariosSalvos
+  );
+
+  const emailJaExiste =
+    usuariosSalvos.some(
+      (usuario) =>
+        usuario.email.toLowerCase() ===
+        emailNormalizado
+    );
+
+  if (emailJaExiste) {
+    alert(
+      "Já existe uma conta cadastrada com este e-mail."
+    );
+
+    return;
+  }
+
+  const novoUsuario = {
+    id: Date.now().toString(),
+    nome: nome.trim(),
+    email: emailNormalizado,
+    senha,
+    necessidades,
+    outraNecessidade,
+    fotoPerfil,
+  };
+
+  const usuariosAtualizados = [
+    ...usuariosSalvos,
+    novoUsuario,
+  ];
+
+  localStorage.setItem(
+    "acessivelJaUsuarios",
+    JSON.stringify(
+      usuariosAtualizados
+    )
+  );
+
+  console.log(
+    "Usuários depois:",
+    JSON.parse(
+      localStorage.getItem(
+        "acessivelJaUsuarios"
+      )
+    )
+  );
+
+  localStorage.setItem(
+    "acessivelJaUsuarioAtual",
+    JSON.stringify(
+      novoUsuario
+    )
+  );
+
+  localStorage.setItem(
+    "acessivelJaUsuario",
+    JSON.stringify(
+      novoUsuario
+    )
+  );
+
+  localStorage.setItem(
+    "acessivelJaLogado",
+    "true"
+  );
+
+  navigate("/home");
 }
 
   return (

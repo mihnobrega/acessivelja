@@ -290,6 +290,70 @@ function CompanyRegister() {
       usuarioAtual.empresa || {};
 
 
+    // ========================================
+    // CRIAR / MANTER ID DA EMPRESA
+    // ========================================
+
+    const empresaId =
+      empresaAnterior.id ||
+      `empresa-${Date.now()}`;
+
+
+    // ========================================
+    // EMPRESA ATUALIZADA
+    // ========================================
+
+    const empresaAtualizada = {
+
+      localizacao: {
+        latitude:
+          empresaAnterior.localizacao?.latitude ||
+          -21.4678,
+
+        longitude:
+          empresaAnterior.localizacao?.longitude ||
+          -47.0046
+      },
+
+      // Mantém informações antigas,
+      // como plano e pagamento.
+      ...empresaAnterior,
+
+      // Atualiza os dados do cadastro.
+      ...dados,
+
+      id:
+        empresaId,
+
+      proprietarioEmail:
+        usuarioAtual.email || "",
+
+      plano:
+        empresaAnterior.plano ||
+        null,
+
+      pagamentoAtivo:
+        empresaAnterior.pagamentoAtivo ||
+        false,
+
+      visivelPublicamente:
+        empresaAnterior.visivelPublicamente ||
+        false,
+
+      cadastradaEm:
+        empresaAnterior.cadastradaEm ||
+        new Date().toISOString(),
+
+      atualizadaEm:
+        new Date().toISOString()
+
+    };
+
+
+    // ========================================
+    // ATUALIZAR USUÁRIO ATUAL
+    // ========================================
+
     const usuarioAtualizado = {
       ...usuarioAtual,
 
@@ -303,44 +367,8 @@ function CompanyRegister() {
           true
       },
 
-      empresa: {
-
-        localizacao: {
-          latitude:
-            empresaAnterior.localizacao?.latitude ||
-            -21.4678,
-
-          longitude:
-            empresaAnterior.localizacao?.longitude ||
-            -47.0046
-        },
-        // Mantém informações antigas,
-        // como plano e pagamento.
-        ...empresaAnterior,
-
-        // Atualiza os dados do cadastro.
-        ...dados,
-
-        plano:
-          empresaAnterior.plano ||
-          null,
-
-        pagamentoAtivo:
-          empresaAnterior.pagamentoAtivo ||
-          false,
-
-        visivelPublicamente:
-          empresaAnterior.visivelPublicamente ||
-          false,
-
-        cadastradaEm:
-          empresaAnterior.cadastradaEm ||
-          new Date().toISOString(),
-
-        atualizadaEm:
-          new Date().toISOString()
-
-      }
+      empresa:
+        empresaAtualizada
     };
 
 
@@ -348,6 +376,60 @@ function CompanyRegister() {
       "acessivelJaUsuario",
       JSON.stringify(
         usuarioAtualizado
+      )
+    );
+
+
+    // ========================================
+    // SALVAR NA LISTA GLOBAL DE EMPRESAS
+    // ========================================
+
+    const empresasSalvas =
+      JSON.parse(
+        localStorage.getItem(
+          "acessivelJaEmpresas"
+        ) || "[]"
+      );
+
+
+    const indiceEmpresa =
+      empresasSalvas.findIndex(
+        (empresa) =>
+          empresa.id ===
+            empresaAtualizada.id ||
+          (
+            empresa.cnpj &&
+            empresa.cnpj ===
+              empresaAtualizada.cnpj
+          )
+      );
+
+
+    let empresasAtualizadas;
+
+
+    if (
+      indiceEmpresa >= 0
+    ) {
+      empresasAtualizadas =
+        empresasSalvas.map(
+          (empresa, indice) =>
+            indice === indiceEmpresa
+              ? empresaAtualizada
+              : empresa
+        );
+    } else {
+      empresasAtualizadas = [
+        empresaAtualizada,
+        ...empresasSalvas
+      ];
+    }
+
+
+    localStorage.setItem(
+      "acessivelJaEmpresas",
+      JSON.stringify(
+        empresasAtualizadas
       )
     );
 

@@ -292,88 +292,85 @@ function Login() {
       fala
     );
   }
+// ========================================
+// LOGIN
+// ========================================
 
+function fazerLogin(evento) {
+  evento.preventDefault();
 
-  // ========================================
-  // LOGIN
-  // ========================================
+  setErro("");
 
-  function fazerLogin(
-    evento
-  ) {
-    evento.preventDefault();
+  const emailDigitado =
+    email.trim().toLowerCase();
 
-    setErro("");
-
-    const dadosSalvos =
+  // Busca todos os usuários cadastrados
+  const usuariosSalvos =
+    JSON.parse(
       localStorage.getItem(
-        "acessivelJaUsuario"
-      );
+        "acessivelJaUsuarios"
+      )
+    ) || [];
 
-    if (!dadosSalvos) {
-      setErro(
-        "Nenhuma conta foi encontrada. Crie uma conta primeiro."
-      );
+  if (usuariosSalvos.length === 0) {
+    setErro(
+      "Nenhuma conta foi encontrada. Crie uma conta primeiro."
+    );
 
-      return;
-    }
-
-    try {
-      const usuario =
-        JSON.parse(
-          dadosSalvos
-        );
-
-      const emailCorreto =
-        usuario.email ===
-        email.trim();
-
-      const senhaCorreta =
-        usuario.senha ===
-        senha;
-
-      if (
-        emailCorreto &&
-        senhaCorreta
-      ) {
-        localStorage.setItem(
-          "acessivelJaLogado",
-          "true"
-        );
-
-        if (
-          loginPorVoz
-        ) {
-          sessionStorage.setItem(
-            "continuarHomePorVoz",
-            "true"
-          );
-        }
-
-        navigate(
-          "/home"
-        );
-
-        return;
-      }
-
-      setErro(
-        "Email ou senha incorretos."
-      );
-
-    } catch (
-      erroLogin
-    ) {
-      console.error(
-        "Erro ao carregar usuário:",
-        erroLogin
-      );
-
-      setErro(
-        "Não foi possível acessar sua conta."
-      );
-    }
+    return;
   }
+
+  // Procura pelo usuário com
+  // email e senha correspondentes
+  const usuarioEncontrado =
+    usuariosSalvos.find(
+      (usuario) =>
+        usuario.email
+          .trim()
+          .toLowerCase() ===
+          emailDigitado &&
+        usuario.senha === senha
+    );
+
+  if (!usuarioEncontrado) {
+    setErro(
+      "Email ou senha incorretos."
+    );
+
+    return;
+  }
+
+  // Define quem está logado
+  localStorage.setItem(
+    "acessivelJaUsuarioAtual",
+    JSON.stringify(
+      usuarioEncontrado
+    )
+  );
+
+  // Mantemos também a chave antiga
+  // para compatibilidade com outras telas
+  localStorage.setItem(
+    "acessivelJaUsuario",
+    JSON.stringify(
+      usuarioEncontrado
+    )
+  );
+
+  localStorage.setItem(
+    "acessivelJaLogado",
+    "true"
+  );
+
+  if (loginPorVoz) {
+    sessionStorage.setItem(
+      "continuarHomePorVoz",
+      "true"
+    );
+  }
+
+  navigate("/home");
+}
 
 
   return (
